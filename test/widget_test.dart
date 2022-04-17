@@ -4,7 +4,7 @@ import 'package:schildpad/main.dart';
 void main() {
   testWidgets('App starts', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const SchildpadApp());
+    await tester.pumpWidget(SchildpadApp());
 
     expect(find.text('this is home'), findsOneWidget);
   });
