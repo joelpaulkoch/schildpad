@@ -5,7 +5,7 @@ void main() {
   testWidgets('InstalledAppsView should give user access to apps',
       (WidgetTester tester) async {
     //Given: the user is on the installed apps view
-    await tester.pumpWidget(InstalledAppsView());
+    await tester.pumpWidget(const InstalledAppsView());
 
     //When: the user taps on the app icon
 
@@ -14,7 +14,7 @@ void main() {
   testWidgets('InstalledAppsView should give user access to settings',
       (WidgetTester tester) async {
     //Given: the user is on the installed apps view
-    await tester.pumpWidget(InstalledAppsView());
+    await tester.pumpWidget(const InstalledAppsView());
 
     //When: the user taps the settings button
 
