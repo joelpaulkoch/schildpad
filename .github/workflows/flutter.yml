@@ -12,8 +12,10 @@ jobs:
       - name: Flutter analyze
       - uses: actions/checkout@v2      
       - uses: subosito/flutter-action@v2.3.0
-      - run: flutter pub get
-      - run: flutter analyze
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze code
+        run: flutter analyze
       - name: Verify formatting
         run: flutter format --output=none --set-exit-if-changed .
   
