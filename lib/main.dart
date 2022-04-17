@@ -12,6 +12,6 @@ class SchildpadApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(useMaterial3: true),
-        home: const Text("this is home"));
+        home: const Scaffold(body: Center(child: Text("this is home"))));
   }
 }
