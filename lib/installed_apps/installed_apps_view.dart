@@ -117,16 +117,17 @@ class InstalledAppListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: appIcon,
-        title: Text(
-          appName,
-          maxLines: 1,
-        ),
-        onTap: () => onTap,
-        horizontalTitleGap: 40,
+    return ListTile(
+      shape: Border.symmetric(
+          horizontal: BorderSide(color: Theme.of(context).dividerColor)),
+      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      leading: appIcon,
+      title: Text(
+        appName,
+        maxLines: 1,
       ),
+      onTap: () => onTap,
+      horizontalTitleGap: 40,
     );
   }
 }
