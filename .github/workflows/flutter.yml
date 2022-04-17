@@ -1,0 +1,33 @@
+name: Flutter
+
+on:
+  push:    
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flutter analyze
+        uses: subosito/flutter-action@v2.3.0
+      - run: flutter pub get
+      - run: flutter analyze
+      - name: Verify formatting
+        run: flutter format --output=none --set-exit-if-changed .
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flutter build
+        uses: subosito/flutter-action@v2.3.0
+      - run: flutter pub get
+      - run: flutter build
+      
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flutter test
+        uses: subosito/flutter-action@v2.3.0
+      - run: flutter pub get
+      - run: flutter test
