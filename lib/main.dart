@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:schildpad/launcher/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/theme/theme.dart';
 
-import 'launcher/home_view.dart';
+import 'home/home_view.dart';
 
 void main() {
   runApp(SchildpadApp());
@@ -31,6 +32,8 @@ class SchildpadApp extends StatelessWidget {
         routeInformationParser: _router.routeInformationParser,
         routerDelegate: _router.routerDelegate,
         title: 'Schildpad',
-        theme: ThemeData(useMaterial3: true),
+        themeMode: ThemeMode.system,
+        theme: SchildpadTheme.lightTheme,
+        darkTheme: SchildpadTheme.darkTheme,
       );
 }
