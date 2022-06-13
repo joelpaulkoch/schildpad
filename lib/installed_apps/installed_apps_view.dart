@@ -84,7 +84,7 @@ class InstalledAppButton extends StatelessWidget {
         children: [
           IconButton(
             iconSize: 60,
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            padding: EdgeInsets.zero,
             icon: icon,
             onPressed: onTap,
             splashColor: Colors.transparent,

@@ -9,17 +9,11 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onVerticalDragEnd: (details) {
-        context.go("/apps");
-      },
-      child: Stack(
-        children: const [
-          SizedBox.expand(child: ColoredBox(color: Colors.cyanAccent)),
-          Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Center(child: Text("this is home")))
-        ],
-      ),
-    );
+        onVerticalDragEnd: (details) {
+          context.go("/apps");
+        },
+        child: Container(
+          decoration: BoxDecoration(color: Colors.amber),
+        ));
   }
 }
