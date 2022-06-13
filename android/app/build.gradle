@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId "app.schildpad.schildpad"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 26
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

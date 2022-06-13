@@ -1,17 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/theme/theme.dart';
+
+import 'home/home_view.dart';
 
 void main() {
-  runApp(const SchildpadApp());
+  runApp(ProviderScope(child: SchildpadApp()));
 }
 
 class SchildpadApp extends StatelessWidget {
-  const SchildpadApp({Key? key}) : super(key: key);
+  SchildpadApp({Key? key}) : super(key: key);
+
+  final GoRouter _router = GoRouter(
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/',
+        builder: (BuildContext context, GoRouterState state) =>
+            const HomeView(),
+      ),
+      GoRoute(
+        path: '/apps',
+        builder: (BuildContext context, GoRouterState state) =>
+            const InstalledAppsView(),
+      ),
+    ],
+  );
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(useMaterial3: true),
-        home: const Scaffold(body: Center(child: Text("this is home"))));
-  }
+  Widget build(BuildContext context) => MaterialApp.router(
+        routeInformationParser: _router.routeInformationParser,
+        routerDelegate: _router.routerDelegate,
+        title: 'Schildpad',
+        themeMode: ThemeMode.system,
+        theme: SchildpadTheme.lightTheme,
+        darkTheme: SchildpadTheme.darkTheme,
+      );
 }
