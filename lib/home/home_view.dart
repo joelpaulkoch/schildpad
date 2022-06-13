@@ -13,7 +13,7 @@ class HomeView extends StatelessWidget {
           context.go("/apps");
         },
         child: Container(
-          decoration: BoxDecoration(color: Colors.amber),
+          decoration: const BoxDecoration(color: Colors.amber),
         ));
   }
 }

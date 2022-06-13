@@ -1,5 +1,5 @@
 import 'package:device_apps/device_apps.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final installedAppsProvider =
     FutureProvider<List<ApplicationWithIcon>>((ref) async {
