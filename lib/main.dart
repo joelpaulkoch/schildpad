@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -7,6 +8,14 @@ import 'package:schildpad/theme/theme.dart';
 import 'home/home_view.dart';
 
 void main() {
+  //Setting SysemUIOverlay
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemStatusBarContrastEnforced: true,
+    systemNavigationBarContrastEnforced: true,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
   runApp(ProviderScope(child: SchildpadApp()));
 }
 
