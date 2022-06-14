@@ -13,7 +13,7 @@ class InstalledAppsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const FlutterLogoDecoration(),
+      color: Colors.transparent,
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
