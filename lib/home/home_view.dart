@@ -10,7 +10,11 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onVerticalDragEnd: (details) {
-          context.go("/apps");
+          final primaryVelocity = details.primaryVelocity ?? 0;
+          // on swipe up
+          if (primaryVelocity < 0) {
+            context.push('/apps');
+          }
         },
         child: Container(
           decoration: const BoxDecoration(color: Colors.transparent),

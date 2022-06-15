@@ -7,13 +7,16 @@ final _columnCountProvider = Provider<int>((ref) {
   return 3;
 });
 
+const double _gridPadding = 16;
+const double _appIconSize = 60;
+
 class InstalledAppsView extends StatelessWidget {
   const InstalledAppsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.transparent,
+      color: const Color.fromRGBO(0, 0, 0, 0.5),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
@@ -27,13 +30,13 @@ class InstalledAppsView extends StatelessWidget {
                 color: Colors.white,
               ),
               onPressed: () {},
-              splashColor: Colors.transparent,
               splashRadius: 20,
             ),
           ],
         ),
         const SliverPadding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: EdgeInsets.fromLTRB(
+                _gridPadding, 0, _gridPadding, _gridPadding),
             sliver: InstalledAppsGrid())
       ]),
     );
@@ -83,7 +86,7 @@ class InstalledAppButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           IconButton(
-            iconSize: 60,
+            iconSize: _appIconSize,
             padding: EdgeInsets.zero,
             icon: icon,
             onPressed: onTap,

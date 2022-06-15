@@ -13,7 +13,7 @@ void main() {
     statusBarColor: Colors.transparent,
     systemStatusBarContrastEnforced: true,
     systemNavigationBarContrastEnforced: true,
-    systemNavigationBarColor: Colors.transparent,
+    // systemNavigationBarColor: Colors.transparent, TODO extend views below system navigation bar
     systemNavigationBarDividerColor: Colors.transparent,
   ));
   runApp(ProviderScope(child: SchildpadApp()));
