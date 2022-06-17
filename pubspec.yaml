@@ -37,6 +37,7 @@ dependencies:
   go_router: ^3.0.7
   flutter_riverpod: ^2.0.0-dev.5
   device_apps: ^2.2.0
+  equatable: ^2.0.3
 
 dev_dependencies:
   integration_test:

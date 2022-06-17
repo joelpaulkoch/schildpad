@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'installed_apps.dart';
 
@@ -56,50 +57,60 @@ class InstalledAppsGrid extends ConsumerWidget {
         crossAxisCount: columnCount,
         children: installedApps.maybeWhen(
             data: (appsList) => appsList
-                .map((app) => InstalledAppButton(
-                    icon: Image.memory(
-                      app.icon,
-                      fit: BoxFit.contain,
-                    ),
-                    appName: app.appName,
-                    onTap: app.openApp))
+                .map((app) => InstalledAppIcon(
+                      app: app,
+                      showAppName: true,
+                    ))
                 .toList(),
             orElse: () => []));
   }
 }
 
-class InstalledAppButton extends StatelessWidget {
-  const InstalledAppButton(
-      {Key? key, required this.icon, required this.appName, this.onTap})
-      : super(key: key);
+class InstalledAppIcon extends StatelessWidget {
+  const InstalledAppIcon({
+    Key? key,
+    required this.app,
+    this.showAppName = false,
+    this.onDragCompleted,
+  }) : super(key: key);
 
-  final Widget icon;
-  final String appName;
-  final VoidCallback? onTap;
+  final AppData app;
+  final bool showAppName;
+  final VoidCallback? onDragCompleted;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          IconButton(
-            iconSize: _appIconSize,
-            padding: EdgeInsets.zero,
-            icon: icon,
-            onPressed: onTap,
-            splashColor: Colors.transparent,
-          ),
-          Text(
-            appName,
-            style: Theme.of(context).textTheme.caption,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-        ],
+    return LongPressDraggable(
+      data: (app),
+      maxSimultaneousDrags: 1,
+      feedback:
+          SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
+      childWhenDragging: const SizedBox.shrink(),
+      onDragStarted: () => context.go('/'),
+      onDragCompleted: onDragCompleted,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            IconButton(
+              iconSize: _appIconSize,
+              padding: EdgeInsets.zero,
+              icon: app.icon,
+              onPressed: app.launch,
+              splashColor: Colors.transparent,
+            ),
+            if (showAppName)
+              Text(
+                app.name,
+                style: Theme.of(context).textTheme.caption,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+          ],
+        ),
       ),
     );
   }

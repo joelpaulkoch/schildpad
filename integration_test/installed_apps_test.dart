@@ -63,13 +63,30 @@ void main() {
       await tester.pumpAndSettle();
 
       final installedAppsViewFinder = find.byType(InstalledAppsView);
-      // expect(installedAppsViewFinder, findsOneWidget);
+      expect(installedAppsViewFinder, findsOneWidget);
+
+      // wait to load apps
+      await Future.delayed(const Duration(seconds: 5), () {});
+      await tester.pumpAndSettle();
 
       // When:
-      // I swipe up
+      // I long press and drag an InstalledAppButton
+      final installedAppFinder = find.byType(InstalledAppIcon).first;
+      expect(installedAppFinder, findsOneWidget);
+
+      final longPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder));
+      await tester.pumpAndSettle();
+
+      await longPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
 
       // Then:
-      // A list of all installed apps is shown
+      // I can drop it on the HomeView and it is added
+      await longPressDragGesture.up();
+      await tester.pumpAndSettle();
+      expect(homeViewFinder, findsOneWidget);
+      expect(installedAppFinder, findsOneWidget);
     });
   });
 }
