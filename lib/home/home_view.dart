@@ -10,7 +10,7 @@ import 'package:schildpad/installed_apps/installed_apps_view.dart';
 const _columnCount = 4;
 const _rowCount = 5;
 
-final _appProvider =
+final appProvider =
     StateProvider.family<AppData?, GridCell>((ref, cell) => null);
 
 class HomeView extends StatelessWidget {
@@ -50,11 +50,17 @@ class HomeViewGrid extends ConsumerWidget {
                         children: List.generate(
                   _rowCount,
                   (rowIndex) => Expanded(
-                    child: DragTarget<AppData>(onAccept: (AppData? data) {
+                    child: DragTarget<AppData>(onWillAccept: (_) {
+                      final currentElement = ref
+                          .read(appProvider(GridCell(colIndex, rowIndex))
+                              .notifier)
+                          .state;
+                      return currentElement == null;
+                    }, onAccept: (AppData? data) {
                       dev.log(
                           'dropped: ${data?.name} in ($colIndex, $rowIndex)');
                       ref
-                          .read(_appProvider(GridCell(colIndex, rowIndex))
+                          .read(appProvider(GridCell(colIndex, rowIndex))
                               .notifier)
                           .state = data;
                     }, builder: (context, candidates, rejects) {
@@ -78,12 +84,12 @@ class GridElement extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     dev.log('rebuilding GridElement($col, $row)');
-    final app = ref.watch(_appProvider(GridCell(col, row)));
+    final app = ref.watch(appProvider(GridCell(col, row)));
     if (app != null) {
       return InstalledAppIcon(
         app: app,
         onDragCompleted: () {
-          ref.read(_appProvider(GridCell(col, row)).notifier).state = null;
+          ref.read(appProvider(GridCell(col, row)).notifier).state = null;
           dev.log('removing ${app.name} from ($col, $row)');
         },
       );
