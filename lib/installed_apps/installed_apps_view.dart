@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/home_view.dart';
 
 import 'installed_apps.dart';
 
@@ -7,13 +9,16 @@ final _columnCountProvider = Provider<int>((ref) {
   return 3;
 });
 
+const double _gridPadding = 16;
+const double _appIconSize = 60;
+
 class InstalledAppsView extends StatelessWidget {
   const InstalledAppsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.transparent,
+      color: const Color.fromRGBO(0, 0, 0, 0.5),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
@@ -27,13 +32,13 @@ class InstalledAppsView extends StatelessWidget {
                 color: Colors.white,
               ),
               onPressed: () {},
-              splashColor: Colors.transparent,
               splashRadius: 20,
             ),
           ],
         ),
         const SliverPadding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: EdgeInsets.fromLTRB(
+                _gridPadding, 0, _gridPadding, _gridPadding),
             sliver: InstalledAppsGrid())
       ]),
     );
@@ -53,50 +58,69 @@ class InstalledAppsGrid extends ConsumerWidget {
         crossAxisCount: columnCount,
         children: installedApps.maybeWhen(
             data: (appsList) => appsList
-                .map((app) => InstalledAppButton(
-                    icon: Image.memory(
-                      app.icon,
-                      fit: BoxFit.contain,
-                    ),
-                    appName: app.appName,
-                    onTap: app.openApp))
+                .map((app) => InstalledAppIcon(
+                      app: app,
+                      showAppName: true,
+                      onDragStarted: () {
+                        context.go('/');
+                        ref.read(showTrashProvider.notifier).state = true;
+                      },
+                    ))
                 .toList(),
             orElse: () => []));
   }
 }
 
-class InstalledAppButton extends StatelessWidget {
-  const InstalledAppButton(
-      {Key? key, required this.icon, required this.appName, this.onTap})
-      : super(key: key);
+class InstalledAppIcon extends ConsumerWidget {
+  const InstalledAppIcon({
+    Key? key,
+    required this.app,
+    this.showAppName = false,
+    this.onDragStarted,
+    this.onDragCompleted,
+  }) : super(key: key);
 
-  final Widget icon;
-  final String appName;
-  final VoidCallback? onTap;
+  final AppData app;
+  final bool showAppName;
+  final VoidCallback? onDragStarted;
+  final VoidCallback? onDragCompleted;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          IconButton(
-            iconSize: 60,
-            padding: EdgeInsets.zero,
-            icon: icon,
-            onPressed: onTap,
-            splashColor: Colors.transparent,
-          ),
-          Text(
-            appName,
-            style: Theme.of(context).textTheme.caption,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-        ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    return LongPressDraggable(
+      data: (app),
+      maxSimultaneousDrags: 1,
+      feedback:
+          SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
+      childWhenDragging: const SizedBox.shrink(),
+      onDragStarted: onDragStarted,
+      onDragCompleted: onDragCompleted,
+      onDraggableCanceled: (_, __) {
+        ref.read(showTrashProvider.notifier).state = false;
+      },
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            IconButton(
+              iconSize: _appIconSize,
+              padding: EdgeInsets.zero,
+              icon: app.icon,
+              onPressed: app.launch,
+              splashColor: Colors.transparent,
+            ),
+            if (showAppName)
+              Text(
+                app.name,
+                style: Theme.of(context).textTheme.caption,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+          ],
+        ),
       ),
     );
   }
