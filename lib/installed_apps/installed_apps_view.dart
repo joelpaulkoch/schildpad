@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/home_view.dart';
 
 import 'installed_apps.dart';
 
@@ -60,34 +61,43 @@ class InstalledAppsGrid extends ConsumerWidget {
                 .map((app) => InstalledAppIcon(
                       app: app,
                       showAppName: true,
+                      onDragStarted: () {
+                        context.go('/');
+                        ref.read(showTrashProvider.notifier).state = true;
+                      },
                     ))
                 .toList(),
             orElse: () => []));
   }
 }
 
-class InstalledAppIcon extends StatelessWidget {
+class InstalledAppIcon extends ConsumerWidget {
   const InstalledAppIcon({
     Key? key,
     required this.app,
     this.showAppName = false,
+    this.onDragStarted,
     this.onDragCompleted,
   }) : super(key: key);
 
   final AppData app;
   final bool showAppName;
+  final VoidCallback? onDragStarted;
   final VoidCallback? onDragCompleted;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return LongPressDraggable(
       data: (app),
       maxSimultaneousDrags: 1,
       feedback:
           SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
       childWhenDragging: const SizedBox.shrink(),
-      onDragStarted: () => context.go('/'),
+      onDragStarted: onDragStarted,
       onDragCompleted: onDragCompleted,
+      onDraggableCanceled: (_, __) {
+        ref.read(showTrashProvider.notifier).state = false;
+      },
       child: Material(
         type: MaterialType.transparency,
         child: Column(

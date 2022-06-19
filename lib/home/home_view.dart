@@ -13,24 +13,73 @@ const _rowCount = 5;
 final appProvider =
     StateProvider.family<AppData?, GridCell>((ref, cell) => null);
 
-class HomeView extends StatelessWidget {
+final showTrashProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
+class HomeView extends ConsumerWidget {
   const HomeView({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
-        child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onVerticalDragEnd: (details) {
-              final primaryVelocity = details.primaryVelocity ?? 0;
-              // on swipe up
-              if (primaryVelocity < 0) {
-                context.push('/apps');
-              }
-            },
-            child: const HomeViewGrid()));
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+            flex: _rowCount,
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onVerticalDragEnd: (details) {
+                  final primaryVelocity = details.primaryVelocity ?? 0;
+                  // on swipe up
+                  if (primaryVelocity < 0) {
+                    context.push('/apps');
+                  }
+                },
+                child: const HomeViewGrid())),
+        const TrashArea()
+      ],
+    ));
+  }
+}
+
+class TrashArea extends ConsumerWidget {
+  const TrashArea({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showTrash = ref.watch(showTrashProvider);
+    return showTrash
+        ? Expanded(
+            flex: 1,
+            child: DragTarget(
+              onWillAccept: (_) => true,
+              onAccept: (_) {
+                ref.read(showTrashProvider.notifier).state = false;
+              },
+              builder: (_, __, ___) => Material(
+                color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2)),
+                    child: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ))
+        : const SizedBox.shrink();
   }
 }
 
@@ -63,6 +112,7 @@ class HomeViewGrid extends ConsumerWidget {
                           .read(appProvider(GridCell(colIndex, rowIndex))
                               .notifier)
                           .state = data;
+                      ref.read(showTrashProvider.notifier).state = false;
                     }, builder: (context, candidates, rejects) {
                       return GridElement(col: colIndex, row: rowIndex);
                     }),
@@ -88,9 +138,13 @@ class GridElement extends ConsumerWidget {
     if (app != null) {
       return InstalledAppIcon(
         app: app,
+        onDragStarted: () {
+          ref.read(showTrashProvider.notifier).state = true;
+        },
         onDragCompleted: () {
           ref.read(appProvider(GridCell(col, row)).notifier).state = null;
           dev.log('removing ${app.name} from ($col, $row)');
+          ref.read(showTrashProvider.notifier).state = false;
         },
       );
     } else {
