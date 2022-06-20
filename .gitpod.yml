@@ -26,7 +26,7 @@ tasks:
             "Request your token here: https://appetize.io/docs#request-api-token if you want to test android builds"
       else
           curl -sS --http1.1 "https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_PUBLICKEY" \
-              -F "file=@/workspace/template-flutter/build/app/outputs/flutter-apk/app.apk" \
+              -F "file=@/workspace/schildpad/build/app/outputs/flutter-apk/app.apk" \
               -F platform=android \
               -F "buttonText=Start App" \
               -F "postSessionButtonText=Start App" \
@@ -43,13 +43,11 @@ tasks:
         rm -f /workspace/.template_init
         flutter create --project-name gitpod_flutter_quickstart .
       } fi
-      flutter build -v linux
-      flutter build -v web
 
       ### If you want to build for android, consider uncommenting the below lines
       # flutter build -v bundle
       # flutter build -v appbundle
-      # flutter build -v apk
+      flutter build -v apk
 
       ### This line is necessary for the below `- name: Run project` to await before proceeding to `flutter run` when prebuilds are not effective
       # We could use `gp sync-[done|await] <id>` but that won't work between `init` and `command`
