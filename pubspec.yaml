@@ -38,6 +38,7 @@ dependencies:
   flutter_riverpod: ^2.0.0-dev.5
   device_apps: ^2.2.0
   equatable: ^2.0.3
+  protoc_plugin: ^20.0.1
 
 dev_dependencies:
   integration_test:
