@@ -17,9 +17,9 @@ class InstalledAppsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color.fromRGBO(0, 0, 0, 0.5),
-      child: CustomScrollView(slivers: <Widget>[
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
+      body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
           pinned: false,
