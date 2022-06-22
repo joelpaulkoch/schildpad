@@ -16,6 +16,8 @@ message App {
   }
 
   DrawableData icon = 3;
+
+  string launchComponent = 4;
 }
 
 message InstalledApps{

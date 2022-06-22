@@ -18,6 +18,7 @@ void main() {
             color: Colors.cyanAccent,
           ),
           name: 'testApp',
+          packageName: 'testPackage',
           launch: () {});
 
       runApp(ProviderScope(overrides: [
@@ -63,6 +64,7 @@ void main() {
             color: Colors.cyanAccent,
           ),
           name: 'firstTestApp',
+          packageName: 'testPackage',
           launch: () {});
       final secondTestApp = AppData(
           icon: const Icon(
@@ -70,6 +72,7 @@ void main() {
             color: Colors.deepOrange,
           ),
           name: 'secondTestApp',
+          packageName: 'testPackage',
           launch: () {});
 
       runApp(ProviderScope(overrides: [
@@ -124,6 +127,7 @@ void main() {
             color: Colors.cyanAccent,
           ),
           name: 'testApp',
+          packageName: 'testPackage',
           launch: () {});
 
       runApp(ProviderScope(overrides: [

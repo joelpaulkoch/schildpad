@@ -18,6 +18,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
+import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : FlutterActivity() {
@@ -55,33 +56,37 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getInstalledApps(): InstalledApps {
-        val appInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-            .filter { it.enabled }
-            .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
+        val packageInfos = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
+            .filter { it.applicationInfo.enabled }
+            .filter { (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
 
         val installedApps = installedApps {
-            for (appInfo in appInfos) {
 
-                val app = app {
-                    name = appInfo.loadLabel(packageManager).toString()
-                    packageName = appInfo.packageName
+            for (packageInfo in packageInfos) {
+                val launchIntent = packageManager.getLaunchIntentForPackage(packageInfo.packageName)
+                val launchIntentComponent = launchIntent?.component
+                if (launchIntent != null && launchIntentComponent != null) {
+                    val app = app {
+                        name = packageInfo.applicationInfo.loadLabel(packageManager).toString()
+                        packageName = packageInfo.packageName
 
-                    icon = AppKt.drawableData {
-                        val bmp: Bitmap? =
-                            appInfo.loadIcon(packageManager).toBitmap()
-                        if (bmp != null) {
-                            data = ByteString.copyFrom(bmp.convertToByteArray())
+                        icon = AppKt.drawableData {
+                            val bmp: Bitmap? =
+                                packageInfo.applicationInfo.loadIcon(packageManager).toBitmap()
+                            if (bmp != null) {
+                                data = ByteString.copyFrom(bmp.convertToByteArray())
+                            }
                         }
+                        launchComponent = launchIntentComponent.className
                     }
+                    apps += app
                 }
-                apps += app
             }
         }
         return installedApps
     }
 
     private fun getInstalledAppWidgets(): InstalledAppWidgets {
-        // TODO test sdk version
         val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
         val providers = appWidgetManager.installedProviders
 

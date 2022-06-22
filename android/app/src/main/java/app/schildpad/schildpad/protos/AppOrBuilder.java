@@ -55,4 +55,19 @@ public interface AppOrBuilder extends
      * <code>.schildpad.App.DrawableData icon = 3;</code>
      */
     app.schildpad.schildpad.protos.App.DrawableDataOrBuilder getIconOrBuilder();
+
+    /**
+     * <code>string launchComponent = 4;</code>
+     *
+     * @return The launchComponent.
+     */
+    java.lang.String getLaunchComponent();
+
+    /**
+     * <code>string launchComponent = 4;</code>
+     *
+     * @return The bytes for launchComponent.
+     */
+    com.google.protobuf.ByteString
+    getLaunchComponentBytes();
 }

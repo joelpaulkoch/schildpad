@@ -17,6 +17,13 @@ const App$json = const {
       '6': '.schildpad.App.DrawableData',
       '10': 'icon'
     },
+    const {
+      '1': 'launchComponent',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '10': 'launchComponent'
+    },
   ],
   '3': const [App_DrawableData$json],
 };
@@ -31,7 +38,7 @@ const App_DrawableData$json = const {
 
 /// Descriptor for `App`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List appDescriptor = $convert.base64Decode(
-    'CgNBcHASEgoEbmFtZRgBIAEoCVIEbmFtZRIgCgtwYWNrYWdlTmFtZRgCIAEoCVILcGFja2FnZU5hbWUSLwoEaWNvbhgDIAEoCzIbLnNjaGlsZHBhZC5BcHAuRHJhd2FibGVEYXRhUgRpY29uGiIKDERyYXdhYmxlRGF0YRISCgRkYXRhGAEgASgMUgRkYXRh');
+    'CgNBcHASEgoEbmFtZRgBIAEoCVIEbmFtZRIgCgtwYWNrYWdlTmFtZRgCIAEoCVILcGFja2FnZU5hbWUSLwoEaWNvbhgDIAEoCzIbLnNjaGlsZHBhZC5BcHAuRHJhd2FibGVEYXRhUgRpY29uEigKD2xhdW5jaENvbXBvbmVudBgEIAEoCVIPbGF1bmNoQ29tcG9uZW50GiIKDERyYXdhYmxlRGF0YRISCgRkYXRhGAEgASgMUgRkYXRh');
 @$core.Deprecated('Use installedAppsDescriptor instead')
 const InstalledApps$json = const {
   '1': 'InstalledApps',

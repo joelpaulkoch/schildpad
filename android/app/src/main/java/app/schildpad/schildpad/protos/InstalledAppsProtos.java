@@ -44,13 +44,13 @@ public final class InstalledAppsProtos {
     static {
         java.lang.String[] descriptorData = {
                 "\n-lib/installed_apps/proto/installed_app" +
-                        "s.proto\022\tschildpad\"q\n\003App\022\014\n\004name\030\001 \001(\t\022" +
-                        "\023\n\013packageName\030\002 \001(\t\022)\n\004icon\030\003 \001(\0132\033.sch" +
-                        "ildpad.App.DrawableData\032\034\n\014DrawableData\022" +
-                        "\014\n\004data\030\001 \001(\014\"-\n\rInstalledApps\022\034\n\004apps\030\001" +
-                        " \003(\0132\016.schildpad.AppB7\n\036app.schildpad.sc" +
-                        "hildpad.protosB\023InstalledAppsProtosP\001b\006p" +
-                        "roto3"
+                        "s.proto\022\tschildpad\"\212\001\n\003App\022\014\n\004name\030\001 \001(\t" +
+                        "\022\023\n\013packageName\030\002 \001(\t\022)\n\004icon\030\003 \001(\0132\033.sc" +
+                        "hildpad.App.DrawableData\022\027\n\017launchCompon" +
+                        "ent\030\004 \001(\t\032\034\n\014DrawableData\022\014\n\004data\030\001 \001(\014\"" +
+                        "-\n\rInstalledApps\022\034\n\004apps\030\001 \003(\0132\016.schildp" +
+                        "ad.AppB7\n\036app.schildpad.schildpad.protos" +
+                        "B\023InstalledAppsProtosP\001b\006proto3"
         };
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
                 .internalBuildGeneratedFileFrom(descriptorData,
@@ -61,7 +61,7 @@ public final class InstalledAppsProtos {
         internal_static_schildpad_App_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_schildpad_App_descriptor,
-                new java.lang.String[]{"Name", "PackageName", "Icon",});
+                new java.lang.String[]{"Name", "PackageName", "Icon", "LaunchComponent",});
         internal_static_schildpad_App_DrawableData_descriptor =
                 internal_static_schildpad_App_descriptor.getNestedTypes().get(0);
         internal_static_schildpad_App_DrawableData_fieldAccessorTable = new

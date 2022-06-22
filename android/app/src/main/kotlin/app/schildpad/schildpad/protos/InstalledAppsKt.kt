@@ -7,7 +7,6 @@ package app.schildpad.schildpad.protos;
 inline fun installedApps(block: app.schildpad.schildpad.protos.InstalledAppsKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.InstalledApps =
     app.schildpad.schildpad.protos.InstalledAppsKt.Dsl._create(app.schildpad.schildpad.protos.InstalledApps.newBuilder())
         .apply { block() }._build()
-
 object InstalledAppsKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     @com.google.protobuf.kotlin.ProtoDslMarker
@@ -111,7 +110,6 @@ object InstalledAppsKt {
 
     }
 }
-
 @kotlin.jvm.JvmSynthetic
 inline fun app.schildpad.schildpad.protos.InstalledApps.copy(block: app.schildpad.schildpad.protos.InstalledAppsKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.InstalledApps =
     app.schildpad.schildpad.protos.InstalledAppsKt.Dsl._create(this.toBuilder()).apply { block() }._build()

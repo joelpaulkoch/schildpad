@@ -7,7 +7,6 @@ package app.schildpad.schildpad.protos;
 inline fun app(block: app.schildpad.schildpad.protos.AppKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.App =
     app.schildpad.schildpad.protos.AppKt.Dsl._create(app.schildpad.schildpad.protos.App.newBuilder()).apply { block() }
         ._build()
-
 object AppKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     @com.google.protobuf.kotlin.ProtoDslMarker
@@ -85,6 +84,24 @@ object AppKt {
         fun hasIcon(): kotlin.Boolean {
             return _builder.hasIcon()
         }
+
+        /**
+         * <code>string launchComponent = 4;</code>
+         */
+        var launchComponent: kotlin.String
+            @JvmName("getLaunchComponent")
+            get() = _builder.getLaunchComponent()
+            @JvmName("setLaunchComponent")
+            set(value) {
+                _builder.setLaunchComponent(value)
+            }
+
+        /**
+         * <code>string launchComponent = 4;</code>
+         */
+        fun clearLaunchComponent() {
+            _builder.clearLaunchComponent()
+        }
     }
 
     @kotlin.jvm.JvmName("-initializedrawableData")
@@ -129,7 +146,6 @@ object AppKt {
         }
     }
 }
-
 @kotlin.jvm.JvmSynthetic
 inline fun app.schildpad.schildpad.protos.App.copy(block: app.schildpad.schildpad.protos.AppKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.App =
     app.schildpad.schildpad.protos.AppKt.Dsl._create(this.toBuilder()).apply { block() }._build()
