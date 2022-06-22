@@ -2,6 +2,8 @@ package app.schildpad.schildpad
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -19,14 +21,27 @@ import java.io.ByteArrayOutputStream
 
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "schildpad.schildpad.app/appwidgets"
+    private val APPS_CHANNEL = "schildpad.schildpad.app/apps"
+    private val APPWIDGETS_CHANNEL = "schildpad.schildpad.app/appwidgets"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
-            CHANNEL
+            APPS_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            // This method is invoked on the main thread.
+            if (call.method == "getInstalledApps") {
+                val widgets = getInstalledApps()
+                result.success(widgets.toByteArray())
+            } else {
+                result.notImplemented()
+            }
+        }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            APPWIDGETS_CHANNEL
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             if (call.method == "getInstalledAppWidgets") {
@@ -36,6 +51,33 @@ class MainActivity : FlutterActivity() {
                 result.notImplemented()
             }
         }
+
+    }
+
+    private fun getInstalledApps(): InstalledApps {
+        val appInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+            .filter { it.enabled }
+            .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
+
+        val installedApps = installedApps {
+            for (appInfo in appInfos) {
+
+                val app = app {
+                    name = appInfo.loadLabel(packageManager).toString()
+                    packageName = appInfo.packageName
+
+                    icon = AppKt.drawableData {
+                        val bmp: Bitmap? =
+                            appInfo.loadIcon(packageManager).toBitmap()
+                        if (bmp != null) {
+                            data = ByteString.copyFrom(bmp.convertToByteArray())
+                        }
+                    }
+                }
+                apps += app
+            }
+        }
+        return installedApps
     }
 
     private fun getInstalledAppWidgets(): InstalledAppWidgets {
