@@ -3,6 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class InstalledAppWidgetsView extends StatelessWidget {
   const InstalledAppWidgetsView({Key? key}) : super(key: key);
@@ -17,6 +19,25 @@ class InstalledAppWidgetsView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AppWidgetsList extends ConsumerWidget {
+  const AppWidgetsList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appWidgets = ref.watch(installedAppWidgetsProvider);
+    return appWidgets.maybeWhen(
+        data: (widgets) => ListView(
+            children: widgets
+                .map((w) => Material(
+                      child: ListTile(leading: w.icon, title: Text(w.label)),
+                    ))
+                .toList()),
+        orElse: SizedBox.shrink);
   }
 }
 
