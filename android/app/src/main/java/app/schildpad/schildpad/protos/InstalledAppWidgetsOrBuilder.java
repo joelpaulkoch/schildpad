@@ -7,31 +7,31 @@ public interface InstalledAppWidgetsOrBuilder extends
         // @@protoc_insertion_point(interface_extends:schildpad.InstalledAppWidgets)
         com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-   */
-  java.util.List<app.schildpad.schildpad.protos.AppWidget>
-  getAppWidgetsList();
+    /**
+     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+     */
+    java.util.List<app.schildpad.schildpad.protos.AppWidget>
+    getAppWidgetsList();
 
-  /**
-   * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-   */
-  app.schildpad.schildpad.protos.AppWidget getAppWidgets(int index);
+    /**
+     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+     */
+    app.schildpad.schildpad.protos.AppWidget getAppWidgets(int index);
 
-  /**
-   * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-   */
-  int getAppWidgetsCount();
+    /**
+     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+     */
+    int getAppWidgetsCount();
 
-  /**
-   * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-   */
-  java.util.List<? extends app.schildpad.schildpad.protos.AppWidgetOrBuilder>
-  getAppWidgetsOrBuilderList();
+    /**
+     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+     */
+    java.util.List<? extends app.schildpad.schildpad.protos.AppWidgetOrBuilder>
+    getAppWidgetsOrBuilderList();
 
-  /**
-   * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-   */
-  app.schildpad.schildpad.protos.AppWidgetOrBuilder getAppWidgetsOrBuilder(
-          int index);
+    /**
+     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+     */
+    app.schildpad.schildpad.protos.AppWidgetOrBuilder getAppWidgetsOrBuilder(
+            int index);
 }

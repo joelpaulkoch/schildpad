@@ -1,7 +1,10 @@
 package app.schildpad.schildpad
 
+import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -18,15 +21,27 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : FlutterActivity() {
     private val APPS_CHANNEL = "schildpad.schildpad.app/apps"
     private val APPWIDGETS_CHANNEL = "schildpad.schildpad.app/appwidgets"
+    private val appWidgetHost: AppWidgetHost by lazy { AppWidgetHost(context, 0) }
+    private val nativeAppWidgetViewFactory: NativeAppWidgetViewFactory by lazy {
+        NativeAppWidgetViewFactory(
+            appWidgetHost
+        )
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
+        flutterEngine
+            .platformViewsController
+            .registry
+            .registerViewFactory(
+                "app.schildpad.schildpad/appwidgetview",
+                nativeAppWidgetViewFactory
+            )
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -45,11 +60,24 @@ class MainActivity : FlutterActivity() {
             APPWIDGETS_CHANNEL
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
-            if (call.method == "getInstalledAppWidgets") {
-                val widgets = getInstalledAppWidgets()
-                result.success(widgets.toByteArray())
-            } else {
-                result.notImplemented()
+            when (call.method) {
+                ("getInstalledAppWidgets") -> {
+                    val widgets = getInstalledAppWidgets()
+                    result.success(widgets.toByteArray())
+                }
+                ("createAndBindWidget") -> {
+                    val args = call.arguments as List<String>
+                    val componentName = args.first()
+                    val widgetId = createAndBindWidget(componentName)
+                    if (widgetId != null) result.success(widgetId) else result.error(
+                        "FAILED",
+                        "Could not create widget",
+                        "Could not find widget corresponding to $componentName"
+                    )
+                }
+                else -> {
+                    result.notImplemented()
+                }
             }
         }
 
@@ -96,6 +124,7 @@ class MainActivity : FlutterActivity() {
                 val widget = appWidget {
                     packageName = provider.provider.packageName
                     label = provider.loadLabel(packageManager)
+                    componentName = provider.provider.className
 
                     minWidth = provider.minWidth
                     minHeight = provider.minHeight
@@ -118,6 +147,31 @@ class MainActivity : FlutterActivity() {
         return installedAppWidgets
     }
 
+    private fun createAndBindWidget(componentName: String): Int? {
+
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+
+        val provider = appWidgetManager.installedProviders
+            .find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+            ?: return null
+
+        val appWidgetId = appWidgetHost.allocateAppWidgetId()
+        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, provider.provider)
+
+        if (!allowed) {
+            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
+                // This is the options bundle described in the preceding section.
+                // putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options)
+            }
+            val REQUEST_BIND_APPWIDGET = 1
+            startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
+        }
+        //TODO test binding
+        return appWidgetId
+    }
+
     private fun Bitmap.convertToByteArray(): ByteArray {
         val byteArrayOS = ByteArrayOutputStream()
         this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOS)
@@ -130,5 +184,15 @@ class MainActivity : FlutterActivity() {
             FlutterActivityLaunchConfigs.BackgroundMode.transparent.toString()
         )
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
+        appWidgetHost.startListening()
+        super.onStart()
+    }
+
+    override fun onStop() {
+        appWidgetHost.stopListening()
+        super.onStop()
     }
 }

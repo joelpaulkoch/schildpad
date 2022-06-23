@@ -7,78 +7,78 @@ public final class InstalledAppWidgetsProtos {
   private InstalledAppWidgetsProtos() {
   }
 
-  public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistryLite registry) {
-  }
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
 
-  public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-            (com.google.protobuf.ExtensionRegistryLite) registry);
-  }
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
 
-  static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_schildpad_AppWidget_descriptor;
-  static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_schildpad_AppWidget_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_schildpad_AppWidget_DrawableData_descriptor;
-  static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_schildpad_AppWidget_DrawableData_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_schildpad_InstalledAppWidgets_descriptor;
-  static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_schildpad_InstalledAppWidgets_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_schildpad_AppWidget_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_schildpad_AppWidget_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_schildpad_AppWidget_DrawableData_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_schildpad_AppWidget_DrawableData_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_schildpad_InstalledAppWidgets_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_schildpad_InstalledAppWidgets_fieldAccessorTable;
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-  getDescriptor() {
-    return descriptor;
-  }
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
 
-  private static com.google.protobuf.Descriptors.FileDescriptor
-          descriptor;
+    private static com.google.protobuf.Descriptors.FileDescriptor
+            descriptor;
 
-  static {
-    java.lang.String[] descriptorData = {
-            "\n;lib/installed_app_widgets/proto/instal" +
-                    "led_app_widgets.proto\022\tschildpad\"\227\002\n\tApp" +
-                    "Widget\022\023\n\013packageName\030\001 \001(\t\022\r\n\005label\030\002 \001" +
-                    "(\t\022\023\n\013description\030\003 \001(\t\022/\n\004icon\030\004 \001(\0132!." +
-                    "schildpad.AppWidget.DrawableData\0222\n\007prev" +
-                    "iew\030\006 \001(\0132!.schildpad.AppWidget.Drawable" +
-                    "Data\022\023\n\013targetWidth\030\007 \001(\005\022\024\n\014targetHeigh" +
-                    "t\030\010 \001(\005\022\020\n\010minWidth\030\t \001(\005\022\021\n\tminHeight\030\n" +
-                    " \001(\005\032\034\n\014DrawableData\022\014\n\004data\030\001 \001(\014\"?\n\023In" +
-                    "stalledAppWidgets\022(\n\nappWidgets\030\001 \003(\0132\024." +
-                    "schildpad.AppWidgetB=\n\036app.schildpad.sch" +
-                    "ildpad.protosB\031InstalledAppWidgetsProtos" +
-                    "P\001b\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-            .internalBuildGeneratedFileFrom(descriptorData,
-                    new com.google.protobuf.Descriptors.FileDescriptor[]{
-                    });
-    internal_static_schildpad_AppWidget_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-    internal_static_schildpad_AppWidget_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_schildpad_AppWidget_descriptor,
-            new java.lang.String[]{"PackageName", "Label", "Description", "Icon", "Preview", "TargetWidth", "TargetHeight", "MinWidth", "MinHeight",});
-    internal_static_schildpad_AppWidget_DrawableData_descriptor =
-            internal_static_schildpad_AppWidget_descriptor.getNestedTypes().get(0);
-    internal_static_schildpad_AppWidget_DrawableData_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_schildpad_AppWidget_DrawableData_descriptor,
-            new java.lang.String[]{"Data",});
-    internal_static_schildpad_InstalledAppWidgets_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-    internal_static_schildpad_InstalledAppWidgets_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_schildpad_InstalledAppWidgets_descriptor,
-            new java.lang.String[]{"AppWidgets",});
+    static {
+        java.lang.String[] descriptorData = {
+                "\n;lib/installed_app_widgets/proto/instal" +
+                        "led_app_widgets.proto\022\tschildpad\"\256\002\n\tApp" +
+                        "Widget\022\023\n\013packageName\030\001 \001(\t\022\025\n\rcomponent" +
+                        "Name\030\002 \001(\t\022\r\n\005label\030\003 \001(\t\022\023\n\013description" +
+                        "\030\004 \001(\t\022/\n\004icon\030\005 \001(\0132!.schildpad.AppWidg" +
+                        "et.DrawableData\0222\n\007preview\030\006 \001(\0132!.schil" +
+                        "dpad.AppWidget.DrawableData\022\023\n\013targetWid" +
+                        "th\030\007 \001(\005\022\024\n\014targetHeight\030\010 \001(\005\022\020\n\010minWid" +
+                        "th\030\t \001(\005\022\021\n\tminHeight\030\n \001(\005\032\034\n\014DrawableD" +
+                        "ata\022\014\n\004data\030\001 \001(\014\"?\n\023InstalledAppWidgets" +
+                        "\022(\n\nappWidgets\030\001 \003(\0132\024.schildpad.AppWidg" +
+                        "etB=\n\036app.schildpad.schildpad.protosB\031In" +
+                        "stalledAppWidgetsProtosP\001b\006proto3"
+        };
+        descriptor = com.google.protobuf.Descriptors.FileDescriptor
+                .internalBuildGeneratedFileFrom(descriptorData,
+                        new com.google.protobuf.Descriptors.FileDescriptor[]{
+                        });
+        internal_static_schildpad_AppWidget_descriptor =
+                getDescriptor().getMessageTypes().get(0);
+        internal_static_schildpad_AppWidget_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_schildpad_AppWidget_descriptor,
+                new java.lang.String[]{"PackageName", "ComponentName", "Label", "Description", "Icon", "Preview", "TargetWidth", "TargetHeight", "MinWidth", "MinHeight",});
+        internal_static_schildpad_AppWidget_DrawableData_descriptor =
+                internal_static_schildpad_AppWidget_descriptor.getNestedTypes().get(0);
+        internal_static_schildpad_AppWidget_DrawableData_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_schildpad_AppWidget_DrawableData_descriptor,
+                new java.lang.String[]{"Data",});
+        internal_static_schildpad_InstalledAppWidgets_descriptor =
+                getDescriptor().getMessageTypes().get(1);
+        internal_static_schildpad_InstalledAppWidgets_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_schildpad_InstalledAppWidgets_descriptor,
+                new java.lang.String[]{"AppWidgets",});
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -9,14 +9,16 @@ option java_outer_classname = "InstalledAppWidgetsProtos";
 
 message AppWidget {
   string packageName = 1;
-  string label = 2;
-  string description = 3;
+  string componentName = 2;
+
+  string label = 3;
+  string description = 4;
 
   message DrawableData{
     bytes data = 1;
   }
 
-  DrawableData icon = 4;
+  DrawableData icon = 5;
   DrawableData preview = 6;
 
   int32 targetWidth = 7;

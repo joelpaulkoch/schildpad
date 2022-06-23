@@ -7,84 +7,91 @@ public interface AppWidgetOrBuilder extends
         // @@protoc_insertion_point(interface_extends:schildpad.AppWidget)
         com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string packageName = 1;</code>
-   *
-   * @return The packageName.
-   */
-  java.lang.String getPackageName();
+    /**
+     * <code>string packageName = 1;</code>
+     *
+     * @return The packageName.
+     */
+    java.lang.String getPackageName();
 
-  /**
-   * <code>string packageName = 1;</code>
-   *
-   * @return The bytes for packageName.
-   */
-  com.google.protobuf.ByteString
-  getPackageNameBytes();
+    /**
+     * <code>string packageName = 1;</code>
+     *
+     * @return The bytes for packageName.
+     */
+    com.google.protobuf.ByteString
+    getPackageNameBytes();
 
-  /**
-   * <code>string label = 2;</code>
-   *
-   * @return The label.
-   */
-  java.lang.String getLabel();
+    /**
+     * <code>string componentName = 2;</code>
+     *
+     * @return The componentName.
+     */
+    java.lang.String getComponentName();
 
-  /**
-   * <code>string label = 2;</code>
-   *
-   * @return The bytes for label.
-   */
-  com.google.protobuf.ByteString
-  getLabelBytes();
+    /**
+     * <code>string componentName = 2;</code>
+     *
+     * @return The bytes for componentName.
+     */
+    com.google.protobuf.ByteString
+    getComponentNameBytes();
 
-  /**
-   * <code>string description = 3;</code>
-   *
-   * @return The description.
-   */
-  java.lang.String getDescription();
+    /**
+     * <code>string label = 3;</code>
+     *
+     * @return The label.
+     */
+    java.lang.String getLabel();
 
-  /**
-   * <code>string description = 3;</code>
-   *
-   * @return The bytes for description.
-   */
-  com.google.protobuf.ByteString
-  getDescriptionBytes();
+    /**
+     * <code>string label = 3;</code>
+     *
+     * @return The bytes for label.
+     */
+    com.google.protobuf.ByteString
+    getLabelBytes();
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
-   *
-   * @return Whether the icon field is set.
-   */
-  boolean hasIcon();
+    /**
+     * <code>string description = 4;</code>
+     *
+     * @return The description.
+     */
+    java.lang.String getDescription();
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
-   *
+    /**
+     * <code>string description = 4;</code>
+     * @return The bytes for description.
+     */
+    com.google.protobuf.ByteString
+    getDescriptionBytes();
+
+    /**
+     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * @return Whether the icon field is set.
+     */
+    boolean hasIcon();
+
+    /**
+   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
    * @return The icon.
-   */
-  app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon();
-
+     */
+    app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon();
   /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
+   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
    */
   app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder();
 
   /**
    * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   *
    * @return Whether the preview field is set.
    */
   boolean hasPreview();
-
   /**
    * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   *
    * @return The preview.
    */
   app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview();
-
   /**
    * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
    */
@@ -92,28 +99,24 @@ public interface AppWidgetOrBuilder extends
 
   /**
    * <code>int32 targetWidth = 7;</code>
-   *
    * @return The targetWidth.
    */
   int getTargetWidth();
 
   /**
    * <code>int32 targetHeight = 8;</code>
-   *
    * @return The targetHeight.
    */
   int getTargetHeight();
 
   /**
    * <code>int32 minWidth = 9;</code>
-   *
    * @return The minWidth.
    */
   int getMinWidth();
 
   /**
    * <code>int32 minHeight = 10;</code>
-   *
    * @return The minHeight.
    */
   int getMinHeight();

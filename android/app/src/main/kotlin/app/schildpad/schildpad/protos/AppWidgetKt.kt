@@ -5,9 +5,8 @@ package app.schildpad.schildpad.protos;
 
 @kotlin.jvm.JvmName("-initializeappWidget")
 inline fun appWidget(block: app.schildpad.schildpad.protos.AppWidgetKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.AppWidget =
-    app.schildpad.schildpad.protos.AppWidgetKt.Dsl._create(app.schildpad.schildpad.protos.AppWidget.newBuilder())
-        .apply { block() }._build()
-
+  app.schildpad.schildpad.protos.AppWidgetKt.Dsl._create(app.schildpad.schildpad.protos.AppWidget.newBuilder())
+      .apply { block() }._build()
 object AppWidgetKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     @com.google.protobuf.kotlin.ProtoDslMarker
@@ -43,7 +42,25 @@ object AppWidgetKt {
         }
 
         /**
-         * <code>string label = 2;</code>
+         * <code>string componentName = 2;</code>
+         */
+        var componentName: kotlin.String
+            @JvmName("getComponentName")
+            get() = _builder.getComponentName()
+            @JvmName("setComponentName")
+            set(value) {
+                _builder.setComponentName(value)
+            }
+
+        /**
+         * <code>string componentName = 2;</code>
+         */
+        fun clearComponentName() {
+            _builder.clearComponentName()
+        }
+
+        /**
+         * <code>string label = 3;</code>
          */
         var label: kotlin.String
             @JvmName("getLabel")
@@ -54,14 +71,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>string label = 2;</code>
+         * <code>string label = 3;</code>
          */
         fun clearLabel() {
             _builder.clearLabel()
         }
 
         /**
-         * <code>string description = 3;</code>
+         * <code>string description = 4;</code>
          */
         var description: kotlin.String
             @JvmName("getDescription")
@@ -72,14 +89,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>string description = 3;</code>
+         * <code>string description = 4;</code>
          */
         fun clearDescription() {
             _builder.clearDescription()
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
          */
         var icon: app.schildpad.schildpad.protos.AppWidget.DrawableData
             @JvmName("getIcon")
@@ -90,14 +107,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
          */
         fun clearIcon() {
             _builder.clearIcon()
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 4;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
          * @return Whether the icon field is set.
          */
         fun hasIcon(): kotlin.Boolean {
@@ -245,7 +262,6 @@ object AppWidgetKt {
         }
     }
 }
-
 @kotlin.jvm.JvmSynthetic
 inline fun app.schildpad.schildpad.protos.AppWidget.copy(block: app.schildpad.schildpad.protos.AppWidgetKt.Dsl.() -> kotlin.Unit): app.schildpad.schildpad.protos.AppWidget =
     app.schildpad.schildpad.protos.AppWidgetKt.Dsl._create(this.toBuilder()).apply { block() }._build()
