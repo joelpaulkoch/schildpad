@@ -11,12 +11,10 @@ class InstalledAppWidgetsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
-        body: Column(
-          children: const [],
-        ),
+        backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
+        body: AppWidgetsList(),
       ),
     );
   }
@@ -31,12 +29,47 @@ class AppWidgetsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appWidgets = ref.watch(installedAppWidgetsProvider);
     return appWidgets.maybeWhen(
-        data: (widgets) => ListView(
-            children: widgets
-                .map((w) => Material(
-                      child: ListTile(leading: w.icon, title: Text(w.label)),
-                    ))
-                .toList()),
+        data: (widgets) {
+          widgets.sort((a, b) => a.packageName
+              .split('.')
+              .last
+              .compareTo(b.packageName.split('.').last));
+          final packageNames = widgets.map((w) => w.packageName).toSet();
+          return ListView(
+            children: ListTile.divideTiles(
+                    color: Colors.white,
+                    context: context,
+                    tiles: packageNames
+                        .map((p) => Material(
+                            color: Colors.transparent,
+                            child: ListTile(
+                              title: Text(
+                                p.split('.').last,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              subtitle: Column(
+                                children: widgets
+                                    .where(
+                                        (element) => (element.packageName == p))
+                                    .map((e) => Card(
+                                          color: Colors.transparent,
+                                          child: ListTile(
+                                            leading: e.icon,
+                                            title: Text(
+                                              e.label,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            )))
+                        .toList())
+                .toList(),
+          );
+        },
         orElse: SizedBox.shrink);
   }
 }
