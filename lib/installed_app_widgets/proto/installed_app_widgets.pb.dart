@@ -99,47 +99,53 @@ class AppWidget extends $pb.GeneratedMessage {
         3,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
-            : 'label')
+            : 'appName',
+        protoName: 'appName')
     ..aOS(
         4,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
+            : 'label')
+    ..aOS(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
             : 'description')
     ..aOM<AppWidget_DrawableData>(
-        5,
+        6,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'icon',
         subBuilder: AppWidget_DrawableData.create)
     ..aOM<AppWidget_DrawableData>(
-        6,
+        7,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'preview',
         subBuilder: AppWidget_DrawableData.create)
     ..a<$core.int>(
-        7,
+        8,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'targetWidth',
         $pb.PbFieldType.O3,
         protoName: 'targetWidth')
     ..a<$core.int>(
-        8,
+        9,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'targetHeight',
         $pb.PbFieldType.O3,
         protoName: 'targetHeight')
     ..a<$core.int>(
-        9,
+        10,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'minWidth',
         $pb.PbFieldType.O3,
         protoName: 'minWidth')
     ..a<$core.int>(
-        10,
+        11,
         const $core.bool.fromEnvironment('protobuf.omit_field_names')
             ? ''
             : 'minHeight',
@@ -151,6 +157,7 @@ class AppWidget extends $pb.GeneratedMessage {
   factory AppWidget({
     $core.String? packageName,
     $core.String? componentName,
+    $core.String? appName,
     $core.String? label,
     $core.String? description,
     AppWidget_DrawableData? icon,
@@ -166,6 +173,9 @@ class AppWidget extends $pb.GeneratedMessage {
     }
     if (componentName != null) {
       _result.componentName = componentName;
+    }
+    if (appName != null) {
+      _result.appName = appName;
     }
     if (label != null) {
       _result.label = label;
@@ -233,7 +243,6 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(2)
   $core.String get componentName => $_getSZ(1);
-
   @$pb.TagNumber(2)
   set componentName($core.String v) {
     $_setString(1, v);
@@ -241,123 +250,140 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(2)
   $core.bool hasComponentName() => $_has(1);
-
   @$pb.TagNumber(2)
   void clearComponentName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get label => $_getSZ(2);
+  $core.String get appName => $_getSZ(2);
 
   @$pb.TagNumber(3)
-  set label($core.String v) {
+  set appName($core.String v) {
     $_setString(2, v);
   }
 
   @$pb.TagNumber(3)
-  $core.bool hasLabel() => $_has(2);
+  $core.bool hasAppName() => $_has(2);
 
   @$pb.TagNumber(3)
-  void clearLabel() => clearField(3);
+  void clearAppName() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get description => $_getSZ(3);
+  $core.String get label => $_getSZ(3);
 
   @$pb.TagNumber(4)
-  set description($core.String v) {
+  set label($core.String v) {
     $_setString(3, v);
   }
 
   @$pb.TagNumber(4)
-  $core.bool hasDescription() => $_has(3);
+  $core.bool hasLabel() => $_has(3);
 
   @$pb.TagNumber(4)
-  void clearDescription() => clearField(4);
+  void clearLabel() => clearField(4);
 
   @$pb.TagNumber(5)
-  AppWidget_DrawableData get icon => $_getN(4);
+  $core.String get description => $_getSZ(4);
 
   @$pb.TagNumber(5)
-  set icon(AppWidget_DrawableData v) {
-    setField(5, v);
+  set description($core.String v) {
+    $_setString(4, v);
   }
 
   @$pb.TagNumber(5)
-  $core.bool hasIcon() => $_has(4);
+  $core.bool hasDescription() => $_has(4);
 
   @$pb.TagNumber(5)
-  void clearIcon() => clearField(5);
-
-  @$pb.TagNumber(5)
-  AppWidget_DrawableData ensureIcon() => $_ensure(4);
+  void clearDescription() => clearField(5);
 
   @$pb.TagNumber(6)
-  AppWidget_DrawableData get preview => $_getN(5);
+  AppWidget_DrawableData get icon => $_getN(5);
 
   @$pb.TagNumber(6)
-  set preview(AppWidget_DrawableData v) {
+  set icon(AppWidget_DrawableData v) {
     setField(6, v);
   }
 
   @$pb.TagNumber(6)
-  $core.bool hasPreview() => $_has(5);
+  $core.bool hasIcon() => $_has(5);
 
   @$pb.TagNumber(6)
-  void clearPreview() => clearField(6);
+  void clearIcon() => clearField(6);
 
   @$pb.TagNumber(6)
-  AppWidget_DrawableData ensurePreview() => $_ensure(5);
+  AppWidget_DrawableData ensureIcon() => $_ensure(5);
 
   @$pb.TagNumber(7)
-  $core.int get targetWidth => $_getIZ(6);
+  AppWidget_DrawableData get preview => $_getN(6);
+
   @$pb.TagNumber(7)
-  set targetWidth($core.int v) {
-    $_setSignedInt32(6, v);
+  set preview(AppWidget_DrawableData v) {
+    setField(7, v);
   }
 
   @$pb.TagNumber(7)
-  $core.bool hasTargetWidth() => $_has(6);
+  $core.bool hasPreview() => $_has(6);
 
   @$pb.TagNumber(7)
-  void clearTargetWidth() => clearField(7);
+  void clearPreview() => clearField(7);
+
+  @$pb.TagNumber(7)
+  AppWidget_DrawableData ensurePreview() => $_ensure(6);
 
   @$pb.TagNumber(8)
-  $core.int get targetHeight => $_getIZ(7);
+  $core.int get targetWidth => $_getIZ(7);
+
   @$pb.TagNumber(8)
-  set targetHeight($core.int v) {
+  set targetWidth($core.int v) {
     $_setSignedInt32(7, v);
   }
 
   @$pb.TagNumber(8)
-  $core.bool hasTargetHeight() => $_has(7);
+  $core.bool hasTargetWidth() => $_has(7);
 
   @$pb.TagNumber(8)
-  void clearTargetHeight() => clearField(8);
+  void clearTargetWidth() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.int get minWidth => $_getIZ(8);
+  $core.int get targetHeight => $_getIZ(8);
+
   @$pb.TagNumber(9)
-  set minWidth($core.int v) {
+  set targetHeight($core.int v) {
     $_setSignedInt32(8, v);
   }
 
   @$pb.TagNumber(9)
-  $core.bool hasMinWidth() => $_has(8);
+  $core.bool hasTargetHeight() => $_has(8);
 
   @$pb.TagNumber(9)
-  void clearMinWidth() => clearField(9);
+  void clearTargetHeight() => clearField(9);
 
   @$pb.TagNumber(10)
-  $core.int get minHeight => $_getIZ(9);
+  $core.int get minWidth => $_getIZ(9);
+
   @$pb.TagNumber(10)
-  set minHeight($core.int v) {
+  set minWidth($core.int v) {
     $_setSignedInt32(9, v);
   }
 
   @$pb.TagNumber(10)
-  $core.bool hasMinHeight() => $_has(9);
+  $core.bool hasMinWidth() => $_has(9);
 
   @$pb.TagNumber(10)
-  void clearMinHeight() => clearField(10);
+  void clearMinWidth() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.int get minHeight => $_getIZ(10);
+
+  @$pb.TagNumber(11)
+  set minHeight($core.int v) {
+    $_setSignedInt32(10, v);
+  }
+
+  @$pb.TagNumber(11)
+  $core.bool hasMinHeight() => $_has(10);
+
+  @$pb.TagNumber(11)
+  void clearMinHeight() => clearField(11);
 }
 
 class InstalledAppWidgets extends $pb.GeneratedMessage {

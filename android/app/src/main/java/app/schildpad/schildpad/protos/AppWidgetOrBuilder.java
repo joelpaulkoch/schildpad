@@ -38,14 +38,29 @@ public interface AppWidgetOrBuilder extends
     getComponentNameBytes();
 
     /**
-     * <code>string label = 3;</code>
+     * <code>string appName = 3;</code>
+     *
+     * @return The appName.
+     */
+    java.lang.String getAppName();
+
+    /**
+     * <code>string appName = 3;</code>
+     *
+     * @return The bytes for appName.
+     */
+    com.google.protobuf.ByteString
+    getAppNameBytes();
+
+    /**
+     * <code>string label = 4;</code>
      *
      * @return The label.
      */
     java.lang.String getLabel();
 
     /**
-     * <code>string label = 3;</code>
+     * <code>string label = 4;</code>
      *
      * @return The bytes for label.
      */
@@ -53,71 +68,83 @@ public interface AppWidgetOrBuilder extends
     getLabelBytes();
 
     /**
-     * <code>string description = 4;</code>
+     * <code>string description = 5;</code>
      *
      * @return The description.
      */
     java.lang.String getDescription();
 
     /**
-     * <code>string description = 4;</code>
+     * <code>string description = 5;</code>
+     *
      * @return The bytes for description.
      */
     com.google.protobuf.ByteString
     getDescriptionBytes();
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     *
      * @return Whether the icon field is set.
      */
     boolean hasIcon();
 
     /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-   * @return The icon.
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     *
+     * @return The icon.
      */
     app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon();
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-   */
-  app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder();
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   * @return Whether the preview field is set.
-   */
-  boolean hasPreview();
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   * @return The preview.
-   */
-  app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview();
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   */
-  app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getPreviewOrBuilder();
+    /**
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     */
+    app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder();
 
-  /**
-   * <code>int32 targetWidth = 7;</code>
-   * @return The targetWidth.
-   */
-  int getTargetWidth();
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     *
+     * @return Whether the preview field is set.
+     */
+    boolean hasPreview();
 
-  /**
-   * <code>int32 targetHeight = 8;</code>
-   * @return The targetHeight.
-   */
-  int getTargetHeight();
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     *
+     * @return The preview.
+     */
+    app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview();
 
-  /**
-   * <code>int32 minWidth = 9;</code>
-   * @return The minWidth.
-   */
-  int getMinWidth();
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     */
+    app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getPreviewOrBuilder();
 
-  /**
-   * <code>int32 minHeight = 10;</code>
-   * @return The minHeight.
-   */
-  int getMinHeight();
+    /**
+     * <code>int32 targetWidth = 8;</code>
+     *
+     * @return The targetWidth.
+     */
+    int getTargetWidth();
+
+    /**
+     * <code>int32 targetHeight = 9;</code>
+     *
+     * @return The targetHeight.
+     */
+    int getTargetHeight();
+
+    /**
+     * <code>int32 minWidth = 10;</code>
+     *
+     * @return The minWidth.
+     */
+    int getMinWidth();
+
+    /**
+     * <code>int32 minHeight = 11;</code>
+     *
+     * @return The minHeight.
+     */
+    int getMinHeight();
 }

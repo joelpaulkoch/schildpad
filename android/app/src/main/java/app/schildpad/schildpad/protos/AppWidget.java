@@ -18,10 +18,11 @@ public final class AppWidget extends
   }
 
   private AppWidget() {
-    packageName_ = "";
-    componentName_ = "";
-    label_ = "";
-    description_ = "";
+      packageName_ = "";
+      componentName_ = "";
+      appName_ = "";
+      label_ = "";
+      description_ = "";
   }
 
   @java.lang.Override
@@ -64,74 +65,80 @@ public final class AppWidget extends
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            componentName_ = s;
-            break;
+              componentName_ = s;
+              break;
           }
-          case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
+            case 26: {
+                java.lang.String s = input.readStringRequireUtf8();
 
-            label_ = s;
-            break;
-          }
-          case 34: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            description_ = s;
-            break;
-          }
-          case 42: {
-            app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder subBuilder = null;
-            if (icon_ != null) {
-              subBuilder = icon_.toBuilder();
+                appName_ = s;
+                break;
             }
-            icon_ = input.readMessage(app.schildpad.schildpad.protos.AppWidget.DrawableData.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(icon_);
-              icon_ = subBuilder.buildPartial();
+            case 34: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                label_ = s;
+                break;
             }
+            case 42: {
+                java.lang.String s = input.readStringRequireUtf8();
 
-            break;
-          }
-          case 50: {
-            app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder subBuilder = null;
-            if (preview_ != null) {
-              subBuilder = preview_.toBuilder();
+                description_ = s;
+                break;
             }
-            preview_ = input.readMessage(app.schildpad.schildpad.protos.AppWidget.DrawableData.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(preview_);
-              preview_ = subBuilder.buildPartial();
+            case 50: {
+                app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder subBuilder = null;
+                if (icon_ != null) {
+                    subBuilder = icon_.toBuilder();
+                }
+                icon_ = input.readMessage(app.schildpad.schildpad.protos.AppWidget.DrawableData.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                    subBuilder.mergeFrom(icon_);
+                    icon_ = subBuilder.buildPartial();
+                }
+
+                break;
             }
+            case 58: {
+                app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder subBuilder = null;
+                if (preview_ != null) {
+                    subBuilder = preview_.toBuilder();
+                }
+                preview_ = input.readMessage(app.schildpad.schildpad.protos.AppWidget.DrawableData.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                    subBuilder.mergeFrom(preview_);
+                    preview_ = subBuilder.buildPartial();
+                }
 
-            break;
-          }
-          case 56: {
-
-            targetWidth_ = input.readInt32();
-            break;
-          }
-          case 64: {
-
-            targetHeight_ = input.readInt32();
-            break;
-          }
-          case 72: {
-
-            minWidth_ = input.readInt32();
-            break;
-          }
-          case 80: {
-
-            minHeight_ = input.readInt32();
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-              done = true;
+                break;
             }
-            break;
-          }
+            case 64: {
+
+                targetWidth_ = input.readInt32();
+                break;
+            }
+            case 72: {
+
+                targetHeight_ = input.readInt32();
+                break;
+            }
+            case 80: {
+
+                minWidth_ = input.readInt32();
+                break;
+            }
+            case 88: {
+
+                minHeight_ = input.readInt32();
+                break;
+            }
+            default: {
+                if (!parseUnknownField(
+                        input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                }
+                break;
+            }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -263,10 +270,8 @@ public final class AppWidget extends
 
     public static final int DATA_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString data_;
-
     /**
      * <code>bytes data = 1;</code>
-     *
      * @return The data.
      */
     @java.lang.Override
@@ -275,7 +280,6 @@ public final class AppWidget extends
     }
 
     private byte memoizedIsInitialized = -1;
-
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -429,11 +433,9 @@ public final class AppWidget extends
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-
     public static Builder newBuilder(app.schildpad.schildpad.protos.AppWidget.DrawableData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-
     @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
@@ -483,7 +485,6 @@ public final class AppWidget extends
                 .alwaysUseFieldBuilders) {
         }
       }
-
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -603,20 +604,16 @@ public final class AppWidget extends
       }
 
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-
       /**
        * <code>bytes data = 1;</code>
-       *
        * @return The data.
        */
       @java.lang.Override
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
-
       /**
        * <code>bytes data = 1;</code>
-       *
        * @param value The data to set.
        * @return This builder for chaining.
        */
@@ -629,10 +626,8 @@ public final class AppWidget extends
         onChanged();
         return this;
       }
-
       /**
        * <code>bytes data = 1;</code>
-       *
        * @return This builder for chaining.
        */
       public Builder clearData() {
@@ -660,7 +655,6 @@ public final class AppWidget extends
 
     // @@protoc_insertion_point(class_scope:schildpad.AppWidget.DrawableData)
     private static final app.schildpad.schildpad.protos.AppWidget.DrawableData DEFAULT_INSTANCE;
-
     static {
       DEFAULT_INSTANCE = new app.schildpad.schildpad.protos.AppWidget.DrawableData();
     }
@@ -698,10 +692,8 @@ public final class AppWidget extends
 
   public static final int PACKAGENAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object packageName_;
-
   /**
    * <code>string packageName = 1;</code>
-   *
    * @return The packageName.
    */
   @java.lang.Override
@@ -740,10 +732,8 @@ public final class AppWidget extends
 
   public static final int COMPONENTNAME_FIELD_NUMBER = 2;
   private volatile java.lang.Object componentName_;
-
   /**
    * <code>string componentName = 2;</code>
-   *
    * @return The componentName.
    */
   @java.lang.Override
@@ -770,219 +760,261 @@ public final class AppWidget extends
   getComponentNameBytes() {
     java.lang.Object ref = componentName_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
-              com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-      componentName_ = b;
-      return b;
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        componentName_ = b;
+        return b;
     } else {
-      return (com.google.protobuf.ByteString) ref;
+        return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int LABEL_FIELD_NUMBER = 3;
-  private volatile java.lang.Object label_;
+    public static final int APPNAME_FIELD_NUMBER = 3;
+    private volatile java.lang.Object appName_;
 
-  /**
-   * <code>string label = 3;</code>
-   *
-   * @return The label.
-   */
-  @java.lang.Override
-  public java.lang.String getLabel() {
-    java.lang.Object ref = label_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      label_ = s;
-      return s;
+    /**
+     * <code>string appName = 3;</code>
+     *
+     * @return The appName.
+     */
+    @java.lang.Override
+    public java.lang.String getAppName() {
+        java.lang.Object ref = appName_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            appName_ = s;
+            return s;
+        }
     }
-  }
 
-  /**
-   * <code>string label = 3;</code>
-   *
-   * @return The bytes for label.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-  getLabelBytes() {
-    java.lang.Object ref = label_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
-              com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-      label_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    /**
+     * <code>string appName = 3;</code>
+     *
+     * @return The bytes for appName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getAppNameBytes() {
+        java.lang.Object ref = appName_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            appName_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
     }
-  }
 
-  public static final int DESCRIPTION_FIELD_NUMBER = 4;
-  private volatile java.lang.Object description_;
+    public static final int LABEL_FIELD_NUMBER = 4;
+    private volatile java.lang.Object label_;
 
-  /**
-   * <code>string description = 4;</code>
-   *
-   * @return The description.
-   */
-  @java.lang.Override
-  public java.lang.String getDescription() {
-    java.lang.Object ref = description_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      description_ = s;
-      return s;
+    /**
+     * <code>string label = 4;</code>
+     *
+     * @return The label.
+     */
+    @java.lang.Override
+    public java.lang.String getLabel() {
+        java.lang.Object ref = label_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            label_ = s;
+            return s;
+        }
     }
-  }
 
-  /**
-   * <code>string description = 4;</code>
-   *
-   * @return The bytes for description.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-  getDescriptionBytes() {
-    java.lang.Object ref = description_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
-              com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-      description_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    /**
+     * <code>string label = 4;</code>
+     *
+     * @return The bytes for label.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getLabelBytes() {
+        java.lang.Object ref = label_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            label_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
     }
-  }
 
-  public static final int ICON_FIELD_NUMBER = 5;
-  private app.schildpad.schildpad.protos.AppWidget.DrawableData icon_;
+    public static final int DESCRIPTION_FIELD_NUMBER = 5;
+    private volatile java.lang.Object description_;
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-   *
-   * @return Whether the icon field is set.
-   */
-  @java.lang.Override
-  public boolean hasIcon() {
-    return icon_ != null;
-  }
+    /**
+     * <code>string description = 5;</code>
+     *
+     * @return The description.
+     */
+    @java.lang.Override
+    public java.lang.String getDescription() {
+        java.lang.Object ref = description_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            description_ = s;
+            return s;
+        }
+    }
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-   *
-   * @return The icon.
-   */
-  @java.lang.Override
-  public app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon() {
-    return icon_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : icon_;
-  }
+    /**
+     * <code>string description = 5;</code>
+     *
+     * @return The bytes for description.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getDescriptionBytes() {
+        java.lang.Object ref = description_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            description_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-   */
-  @java.lang.Override
-  public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder() {
-    return getIcon();
-  }
+    public static final int ICON_FIELD_NUMBER = 6;
+    private app.schildpad.schildpad.protos.AppWidget.DrawableData icon_;
 
-  public static final int PREVIEW_FIELD_NUMBER = 6;
-  private app.schildpad.schildpad.protos.AppWidget.DrawableData preview_;
+    /**
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     *
+     * @return Whether the icon field is set.
+     */
+    @java.lang.Override
+    public boolean hasIcon() {
+        return icon_ != null;
+    }
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   *
-   * @return Whether the preview field is set.
-   */
-  @java.lang.Override
-  public boolean hasPreview() {
-    return preview_ != null;
-  }
+    /**
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     *
+     * @return The icon.
+     */
+    @java.lang.Override
+    public app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon() {
+        return icon_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : icon_;
+    }
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   *
-   * @return The preview.
-   */
-  @java.lang.Override
-  public app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview() {
-    return preview_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : preview_;
-  }
+    /**
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+     */
+    @java.lang.Override
+    public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder() {
+        return getIcon();
+    }
 
-  /**
-   * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-   */
-  @java.lang.Override
-  public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getPreviewOrBuilder() {
-    return getPreview();
-  }
+    public static final int PREVIEW_FIELD_NUMBER = 7;
+    private app.schildpad.schildpad.protos.AppWidget.DrawableData preview_;
 
-  public static final int TARGETWIDTH_FIELD_NUMBER = 7;
-  private int targetWidth_;
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     *
+     * @return Whether the preview field is set.
+     */
+    @java.lang.Override
+    public boolean hasPreview() {
+        return preview_ != null;
+    }
 
-  /**
-   * <code>int32 targetWidth = 7;</code>
-   *
-   * @return The targetWidth.
-   */
-  @java.lang.Override
-  public int getTargetWidth() {
-    return targetWidth_;
-  }
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     *
+     * @return The preview.
+     */
+    @java.lang.Override
+    public app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview() {
+        return preview_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : preview_;
+    }
 
-  public static final int TARGETHEIGHT_FIELD_NUMBER = 8;
-  private int targetHeight_;
+    /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+     */
+    @java.lang.Override
+    public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getPreviewOrBuilder() {
+        return getPreview();
+    }
 
-  /**
-   * <code>int32 targetHeight = 8;</code>
-   *
-   * @return The targetHeight.
-   */
-  @java.lang.Override
-  public int getTargetHeight() {
-    return targetHeight_;
-  }
+    public static final int TARGETWIDTH_FIELD_NUMBER = 8;
+    private int targetWidth_;
 
-  public static final int MINWIDTH_FIELD_NUMBER = 9;
-  private int minWidth_;
+    /**
+     * <code>int32 targetWidth = 8;</code>
+     *
+     * @return The targetWidth.
+     */
+    @java.lang.Override
+    public int getTargetWidth() {
+        return targetWidth_;
+    }
 
-  /**
-   * <code>int32 minWidth = 9;</code>
-   *
-   * @return The minWidth.
-   */
-  @java.lang.Override
-  public int getMinWidth() {
-    return minWidth_;
-  }
+    public static final int TARGETHEIGHT_FIELD_NUMBER = 9;
+    private int targetHeight_;
 
-  public static final int MINHEIGHT_FIELD_NUMBER = 10;
-  private int minHeight_;
+    /**
+     * <code>int32 targetHeight = 9;</code>
+     *
+     * @return The targetHeight.
+     */
+    @java.lang.Override
+    public int getTargetHeight() {
+        return targetHeight_;
+    }
 
-  /**
-   * <code>int32 minHeight = 10;</code>
-   *
-   * @return The minHeight.
-   */
-  @java.lang.Override
-  public int getMinHeight() {
-    return minHeight_;
-  }
+    public static final int MINWIDTH_FIELD_NUMBER = 10;
+    private int minWidth_;
 
-  private byte memoizedIsInitialized = -1;
+    /**
+     * <code>int32 minWidth = 10;</code>
+     *
+     * @return The minWidth.
+     */
+    @java.lang.Override
+    public int getMinWidth() {
+        return minWidth_;
+    }
 
-  @java.lang.Override
-  public final boolean isInitialized() {
-    byte isInitialized = memoizedIsInitialized;
+    public static final int MINHEIGHT_FIELD_NUMBER = 11;
+    private int minHeight_;
+
+    /**
+     * <code>int32 minHeight = 11;</code>
+     *
+     * @return The minHeight.
+     */
+    @java.lang.Override
+    public int getMinHeight() {
+        return minHeight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
@@ -993,156 +1025,166 @@ public final class AppWidget extends
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
           throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(packageName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, packageName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(componentName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, componentName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(label_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, label_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, description_);
-    }
-    if (icon_ != null) {
-      output.writeMessage(5, getIcon());
-    }
-    if (preview_ != null) {
-      output.writeMessage(6, getPreview());
-    }
-    if (targetWidth_ != 0) {
-      output.writeInt32(7, targetWidth_);
-    }
-    if (targetHeight_ != 0) {
-      output.writeInt32(8, targetHeight_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(packageName_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, packageName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(componentName_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, componentName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(appName_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, appName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(label_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 4, label_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 5, description_);
+      }
+      if (icon_ != null) {
+          output.writeMessage(6, getIcon());
+      }
+      if (preview_ != null) {
+          output.writeMessage(7, getPreview());
+      }
+      if (targetWidth_ != 0) {
+          output.writeInt32(8, targetWidth_);
+      }
+      if (targetHeight_ != 0) {
+          output.writeInt32(9, targetHeight_);
     }
     if (minWidth_ != 0) {
-      output.writeInt32(9, minWidth_);
+        output.writeInt32(10, minWidth_);
     }
     if (minHeight_ != 0) {
-      output.writeInt32(10, minHeight_);
+        output.writeInt32(11, minHeight_);
     }
     unknownFields.writeTo(output);
   }
 
-  @java.lang.Override
-  public int getSerializedSize() {
-    int size = memoizedSize;
-    if (size != -1) return size;
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
 
-    size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(packageName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, packageName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(componentName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, componentName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(label_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, label_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, description_);
-    }
-    if (icon_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeMessageSize(5, getIcon());
-    }
-    if (preview_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeMessageSize(6, getPreview());
-    }
-    if (targetWidth_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeInt32Size(7, targetWidth_);
-    }
-    if (targetHeight_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeInt32Size(8, targetHeight_);
-    }
-    if (minWidth_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeInt32Size(9, minWidth_);
-    }
-    if (minHeight_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-              .computeInt32Size(10, minHeight_);
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(packageName_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, packageName_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(componentName_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, componentName_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(appName_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, appName_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(label_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, label_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, description_);
+        }
+        if (icon_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(6, getIcon());
+        }
+        if (preview_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(7, getPreview());
+        }
+        if (targetWidth_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(8, targetWidth_);
+        }
+        if (targetHeight_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(9, targetHeight_);
+        }
+        if (minWidth_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(10, minWidth_);
+        }
+        if (minHeight_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(11, minHeight_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
-  }
+    }
 
-  @java.lang.Override
-  public boolean equals(final java.lang.Object obj) {
-    if (obj == this) {
-      return true;
-    }
-    if (!(obj instanceof app.schildpad.schildpad.protos.AppWidget)) {
-      return super.equals(obj);
-    }
-    app.schildpad.schildpad.protos.AppWidget other = (app.schildpad.schildpad.protos.AppWidget) obj;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof app.schildpad.schildpad.protos.AppWidget)) {
+            return super.equals(obj);
+        }
+        app.schildpad.schildpad.protos.AppWidget other = (app.schildpad.schildpad.protos.AppWidget) obj;
 
-    if (!getPackageName()
-            .equals(other.getPackageName())) return false;
-    if (!getComponentName()
-            .equals(other.getComponentName())) return false;
-    if (!getLabel()
-            .equals(other.getLabel())) return false;
-    if (!getDescription()
-            .equals(other.getDescription())) return false;
-    if (hasIcon() != other.hasIcon()) return false;
-    if (hasIcon()) {
-      if (!getIcon()
-              .equals(other.getIcon())) return false;
-    }
-    if (hasPreview() != other.hasPreview()) return false;
-    if (hasPreview()) {
-      if (!getPreview()
-              .equals(other.getPreview())) return false;
-    }
-    if (getTargetWidth()
-            != other.getTargetWidth()) return false;
-    if (getTargetHeight()
-            != other.getTargetHeight()) return false;
+        if (!getPackageName()
+                .equals(other.getPackageName())) return false;
+        if (!getComponentName()
+                .equals(other.getComponentName())) return false;
+        if (!getAppName()
+                .equals(other.getAppName())) return false;
+        if (!getLabel()
+                .equals(other.getLabel())) return false;
+        if (!getDescription()
+                .equals(other.getDescription())) return false;
+        if (hasIcon() != other.hasIcon()) return false;
+        if (hasIcon()) {
+            if (!getIcon()
+                    .equals(other.getIcon())) return false;
+        }
+        if (hasPreview() != other.hasPreview()) return false;
+        if (hasPreview()) {
+            if (!getPreview()
+                    .equals(other.getPreview())) return false;
+        }
+        if (getTargetWidth()
+                != other.getTargetWidth()) return false;
+        if (getTargetHeight()
+                != other.getTargetHeight()) return false;
     if (getMinWidth()
             != other.getMinWidth()) return false;
     if (getMinHeight()
             != other.getMinHeight()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
-    return true;
-  }
+        return true;
+    }
 
-  @java.lang.Override
-  public int hashCode() {
-    if (memoizedHashCode != 0) {
-      return memoizedHashCode;
-    }
-    int hash = 41;
-    hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + PACKAGENAME_FIELD_NUMBER;
-    hash = (53 * hash) + getPackageName().hashCode();
-    hash = (37 * hash) + COMPONENTNAME_FIELD_NUMBER;
-    hash = (53 * hash) + getComponentName().hashCode();
-    hash = (37 * hash) + LABEL_FIELD_NUMBER;
-    hash = (53 * hash) + getLabel().hashCode();
-    hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
-    hash = (53 * hash) + getDescription().hashCode();
-    if (hasIcon()) {
-      hash = (37 * hash) + ICON_FIELD_NUMBER;
-      hash = (53 * hash) + getIcon().hashCode();
-    }
-    if (hasPreview()) {
-      hash = (37 * hash) + PREVIEW_FIELD_NUMBER;
-      hash = (53 * hash) + getPreview().hashCode();
-    }
-    hash = (37 * hash) + TARGETWIDTH_FIELD_NUMBER;
-    hash = (53 * hash) + getTargetWidth();
-    hash = (37 * hash) + TARGETHEIGHT_FIELD_NUMBER;
-    hash = (53 * hash) + getTargetHeight();
-    hash = (37 * hash) + MINWIDTH_FIELD_NUMBER;
-    hash = (53 * hash) + getMinWidth();
-    hash = (37 * hash) + MINHEIGHT_FIELD_NUMBER;
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + PACKAGENAME_FIELD_NUMBER;
+        hash = (53 * hash) + getPackageName().hashCode();
+        hash = (37 * hash) + COMPONENTNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getComponentName().hashCode();
+        hash = (37 * hash) + APPNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getAppName().hashCode();
+        hash = (37 * hash) + LABEL_FIELD_NUMBER;
+        hash = (53 * hash) + getLabel().hashCode();
+        hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+        hash = (53 * hash) + getDescription().hashCode();
+        if (hasIcon()) {
+            hash = (37 * hash) + ICON_FIELD_NUMBER;
+            hash = (53 * hash) + getIcon().hashCode();
+        }
+        if (hasPreview()) {
+            hash = (37 * hash) + PREVIEW_FIELD_NUMBER;
+            hash = (53 * hash) + getPreview().hashCode();
+        }
+        hash = (37 * hash) + TARGETWIDTH_FIELD_NUMBER;
+        hash = (53 * hash) + getTargetWidth();
+        hash = (37 * hash) + TARGETHEIGHT_FIELD_NUMBER;
+        hash = (53 * hash) + getTargetHeight();
+        hash = (37 * hash) + MINWIDTH_FIELD_NUMBER;
+        hash = (53 * hash) + getMinWidth();
+        hash = (37 * hash) + MINHEIGHT_FIELD_NUMBER;
     hash = (53 * hash) + getMinHeight();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -1238,7 +1280,6 @@ public final class AppWidget extends
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-
   public static Builder newBuilder(app.schildpad.schildpad.protos.AppWidget prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
@@ -1293,28 +1334,30 @@ public final class AppWidget extends
       }
     }
 
-    @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      packageName_ = "";
+      @java.lang.Override
+      public Builder clear() {
+          super.clear();
+          packageName_ = "";
 
-      componentName_ = "";
+          componentName_ = "";
 
-      label_ = "";
+          appName_ = "";
 
-      description_ = "";
+          label_ = "";
 
-      if (iconBuilder_ == null) {
-        icon_ = null;
-      } else {
-        icon_ = null;
-        iconBuilder_ = null;
-      }
-      if (previewBuilder_ == null) {
-        preview_ = null;
-      } else {
-        preview_ = null;
-        previewBuilder_ = null;
+          description_ = "";
+
+          if (iconBuilder_ == null) {
+              icon_ = null;
+          } else {
+              icon_ = null;
+              iconBuilder_ = null;
+          }
+          if (previewBuilder_ == null) {
+              preview_ = null;
+          } else {
+              preview_ = null;
+              previewBuilder_ = null;
       }
       targetWidth_ = 0;
 
@@ -1347,20 +1390,21 @@ public final class AppWidget extends
       return result;
     }
 
-    @java.lang.Override
-    public app.schildpad.schildpad.protos.AppWidget buildPartial() {
-      app.schildpad.schildpad.protos.AppWidget result = new app.schildpad.schildpad.protos.AppWidget(this);
-      result.packageName_ = packageName_;
-      result.componentName_ = componentName_;
-      result.label_ = label_;
-      result.description_ = description_;
-      if (iconBuilder_ == null) {
-        result.icon_ = icon_;
-      } else {
-        result.icon_ = iconBuilder_.build();
-      }
-      if (previewBuilder_ == null) {
-        result.preview_ = preview_;
+      @java.lang.Override
+      public app.schildpad.schildpad.protos.AppWidget buildPartial() {
+          app.schildpad.schildpad.protos.AppWidget result = new app.schildpad.schildpad.protos.AppWidget(this);
+          result.packageName_ = packageName_;
+          result.componentName_ = componentName_;
+          result.appName_ = appName_;
+          result.label_ = label_;
+          result.description_ = description_;
+          if (iconBuilder_ == null) {
+              result.icon_ = icon_;
+          } else {
+              result.icon_ = iconBuilder_.build();
+          }
+          if (previewBuilder_ == null) {
+              result.preview_ = preview_;
       } else {
         result.preview_ = previewBuilder_.build();
       }
@@ -1412,42 +1456,46 @@ public final class AppWidget extends
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof app.schildpad.schildpad.protos.AppWidget) {
-        return mergeFrom((app.schildpad.schildpad.protos.AppWidget) other);
+        if (other instanceof app.schildpad.schildpad.protos.AppWidget) {
+          return mergeFrom((app.schildpad.schildpad.protos.AppWidget)other);
       } else {
         super.mergeFrom(other);
         return this;
-      }
+        }
     }
 
-    public Builder mergeFrom(app.schildpad.schildpad.protos.AppWidget other) {
-      if (other == app.schildpad.schildpad.protos.AppWidget.getDefaultInstance()) return this;
-      if (!other.getPackageName().isEmpty()) {
-        packageName_ = other.packageName_;
-        onChanged();
-      }
-      if (!other.getComponentName().isEmpty()) {
-        componentName_ = other.componentName_;
-        onChanged();
-      }
-      if (!other.getLabel().isEmpty()) {
-        label_ = other.label_;
-        onChanged();
-      }
-      if (!other.getDescription().isEmpty()) {
-        description_ = other.description_;
-        onChanged();
-      }
-      if (other.hasIcon()) {
-        mergeIcon(other.getIcon());
-      }
-      if (other.hasPreview()) {
-        mergePreview(other.getPreview());
-      }
-      if (other.getTargetWidth() != 0) {
-        setTargetWidth(other.getTargetWidth());
-      }
-      if (other.getTargetHeight() != 0) {
+      public Builder mergeFrom(app.schildpad.schildpad.protos.AppWidget other) {
+          if (other == app.schildpad.schildpad.protos.AppWidget.getDefaultInstance()) return this;
+          if (!other.getPackageName().isEmpty()) {
+              packageName_ = other.packageName_;
+              onChanged();
+          }
+          if (!other.getComponentName().isEmpty()) {
+              componentName_ = other.componentName_;
+              onChanged();
+          }
+          if (!other.getAppName().isEmpty()) {
+              appName_ = other.appName_;
+              onChanged();
+          }
+          if (!other.getLabel().isEmpty()) {
+              label_ = other.label_;
+              onChanged();
+          }
+          if (!other.getDescription().isEmpty()) {
+              description_ = other.description_;
+              onChanged();
+          }
+          if (other.hasIcon()) {
+              mergeIcon(other.getIcon());
+          }
+          if (other.hasPreview()) {
+              mergePreview(other.getPreview());
+          }
+          if (other.getTargetWidth() != 0) {
+              setTargetWidth(other.getTargetWidth());
+          }
+          if (other.getTargetHeight() != 0) {
         setTargetHeight(other.getTargetHeight());
       }
       if (other.getMinWidth() != 0) {
@@ -1486,10 +1534,8 @@ public final class AppWidget extends
     }
 
     private java.lang.Object packageName_ = "";
-
     /**
      * <code>string packageName = 1;</code>
-     *
      * @return The packageName.
      */
     public java.lang.String getPackageName() {
@@ -1535,7 +1581,7 @@ public final class AppWidget extends
       if (value == null) {
         throw new NullPointerException();
       }
-
+  
       packageName_ = value;
       onChanged();
       return this;
@@ -1572,10 +1618,8 @@ public final class AppWidget extends
     }
 
     private java.lang.Object componentName_ = "";
-
     /**
      * <code>string componentName = 2;</code>
-     *
      * @return The componentName.
      */
     public java.lang.String getComponentName() {
@@ -1647,175 +1691,260 @@ public final class AppWidget extends
      */
     public Builder setComponentNameBytes(
             com.google.protobuf.ByteString value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      checkByteStringIsUtf8(value);
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
 
-      componentName_ = value;
-      onChanged();
-      return this;
+        componentName_ = value;
+        onChanged();
+        return this;
     }
 
-    private java.lang.Object label_ = "";
+      private java.lang.Object appName_ = "";
 
-    /**
-     * <code>string label = 3;</code>
-     *
-     * @return The label.
-     */
-    public java.lang.String getLabel() {
-      java.lang.Object ref = label_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        label_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
+      /**
+       * <code>string appName = 3;</code>
+       *
+       * @return The appName.
+       */
+      public java.lang.String getAppName() {
+          java.lang.Object ref = appName_;
+          if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                      (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              appName_ = s;
+              return s;
+          } else {
+              return (java.lang.String) ref;
+          }
+      }
+
+      /**
+       * <code>string appName = 3;</code>
+       *
+       * @return The bytes for appName.
+       */
+      public com.google.protobuf.ByteString
+      getAppNameBytes() {
+          java.lang.Object ref = appName_;
+          if (ref instanceof String) {
+              com.google.protobuf.ByteString b =
+                      com.google.protobuf.ByteString.copyFromUtf8(
+                              (java.lang.String) ref);
+              appName_ = b;
+              return b;
+          } else {
+              return (com.google.protobuf.ByteString) ref;
+          }
+      }
+
+      /**
+       * <code>string appName = 3;</code>
+       *
+       * @param value The appName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAppName(
+              java.lang.String value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+
+          appName_ = value;
+          onChanged();
+          return this;
+      }
+
+      /**
+       * <code>string appName = 3;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearAppName() {
+
+          appName_ = getDefaultInstance().getAppName();
+          onChanged();
+          return this;
+      }
+
+      /**
+       * <code>string appName = 3;</code>
+       *
+       * @param value The bytes for appName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAppNameBytes(
+              com.google.protobuf.ByteString value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
+
+          appName_ = value;
+          onChanged();
+          return this;
+      }
+
+      private java.lang.Object label_ = "";
+
+      /**
+       * <code>string label = 4;</code>
+       *
+       * @return The label.
+       */
+      public java.lang.String getLabel() {
+          java.lang.Object ref = label_;
+          if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                      (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              label_ = s;
+              return s;
+          } else {
+              return (java.lang.String) ref;
       }
     }
 
     /**
-     * <code>string label = 3;</code>
+     * <code>string label = 4;</code>
      *
      * @return The bytes for label.
      */
     public com.google.protobuf.ByteString
     getLabelBytes() {
-      java.lang.Object ref = label_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
-        label_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+        java.lang.Object ref = label_;
+        if (ref instanceof String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            label_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+      /**
+       * <code>string label = 4;</code>
+       *
+       * @param value The label to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLabel(
+              java.lang.String value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+
+          label_ = value;
+          onChanged();
+          return this;
       }
-    }
 
-    /**
-     * <code>string label = 3;</code>
-     *
-     * @param value The label to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLabel(
-            java.lang.String value) {
-      if (value == null) {
-        throw new NullPointerException();
+      /**
+       * <code>string label = 4;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearLabel() {
+
+          label_ = getDefaultInstance().getLabel();
+          onChanged();
+          return this;
       }
 
-      label_ = value;
-      onChanged();
-      return this;
-    }
+      /**
+       * <code>string label = 4;</code>
+       *
+       * @param value The bytes for label to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLabelBytes(
+              com.google.protobuf.ByteString value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
 
-    /**
-     * <code>string label = 3;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearLabel() {
-
-      label_ = getDefaultInstance().getLabel();
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>string label = 3;</code>
-     *
-     * @param value The bytes for label to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLabelBytes(
-            com.google.protobuf.ByteString value) {
-      if (value == null) {
-        throw new NullPointerException();
+          label_ = value;
+          onChanged();
+          return this;
       }
-      checkByteStringIsUtf8(value);
 
-      label_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object description_ = "";
+      private java.lang.Object description_ = "";
 
     /**
-     * <code>string description = 4;</code>
+     * <code>string description = 5;</code>
      *
      * @return The description.
      */
     public java.lang.String getDescription() {
-      java.lang.Object ref = description_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        description_ = s;
-        return s;
+        java.lang.Object ref = description_;
+        if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            description_ = s;
+            return s;
       } else {
-        return (java.lang.String) ref;
+          return (java.lang.String) ref;
       }
     }
 
     /**
-     * <code>string description = 4;</code>
+     * <code>string description = 5;</code>
      *
      * @return The bytes for description.
      */
     public com.google.protobuf.ByteString
     getDescriptionBytes() {
-      java.lang.Object ref = description_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
-        description_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+        java.lang.Object ref = description_;
+        if (ref instanceof String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            description_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+      /**
+       * <code>string description = 5;</code>
+       *
+       * @param value The description to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDescription(
+              java.lang.String value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+
+          description_ = value;
+          onChanged();
+          return this;
       }
-    }
 
-    /**
-     * <code>string description = 4;</code>
-     *
-     * @param value The description to set.
-     * @return This builder for chaining.
-     */
-    public Builder setDescription(
-            java.lang.String value) {
-      if (value == null) {
-        throw new NullPointerException();
+      /**
+       * <code>string description = 5;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearDescription() {
+
+          description_ = getDefaultInstance().getDescription();
+          onChanged();
+          return this;
       }
 
-      description_ = value;
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>string description = 4;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearDescription() {
-
-      description_ = getDefaultInstance().getDescription();
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>string description = 4;</code>
-     *
-     * @param value The bytes for description to set.
-     * @return This builder for chaining.
+      /**
+       * <code>string description = 5;</code>
+       * @param value The bytes for description to set.
+       * @return This builder for chaining.
      */
     public Builder setDescriptionBytes(
             com.google.protobuf.ByteString value) {
@@ -1833,109 +1962,105 @@ public final class AppWidget extends
     private com.google.protobuf.SingleFieldBuilderV3<
             app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder> iconBuilder_;
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-     *
-     * @return Whether the icon field is set.
+      /**
+       * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+       * @return Whether the icon field is set.
      */
     public boolean hasIcon() {
-      return iconBuilder_ != null || icon_ != null;
+        return iconBuilder_ != null || icon_ != null;
     }
-
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-     *
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      * @return The icon.
      */
     public app.schildpad.schildpad.protos.AppWidget.DrawableData getIcon() {
-      if (iconBuilder_ == null) {
-        return icon_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : icon_;
+        if (iconBuilder_ == null) {
+            return icon_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : icon_;
       } else {
-        return iconBuilder_.getMessage();
+          return iconBuilder_.getMessage();
       }
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      */
     public Builder setIcon(app.schildpad.schildpad.protos.AppWidget.DrawableData value) {
       if (iconBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+          if (value == null) {
+              throw new NullPointerException();
         }
         icon_ = value;
-        onChanged();
+          onChanged();
       } else {
-        iconBuilder_.setMessage(value);
+          iconBuilder_.setMessage(value);
       }
 
       return this;
     }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+      /**
+       * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      */
     public Builder setIcon(
             app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder builderForValue) {
-      if (iconBuilder_ == null) {
-        icon_ = builderForValue.build();
-        onChanged();
+        if (iconBuilder_ == null) {
+            icon_ = builderForValue.build();
+          onChanged();
       } else {
-        iconBuilder_.setMessage(builderForValue.build());
+          iconBuilder_.setMessage(builderForValue.build());
       }
 
       return this;
     }
-
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      */
     public Builder mergeIcon(app.schildpad.schildpad.protos.AppWidget.DrawableData value) {
       if (iconBuilder_ == null) {
-        if (icon_ != null) {
-          icon_ =
-                  app.schildpad.schildpad.protos.AppWidget.DrawableData.newBuilder(icon_).mergeFrom(value).buildPartial();
-        } else {
+          if (icon_ != null) {
+              icon_ =
+                      app.schildpad.schildpad.protos.AppWidget.DrawableData.newBuilder(icon_).mergeFrom(value).buildPartial();
+          } else {
           icon_ = value;
         }
-        onChanged();
+          onChanged();
       } else {
-        iconBuilder_.mergeFrom(value);
+          iconBuilder_.mergeFrom(value);
       }
 
-      return this;
+        return this;
     }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-     */
-    public Builder clearIcon() {
-      if (iconBuilder_ == null) {
+      /**
+       * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+       */
+      public Builder clearIcon() {
+          if (iconBuilder_ == null) {
         icon_ = null;
-        onChanged();
+          onChanged();
       } else {
-        icon_ = null;
-        iconBuilder_ = null;
+          icon_ = null;
+              iconBuilder_ = null;
+          }
+
+          return this;
       }
 
-      return this;
+      /**
+       * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
+       */
+      public app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder getIconBuilder() {
+
+        onChanged();
+        return getIconFieldBuilder().getBuilder();
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
-     */
-    public app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder getIconBuilder() {
-
-      onChanged();
-      return getIconFieldBuilder().getBuilder();
-    }
-
-    /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      */
     public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getIconOrBuilder() {
       if (iconBuilder_ != null) {
-        return iconBuilder_.getMessageOrBuilder();
+          return iconBuilder_.getMessageOrBuilder();
       } else {
         return icon_ == null ?
                 app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : icon_;
@@ -1943,7 +2068,7 @@ public final class AppWidget extends
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+     * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
             app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder>
@@ -1954,118 +2079,117 @@ public final class AppWidget extends
                 getIcon(),
                 getParentForChildren(),
                 isClean());
-        icon_ = null;
+          icon_ = null;
       }
-      return iconBuilder_;
+        return iconBuilder_;
     }
 
-    private app.schildpad.schildpad.protos.AppWidget.DrawableData preview_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-            app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder> previewBuilder_;
+      private app.schildpad.schildpad.protos.AppWidget.DrawableData preview_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+              app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder> previewBuilder_;
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-     *
-     * @return Whether the preview field is set.
-     */
-    public boolean hasPreview() {
-      return previewBuilder_ != null || preview_ != null;
-    }
+      /**
+       * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+       *
+       * @return Whether the preview field is set.
+       */
+      public boolean hasPreview() {
+          return previewBuilder_ != null || preview_ != null;
+      }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-     *
-     * @return The preview.
-     */
-    public app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview() {
-      if (previewBuilder_ == null) {
+      /**
+       * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+       *
+       * @return The preview.
+       */
+      public app.schildpad.schildpad.protos.AppWidget.DrawableData getPreview() {
+          if (previewBuilder_ == null) {
         return preview_ == null ? app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : preview_;
       } else {
-        return previewBuilder_.getMessage();
+          return previewBuilder_.getMessage();
       }
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
      */
     public Builder setPreview(app.schildpad.schildpad.protos.AppWidget.DrawableData value) {
-      if (previewBuilder_ == null) {
-        if (value == null) {
+        if (previewBuilder_ == null) {
+            if (value == null) {
           throw new NullPointerException();
         }
         preview_ = value;
-        onChanged();
+          onChanged();
       } else {
-        previewBuilder_.setMessage(value);
-      }
+          previewBuilder_.setMessage(value);
+        }
 
-      return this;
+        return this;
     }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-     */
-    public Builder setPreview(
+      /**
+       * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+       */
+      public Builder setPreview(
             app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder builderForValue) {
-      if (previewBuilder_ == null) {
+          if (previewBuilder_ == null) {
         preview_ = builderForValue.build();
-        onChanged();
+          onChanged();
       } else {
-        previewBuilder_.setMessage(builderForValue.build());
+          previewBuilder_.setMessage(builderForValue.build());
       }
 
       return this;
     }
-
     /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
      */
     public Builder mergePreview(app.schildpad.schildpad.protos.AppWidget.DrawableData value) {
-      if (previewBuilder_ == null) {
-        if (preview_ != null) {
-          preview_ =
-                  app.schildpad.schildpad.protos.AppWidget.DrawableData.newBuilder(preview_).mergeFrom(value).buildPartial();
+        if (previewBuilder_ == null) {
+            if (preview_ != null) {
+                preview_ =
+                        app.schildpad.schildpad.protos.AppWidget.DrawableData.newBuilder(preview_).mergeFrom(value).buildPartial();
         } else {
           preview_ = value;
+            }
+            onChanged();
+        } else {
+          previewBuilder_.mergeFrom(value);
         }
-        onChanged();
-      } else {
-        previewBuilder_.mergeFrom(value);
-      }
 
-      return this;
+        return this;
     }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
-     */
-    public Builder clearPreview() {
+      /**
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
+       */
+      public Builder clearPreview() {
       if (previewBuilder_ == null) {
         preview_ = null;
-        onChanged();
+          onChanged();
       } else {
-        preview_ = null;
-        previewBuilder_ = null;
+          preview_ = null;
+          previewBuilder_ = null;
       }
 
-      return this;
-    }
+          return this;
+      }
 
-    /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+      /**
+       * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
      */
     public app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder getPreviewBuilder() {
 
-      onChanged();
-      return getPreviewFieldBuilder().getBuilder();
+        onChanged();
+        return getPreviewFieldBuilder().getBuilder();
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
      */
     public app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder getPreviewOrBuilder() {
-      if (previewBuilder_ != null) {
-        return previewBuilder_.getMessageOrBuilder();
+        if (previewBuilder_ != null) {
+            return previewBuilder_.getMessageOrBuilder();
       } else {
         return preview_ == null ?
                 app.schildpad.schildpad.protos.AppWidget.DrawableData.getDefaultInstance() : preview_;
@@ -2073,173 +2197,170 @@ public final class AppWidget extends
     }
 
     /**
-     * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+     * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
             app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder>
     getPreviewFieldBuilder() {
-      if (previewBuilder_ == null) {
-        previewBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder>(
-                getPreview(),
-                getParentForChildren(),
-                isClean());
-        preview_ = null;
+        if (previewBuilder_ == null) {
+            previewBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                    app.schildpad.schildpad.protos.AppWidget.DrawableData, app.schildpad.schildpad.protos.AppWidget.DrawableData.Builder, app.schildpad.schildpad.protos.AppWidget.DrawableDataOrBuilder>(
+                    getPreview(),
+                    getParentForChildren(),
+                    isClean());
+            preview_ = null;
+        }
+        return previewBuilder_;
+    }
+
+      private int targetWidth_;
+
+      /**
+       * <code>int32 targetWidth = 8;</code>
+       *
+       * @return The targetWidth.
+       */
+      @java.lang.Override
+      public int getTargetWidth() {
+          return targetWidth_;
       }
-      return previewBuilder_;
-    }
 
-    private int targetWidth_;
-
-    /**
-     * <code>int32 targetWidth = 7;</code>
-     *
-     * @return The targetWidth.
-     */
-    @java.lang.Override
-    public int getTargetWidth() {
-      return targetWidth_;
-    }
-
-    /**
-     * <code>int32 targetWidth = 7;</code>
-     *
-     * @param value The targetWidth to set.
+      /**
+       * <code>int32 targetWidth = 8;</code>
+       * @param value The targetWidth to set.
      * @return This builder for chaining.
-     */
-    public Builder setTargetWidth(int value) {
+       */
+      public Builder setTargetWidth(int value) {
 
-      targetWidth_ = value;
-      onChanged();
-      return this;
-    }
+          targetWidth_ = value;
+          onChanged();
+          return this;
+      }
 
-    /**
-     * <code>int32 targetWidth = 7;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearTargetWidth() {
+      /**
+       * <code>int32 targetWidth = 8;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearTargetWidth() {
 
-      targetWidth_ = 0;
-      onChanged();
-      return this;
-    }
+          targetWidth_ = 0;
+          onChanged();
+          return this;
+      }
 
-    private int targetHeight_;
+      private int targetHeight_;
 
-    /**
-     * <code>int32 targetHeight = 8;</code>
-     *
-     * @return The targetHeight.
-     */
-    @java.lang.Override
-    public int getTargetHeight() {
-      return targetHeight_;
-    }
+      /**
+       * <code>int32 targetHeight = 9;</code>
+       *
+       * @return The targetHeight.
+       */
+      @java.lang.Override
+      public int getTargetHeight() {
+          return targetHeight_;
+      }
 
-    /**
-     * <code>int32 targetHeight = 8;</code>
-     *
+      /**
+       * <code>int32 targetHeight = 9;</code>
      * @param value The targetHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTargetHeight(int value) {
+
+          targetHeight_ = value;
+          onChanged();
+          return this;
+      }
+
+      /**
+       * <code>int32 targetHeight = 9;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearTargetHeight() {
+
+          targetHeight_ = 0;
+          onChanged();
+          return this;
+      }
+
+      private int minWidth_;
+
+      /**
+       * <code>int32 minWidth = 10;</code>
+       *
+       * @return The minWidth.
+       */
+      @java.lang.Override
+      public int getMinWidth() {
+          return minWidth_;
+    }
+
+      /**
+       * <code>int32 minWidth = 10;</code>
+       * @param value The minWidth to set.
      * @return This builder for chaining.
-     */
-    public Builder setTargetHeight(int value) {
+       */
+      public Builder setMinWidth(int value) {
 
-      targetHeight_ = value;
-      onChanged();
-      return this;
+          minWidth_ = value;
+          onChanged();
+          return this;
+      }
+
+      /**
+       * <code>int32 minWidth = 10;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearMinWidth() {
+
+          minWidth_ = 0;
+          onChanged();
+          return this;
+      }
+
+      private int minHeight_;
+
+      /**
+       * <code>int32 minHeight = 11;</code>
+       *
+       * @return The minHeight.
+       */
+      @java.lang.Override
+      public int getMinHeight() {
+          return minHeight_;
+      }
+
+      /**
+       * <code>int32 minHeight = 11;</code>
+       *
+       * @param value The minHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinHeight(int value) {
+
+          minHeight_ = value;
+          onChanged();
+          return this;
+      }
+
+      /**
+       * <code>int32 minHeight = 11;</code>
+       *
+       * @return This builder for chaining.
+       */
+      public Builder clearMinHeight() {
+
+          minHeight_ = 0;
+          onChanged();
+          return this;
     }
 
-    /**
-     * <code>int32 targetHeight = 8;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearTargetHeight() {
-
-      targetHeight_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int minWidth_;
-
-    /**
-     * <code>int32 minWidth = 9;</code>
-     *
-     * @return The minWidth.
-     */
-    @java.lang.Override
-    public int getMinWidth() {
-      return minWidth_;
-    }
-
-    /**
-     * <code>int32 minWidth = 9;</code>
-     *
-     * @param value The minWidth to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMinWidth(int value) {
-
-      minWidth_ = value;
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>int32 minWidth = 9;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearMinWidth() {
-
-      minWidth_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int minHeight_;
-
-    /**
-     * <code>int32 minHeight = 10;</code>
-     *
-     * @return The minHeight.
-     */
-    @java.lang.Override
-    public int getMinHeight() {
-      return minHeight_;
-    }
-
-    /**
-     * <code>int32 minHeight = 10;</code>
-     *
-     * @param value The minHeight to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMinHeight(int value) {
-
-      minHeight_ = value;
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>int32 minHeight = 10;</code>
-     *
-     * @return This builder for chaining.
-     */
-    public Builder clearMinHeight() {
-
-      minHeight_ = 0;
-      onChanged();
-      return this;
-    }
-
-    @java.lang.Override
-    public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
+      @java.lang.Override
+      public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.setUnknownFields(unknownFields);
     }
 
@@ -2253,24 +2374,24 @@ public final class AppWidget extends
     // @@protoc_insertion_point(builder_scope:schildpad.AppWidget)
   }
 
-  // @@protoc_insertion_point(class_scope:schildpad.AppWidget)
-  private static final app.schildpad.schildpad.protos.AppWidget DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:schildpad.AppWidget)
+    private static final app.schildpad.schildpad.protos.AppWidget DEFAULT_INSTANCE;
 
-  static {
-    DEFAULT_INSTANCE = new app.schildpad.schildpad.protos.AppWidget();
-  }
+    static {
+        DEFAULT_INSTANCE = new app.schildpad.schildpad.protos.AppWidget();
+    }
 
-  public static app.schildpad.schildpad.protos.AppWidget getDefaultInstance() {
-    return DEFAULT_INSTANCE;
-  }
+    public static app.schildpad.schildpad.protos.AppWidget getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
 
-  private static final com.google.protobuf.Parser<AppWidget>
+    private static final com.google.protobuf.Parser<AppWidget>
           PARSER = new com.google.protobuf.AbstractParser<AppWidget>() {
-    @java.lang.Override
-    public AppWidget parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+      @java.lang.Override
+      public AppWidget parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return new AppWidget(input, extensionRegistry);
     }
   };

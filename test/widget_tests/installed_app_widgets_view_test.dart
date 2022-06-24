@@ -11,6 +11,7 @@ void main() {
     const firstAppWidget = AppWidgetData(
         icon: Icon(Icons.account_balance),
         label: 'firstWidget',
+        appName: 'firstApp',
         packageName: 'com.widget.first',
         componentName: 'firstComp');
     final appWidgetsList = [firstAppWidget];
@@ -32,11 +33,13 @@ void main() {
     const firstAppWidget = AppWidgetData(
         icon: Icon(Icons.account_balance),
         label: 'firstWidget',
+        appName: 'firstApp',
         packageName: 'com.widget.first',
         componentName: 'firstComp');
     const secondAppWidget = AppWidgetData(
         icon: Icon(Icons.add_business),
         label: 'secondWidget',
+        appName: 'secondApp',
         packageName: 'com.widget.second',
         componentName: 'secondComp');
     final appWidgetsList = [firstAppWidget, secondAppWidget];

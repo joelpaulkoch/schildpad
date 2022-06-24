@@ -15,6 +15,7 @@ final installedAppWidgetsProvider =
       AppWidgetData(
           icon: Image.memory(w.icon.data as Uint8List),
           label: w.label,
+          appName: w.appName,
           packageName: w.packageName,
           componentName: w.componentName));
   return installedAppWidgetsData.toList();
@@ -24,12 +25,14 @@ class AppWidgetData {
   const AppWidgetData({
     required this.icon,
     required this.label,
+    required this.appName,
     required this.packageName,
     required this.componentName,
   });
 
   final Widget icon;
   final String label;
+  final String appName;
   final String packageName;
   final String componentName;
 //TODO add size

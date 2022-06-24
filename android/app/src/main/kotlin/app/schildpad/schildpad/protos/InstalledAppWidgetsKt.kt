@@ -13,22 +13,22 @@ object InstalledAppWidgetsKt {
   class Dsl private constructor(
     private val _builder: app.schildpad.schildpad.protos.InstalledAppWidgets.Builder
   ) {
-    companion object {
+      companion object {
+          @kotlin.jvm.JvmSynthetic
+          @kotlin.PublishedApi
+          internal fun _create(builder: app.schildpad.schildpad.protos.InstalledAppWidgets.Builder): Dsl = Dsl(builder)
+      }
+
       @kotlin.jvm.JvmSynthetic
       @kotlin.PublishedApi
-      internal fun _create(builder: app.schildpad.schildpad.protos.InstalledAppWidgets.Builder): Dsl = Dsl(builder)
-    }
+      internal fun _build(): app.schildpad.schildpad.protos.InstalledAppWidgets = _builder.build()
 
-    @kotlin.jvm.JvmSynthetic
-    @kotlin.PublishedApi
-    internal fun _build(): app.schildpad.schildpad.protos.InstalledAppWidgets = _builder.build()
-
-    /**
-     * An uninstantiable, behaviorless type to represent the field in
-     * generics.
-     */
-    @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
-    class AppWidgetsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
+      /**
+       * An uninstantiable, behaviorless type to represent the field in
+       * generics.
+       */
+      @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
+      class AppWidgetsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
 
       /**
        * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
@@ -38,15 +38,16 @@ object InstalledAppWidgetsKt {
           get() = com.google.protobuf.kotlin.DslList(
               _builder.getAppWidgetsList()
           )
-    /**
-     * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
-     * @param value The appWidgets to add.
-     */
-    @kotlin.jvm.JvmSynthetic
-    @kotlin.jvm.JvmName("addAppWidgets")
-    fun com.google.protobuf.kotlin.DslList<app.schildpad.schildpad.protos.AppWidget, AppWidgetsProxy>.add(value: app.schildpad.schildpad.protos.AppWidget) {
-        _builder.addAppWidgets(value)
-    }
+
+      /**
+       * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>
+       * @param value The appWidgets to add.
+       */
+      @kotlin.jvm.JvmSynthetic
+      @kotlin.jvm.JvmName("addAppWidgets")
+      fun com.google.protobuf.kotlin.DslList<app.schildpad.schildpad.protos.AppWidget, AppWidgetsProxy>.add(value: app.schildpad.schildpad.protos.AppWidget) {
+          _builder.addAppWidgets(value)
+      }
 
       /**
        * <code>repeated .schildpad.AppWidget appWidgets = 1;</code>

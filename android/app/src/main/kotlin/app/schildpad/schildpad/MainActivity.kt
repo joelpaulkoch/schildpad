@@ -35,17 +35,12 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
-        flutterEngine
-            .platformViewsController
-            .registry
-            .registerViewFactory(
-                "app.schildpad.schildpad/appwidgetview",
-                nativeAppWidgetViewFactory
-            )
+        flutterEngine.platformViewsController.registry.registerViewFactory(
+            "app.schildpad.schildpad/appwidgetview", nativeAppWidgetViewFactory
+        )
 
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            APPS_CHANNEL
+            flutterEngine.dartExecutor.binaryMessenger, APPS_CHANNEL
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             if (call.method == "getInstalledApps") {
@@ -56,8 +51,7 @@ class MainActivity : FlutterActivity() {
             }
         }
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            APPWIDGETS_CHANNEL
+            flutterEngine.dartExecutor.binaryMessenger, APPWIDGETS_CHANNEL
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             when (call.method) {
@@ -84,9 +78,10 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getInstalledApps(): InstalledApps {
-        val packageInfos = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
-            .filter { it.applicationInfo.enabled }
-            .filter { (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
+        val packageInfos =
+            packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
+                .filter { it.applicationInfo.enabled }
+                .filter { (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
 
         val installedApps = installedApps {
 
@@ -120,11 +115,15 @@ class MainActivity : FlutterActivity() {
 
         val installedAppWidgets = installedAppWidgets {
             for (provider in providers) {
-
                 val widget = appWidget {
                     packageName = provider.provider.packageName
-                    label = provider.loadLabel(packageManager)
                     componentName = provider.provider.className
+
+                    val appInfo = packageManager.getApplicationInfo(
+                        provider.provider.packageName, PackageManager.GET_META_DATA
+                    )
+                    appName = appInfo.loadLabel(packageManager).toString()
+                    label = provider.loadLabel(packageManager)
 
                     minWidth = provider.minWidth
                     minHeight = provider.minHeight
@@ -151,9 +150,9 @@ class MainActivity : FlutterActivity() {
 
         val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
 
-        val provider = appWidgetManager.installedProviders
-            .find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
-            ?: return null
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+                ?: return null
 
         val appWidgetId = appWidgetHost.allocateAppWidgetId()
         val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, provider.provider)
@@ -180,8 +179,7 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent.putExtra(
-            "background_mode",
-            FlutterActivityLaunchConfigs.BackgroundMode.transparent.toString()
+            "background_mode", FlutterActivityLaunchConfigs.BackgroundMode.transparent.toString()
         )
         super.onCreate(savedInstanceState)
     }

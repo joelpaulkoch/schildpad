@@ -30,33 +30,30 @@ class AppWidgetsList extends ConsumerWidget {
     final appWidgets = ref.watch(installedAppWidgetsProvider);
     return appWidgets.maybeWhen(
         data: (widgets) {
-          widgets.sort((a, b) => a.packageName
-              .split('.')
-              .last
-              .compareTo(b.packageName.split('.').last));
-          final packageNames = widgets.map((w) => w.packageName).toSet();
+          widgets.sort((a, b) =>
+              a.appName.toLowerCase().compareTo(b.appName.toLowerCase()));
+          final appName = widgets.map((w) => w.appName).toSet();
           return ListView(
             children: ListTile.divideTiles(
                     color: Colors.white,
                     context: context,
-                    tiles: packageNames
-                        .map((p) => Material(
+                    tiles: appName
+                        .map((a) => Material(
                             color: Colors.transparent,
                             child: ListTile(
                               title: Text(
-                                p.split('.').last,
+                                a,
                                 style: const TextStyle(color: Colors.white),
                               ),
                               subtitle: Column(
                                 children: widgets
-                                    .where(
-                                        (element) => (element.packageName == p))
-                                    .map((e) => Card(
+                                    .where((widget) => (widget.appName == a))
+                                    .map((widget) => Card(
                                           color: Colors.transparent,
                                           child: ListTile(
-                                            leading: e.icon,
+                                            leading: widget.icon,
                                             title: Text(
-                                              e.label,
+                                              widget.label,
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                   color: Colors.white),

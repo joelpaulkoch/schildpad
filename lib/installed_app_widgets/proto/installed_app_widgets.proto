@@ -11,21 +11,22 @@ message AppWidget {
   string packageName = 1;
   string componentName = 2;
 
-  string label = 3;
-  string description = 4;
+  string appName = 3;
+  string label = 4;
+  string description = 5;
 
   message DrawableData{
     bytes data = 1;
   }
 
-  DrawableData icon = 5;
-  DrawableData preview = 6;
+  DrawableData icon = 6;
+  DrawableData preview = 7;
 
-  int32 targetWidth = 7;
-  int32 targetHeight = 8;
+  int32 targetWidth = 8;
+  int32 targetHeight = 9;
 
-  int32 minWidth = 9;
-  int32 minHeight = 10;
+  int32 minWidth = 10;
+  int32 minHeight = 11;
 }
 
 message InstalledAppWidgets{

@@ -60,7 +60,25 @@ object AppWidgetKt {
         }
 
         /**
-         * <code>string label = 3;</code>
+         * <code>string appName = 3;</code>
+         */
+        var appName: kotlin.String
+            @JvmName("getAppName")
+            get() = _builder.getAppName()
+            @JvmName("setAppName")
+            set(value) {
+                _builder.setAppName(value)
+            }
+
+        /**
+         * <code>string appName = 3;</code>
+         */
+        fun clearAppName() {
+            _builder.clearAppName()
+        }
+
+        /**
+         * <code>string label = 4;</code>
          */
         var label: kotlin.String
             @JvmName("getLabel")
@@ -71,14 +89,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>string label = 3;</code>
+         * <code>string label = 4;</code>
          */
         fun clearLabel() {
             _builder.clearLabel()
         }
 
         /**
-         * <code>string description = 4;</code>
+         * <code>string description = 5;</code>
          */
         var description: kotlin.String
             @JvmName("getDescription")
@@ -89,14 +107,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>string description = 4;</code>
+         * <code>string description = 5;</code>
          */
         fun clearDescription() {
             _builder.clearDescription()
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
          */
         var icon: app.schildpad.schildpad.protos.AppWidget.DrawableData
             @JvmName("getIcon")
@@ -107,14 +125,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
          */
         fun clearIcon() {
             _builder.clearIcon()
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData icon = 5;</code>
+         * <code>.schildpad.AppWidget.DrawableData icon = 6;</code>
          * @return Whether the icon field is set.
          */
         fun hasIcon(): kotlin.Boolean {
@@ -122,7 +140,7 @@ object AppWidgetKt {
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+         * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
          */
         var preview: app.schildpad.schildpad.protos.AppWidget.DrawableData
             @JvmName("getPreview")
@@ -133,14 +151,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+         * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
          */
         fun clearPreview() {
             _builder.clearPreview()
         }
 
         /**
-         * <code>.schildpad.AppWidget.DrawableData preview = 6;</code>
+         * <code>.schildpad.AppWidget.DrawableData preview = 7;</code>
          * @return Whether the preview field is set.
          */
         fun hasPreview(): kotlin.Boolean {
@@ -148,7 +166,7 @@ object AppWidgetKt {
         }
 
         /**
-         * <code>int32 targetWidth = 7;</code>
+         * <code>int32 targetWidth = 8;</code>
          */
         var targetWidth: kotlin.Int
             @JvmName("getTargetWidth")
@@ -159,14 +177,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>int32 targetWidth = 7;</code>
+         * <code>int32 targetWidth = 8;</code>
          */
         fun clearTargetWidth() {
             _builder.clearTargetWidth()
         }
 
         /**
-         * <code>int32 targetHeight = 8;</code>
+         * <code>int32 targetHeight = 9;</code>
          */
         var targetHeight: kotlin.Int
             @JvmName("getTargetHeight")
@@ -177,14 +195,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>int32 targetHeight = 8;</code>
+         * <code>int32 targetHeight = 9;</code>
          */
         fun clearTargetHeight() {
             _builder.clearTargetHeight()
         }
 
         /**
-         * <code>int32 minWidth = 9;</code>
+         * <code>int32 minWidth = 10;</code>
          */
         var minWidth: kotlin.Int
             @JvmName("getMinWidth")
@@ -195,14 +213,14 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>int32 minWidth = 9;</code>
+         * <code>int32 minWidth = 10;</code>
          */
         fun clearMinWidth() {
             _builder.clearMinWidth()
         }
 
         /**
-         * <code>int32 minHeight = 10;</code>
+         * <code>int32 minHeight = 11;</code>
          */
         var minHeight: kotlin.Int
             @JvmName("getMinHeight")
@@ -213,7 +231,7 @@ object AppWidgetKt {
             }
 
         /**
-         * <code>int32 minHeight = 10;</code>
+         * <code>int32 minHeight = 11;</code>
          */
         fun clearMinHeight() {
             _builder.clearMinHeight()
