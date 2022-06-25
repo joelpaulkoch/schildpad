@@ -50,7 +50,18 @@ void main() {
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: they are shown grouped by app
-    // final firstAppWidgetFinder = find.text(firstAppWidget.label);
-    // final secondAppWidgetFinder = find.text(secondAppWidget.label);
+    final firstAppWidgetFinder = find.text(firstAppWidget.label);
+    expect(firstAppWidgetFinder, findsOneWidget);
+    final firstAppGroupFinder = find.ancestor(
+        of: firstAppWidgetFinder,
+        matching: find.widgetWithText(ListTile, firstAppWidget.appName));
+    expect(firstAppGroupFinder, findsOneWidget);
+
+    final secondAppWidgetFinder = find.text(secondAppWidget.label);
+    expect(secondAppWidgetFinder, findsOneWidget);
+    final secondAppGroupFinder = find.ancestor(
+        of: secondAppWidgetFinder,
+        matching: find.widgetWithText(ListTile, secondAppWidget.appName));
+    expect(secondAppGroupFinder, findsOneWidget);
   });
 }
