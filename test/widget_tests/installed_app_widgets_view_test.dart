@@ -50,7 +50,7 @@ void main() {
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: they are shown grouped by app
-    final firstAppWidgetFinder = find.text(firstAppWidget.label);
-    final secondAppWidgetFinder = find.text(secondAppWidget.label);
+    // final firstAppWidgetFinder = find.text(firstAppWidget.label);
+    // final secondAppWidgetFinder = find.text(secondAppWidget.label);
   });
 }

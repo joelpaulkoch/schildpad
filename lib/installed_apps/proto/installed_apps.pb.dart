@@ -1,4 +1,10 @@
 ///
+//  Generated code. Do not modify.
+//  source: lib/installed_apps/proto/installed_apps.proto
+//
+// @dart = 2.12
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
+
 import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
@@ -187,16 +193,13 @@ class App extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(3)
   $core.bool hasIcon() => $_has(2);
-
   @$pb.TagNumber(3)
   void clearIcon() => clearField(3);
-
   @$pb.TagNumber(3)
   App_DrawableData ensureIcon() => $_ensure(2);
 
   @$pb.TagNumber(4)
   $core.String get launchComponent => $_getSZ(3);
-
   @$pb.TagNumber(4)
   set launchComponent($core.String v) {
     $_setString(3, v);
@@ -204,7 +207,6 @@ class App extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(4)
   $core.bool hasLaunchComponent() => $_has(3);
-
   @$pb.TagNumber(4)
   void clearLaunchComponent() => clearField(4);
 }

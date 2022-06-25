@@ -1,4 +1,10 @@
 ///
+//  Generated code. Do not modify.
+//  source: lib/installed_app_widgets/proto/installed_app_widgets.proto
+//
+// @dart = 2.12
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
+
 import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
@@ -255,7 +261,6 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(3)
   $core.String get appName => $_getSZ(2);
-
   @$pb.TagNumber(3)
   set appName($core.String v) {
     $_setString(2, v);
@@ -263,13 +268,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(3)
   $core.bool hasAppName() => $_has(2);
-
   @$pb.TagNumber(3)
   void clearAppName() => clearField(3);
 
   @$pb.TagNumber(4)
   $core.String get label => $_getSZ(3);
-
   @$pb.TagNumber(4)
   set label($core.String v) {
     $_setString(3, v);
@@ -277,13 +280,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(4)
   $core.bool hasLabel() => $_has(3);
-
   @$pb.TagNumber(4)
   void clearLabel() => clearField(4);
 
   @$pb.TagNumber(5)
   $core.String get description => $_getSZ(4);
-
   @$pb.TagNumber(5)
   set description($core.String v) {
     $_setString(4, v);
@@ -291,13 +292,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(5)
   $core.bool hasDescription() => $_has(4);
-
   @$pb.TagNumber(5)
   void clearDescription() => clearField(5);
 
   @$pb.TagNumber(6)
   AppWidget_DrawableData get icon => $_getN(5);
-
   @$pb.TagNumber(6)
   set icon(AppWidget_DrawableData v) {
     setField(6, v);
@@ -305,16 +304,13 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(6)
   $core.bool hasIcon() => $_has(5);
-
   @$pb.TagNumber(6)
   void clearIcon() => clearField(6);
-
   @$pb.TagNumber(6)
   AppWidget_DrawableData ensureIcon() => $_ensure(5);
 
   @$pb.TagNumber(7)
   AppWidget_DrawableData get preview => $_getN(6);
-
   @$pb.TagNumber(7)
   set preview(AppWidget_DrawableData v) {
     setField(7, v);
@@ -322,16 +318,13 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(7)
   $core.bool hasPreview() => $_has(6);
-
   @$pb.TagNumber(7)
   void clearPreview() => clearField(7);
-
   @$pb.TagNumber(7)
   AppWidget_DrawableData ensurePreview() => $_ensure(6);
 
   @$pb.TagNumber(8)
   $core.int get targetWidth => $_getIZ(7);
-
   @$pb.TagNumber(8)
   set targetWidth($core.int v) {
     $_setSignedInt32(7, v);
@@ -339,13 +332,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(8)
   $core.bool hasTargetWidth() => $_has(7);
-
   @$pb.TagNumber(8)
   void clearTargetWidth() => clearField(8);
 
   @$pb.TagNumber(9)
   $core.int get targetHeight => $_getIZ(8);
-
   @$pb.TagNumber(9)
   set targetHeight($core.int v) {
     $_setSignedInt32(8, v);
@@ -353,13 +344,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(9)
   $core.bool hasTargetHeight() => $_has(8);
-
   @$pb.TagNumber(9)
   void clearTargetHeight() => clearField(9);
 
   @$pb.TagNumber(10)
   $core.int get minWidth => $_getIZ(9);
-
   @$pb.TagNumber(10)
   set minWidth($core.int v) {
     $_setSignedInt32(9, v);
@@ -367,13 +356,11 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(10)
   $core.bool hasMinWidth() => $_has(9);
-
   @$pb.TagNumber(10)
   void clearMinWidth() => clearField(10);
 
   @$pb.TagNumber(11)
   $core.int get minHeight => $_getIZ(10);
-
   @$pb.TagNumber(11)
   set minHeight($core.int v) {
     $_setSignedInt32(10, v);
@@ -381,7 +368,6 @@ class AppWidget extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(11)
   $core.bool hasMinHeight() => $_has(10);
-
   @$pb.TagNumber(11)
   void clearMinHeight() => clearField(11);
 }
