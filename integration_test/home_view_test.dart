@@ -28,11 +28,10 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
+        appData: testApp,
       ));
 
       runApp(ProviderScope(overrides: [
-        appProvider(const GridCell(0, 0))
-            .overrideWithValue(StateController(testApp)),
         homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
@@ -91,19 +90,17 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
+        appData: firstTestApp,
       ));
       homeGridStateNotifier.addPlacement(HomeGridPlacement(
         columnStart: 0,
         rowStart: 1,
         columnSpan: 1,
         rowSpan: 1,
+        appData: secondTestApp,
       ));
 
       runApp(ProviderScope(overrides: [
-        appProvider(const GridCell(0, 0))
-            .overrideWithValue(StateController(firstTestApp)),
-        appProvider(const GridCell(0, 1))
-            .overrideWithValue(StateController(secondTestApp)),
         homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
@@ -161,11 +158,10 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
+        appData: testApp,
       ));
 
       runApp(ProviderScope(overrides: [
-        appProvider(const GridCell(0, 0))
-            .overrideWithValue(StateController(testApp)),
         homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
