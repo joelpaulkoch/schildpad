@@ -59,31 +59,32 @@ class InstalledAppsGrid extends ConsumerWidget {
         children: installedApps.maybeWhen(
             data: (appsList) => appsList
                 .map((app) => InstalledAppIcon(
-                      app: app,
-                      showAppName: true,
-                      onDragStarted: () {
-                        context.go('/');
-                        ref.read(showTrashProvider.notifier).state = true;
-                      },
-                    ))
+                    app: app,
+                    showAppName: true,
+                    onDragStarted: () {
+                      context.go('/');
+                      ref.read(showTrashProvider.notifier).state = true;
+                    }))
                 .toList(),
             orElse: () => []));
   }
 }
 
 class InstalledAppIcon extends ConsumerWidget {
-  const InstalledAppIcon({
-    Key? key,
-    required this.app,
-    this.showAppName = false,
-    this.onDragStarted,
-    this.onDragCompleted,
-  }) : super(key: key);
+  const InstalledAppIcon(
+      {Key? key,
+      required this.app,
+      this.showAppName = false,
+      this.onDragStarted,
+      this.onDragCompleted,
+      this.onDraggableCanceled})
+      : super(key: key);
 
   final AppData app;
   final bool showAppName;
   final VoidCallback? onDragStarted;
   final VoidCallback? onDragCompleted;
+  final Function(Velocity, Offset)? onDraggableCanceled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,9 +96,7 @@ class InstalledAppIcon extends ConsumerWidget {
       childWhenDragging: const SizedBox.shrink(),
       onDragStarted: onDragStarted,
       onDragCompleted: onDragCompleted,
-      onDraggableCanceled: (_, __) {
-        ref.read(showTrashProvider.notifier).state = false;
-      },
+      onDraggableCanceled: onDraggableCanceled,
       child: Material(
         type: MaterialType.transparency,
         child: Column(

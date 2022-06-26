@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -21,9 +22,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
+      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
+      homeGridStateNotifier.addPlacement(HomeGridPlacement(
+        columnStart: 0,
+        rowStart: 0,
+        columnSpan: 1,
+        rowSpan: 1,
+      ));
+
       runApp(ProviderScope(overrides: [
         appProvider(const GridCell(0, 0))
-            .overrideWithValue(StateController(testApp))
+            .overrideWithValue(StateController(testApp)),
+        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -75,11 +85,26 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
+      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
+      homeGridStateNotifier.addPlacement(HomeGridPlacement(
+        columnStart: 0,
+        rowStart: 0,
+        columnSpan: 1,
+        rowSpan: 1,
+      ));
+      homeGridStateNotifier.addPlacement(HomeGridPlacement(
+        columnStart: 0,
+        rowStart: 1,
+        columnSpan: 1,
+        rowSpan: 1,
+      ));
+
       runApp(ProviderScope(overrides: [
         appProvider(const GridCell(0, 0))
             .overrideWithValue(StateController(firstTestApp)),
         appProvider(const GridCell(0, 1))
             .overrideWithValue(StateController(secondTestApp)),
+        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -130,9 +155,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
+      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
+      homeGridStateNotifier.addPlacement(HomeGridPlacement(
+        columnStart: 0,
+        rowStart: 0,
+        columnSpan: 1,
+        rowSpan: 1,
+      ));
+
       runApp(ProviderScope(overrides: [
         appProvider(const GridCell(0, 0))
-            .overrideWithValue(StateController(testApp))
+            .overrideWithValue(StateController(testApp)),
+        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 

@@ -1,17 +1,10 @@
 import 'dart:developer' as dev;
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:schildpad/installed_apps/installed_apps.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
-
-const _columnCount = 4;
-const _rowCount = 5;
-
-final appProvider =
-    StateProvider.family<AppData?, GridCell>((ref, cell) => null);
+import 'package:schildpad/home/home_grid.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
   return false;
@@ -24,12 +17,13 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final rowCount = ref.watch(homeRowCountProvider);
     return SafeArea(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-            flex: _rowCount,
+            flex: rowCount,
             child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onVerticalDragEnd: (details) {
@@ -43,6 +37,26 @@ class HomeView extends ConsumerWidget {
         const TrashArea()
       ],
     ));
+  }
+}
+
+class HomeViewGrid extends ConsumerWidget {
+  const HomeViewGrid({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gridPlacements = ref.watch(homeGridPlacementsProvider);
+    final columns = ref.watch(homeColumnCountProvider);
+    final rows = ref.watch(homeRowCountProvider);
+    dev.log('rebuilding HomeViewGrid');
+
+    return LayoutGrid(
+      columnSizes: List.filled(columns, 1.fr),
+      rowSizes: List.filled(rows, 1.fr),
+      children: gridPlacements,
+    );
   }
 }
 
@@ -81,84 +95,4 @@ class TrashArea extends ConsumerWidget {
             ))
         : const SizedBox.shrink();
   }
-}
-
-class HomeViewGrid extends ConsumerWidget {
-  const HomeViewGrid({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding HomeViewGrid');
-    return Row(
-        children: List.generate(
-            _columnCount,
-            (colIndex) => Expanded(
-                    child: Column(
-                        children: List.generate(
-                  _rowCount,
-                  (rowIndex) => Expanded(
-                    child: DragTarget<AppData>(onWillAccept: (_) {
-                      final currentElement = ref
-                          .read(appProvider(GridCell(colIndex, rowIndex))
-                              .notifier)
-                          .state;
-                      return currentElement == null;
-                    }, onAccept: (AppData? data) {
-                      dev.log(
-                          'dropped: ${data?.name} in ($colIndex, $rowIndex)');
-                      ref
-                          .read(appProvider(GridCell(colIndex, rowIndex))
-                              .notifier)
-                          .state = data;
-                      ref.read(showTrashProvider.notifier).state = false;
-                    }, builder: (context, candidates, rejects) {
-                      return GridElement(col: colIndex, row: rowIndex);
-                    }),
-                  ),
-                )))));
-  }
-}
-
-class GridElement extends ConsumerWidget {
-  const GridElement({
-    Key? key,
-    required this.col,
-    required this.row,
-  }) : super(key: key);
-
-  final int col;
-  final int row;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding GridElement($col, $row)');
-    final app = ref.watch(appProvider(GridCell(col, row)));
-    if (app != null) {
-      return InstalledAppIcon(
-        app: app,
-        onDragStarted: () {
-          ref.read(showTrashProvider.notifier).state = true;
-        },
-        onDragCompleted: () {
-          ref.read(appProvider(GridCell(col, row)).notifier).state = null;
-          dev.log('removing ${app.name} from ($col, $row)');
-          ref.read(showTrashProvider.notifier).state = false;
-        },
-      );
-    } else {
-      return const SizedBox.expand();
-    }
-  }
-}
-
-class GridCell extends Equatable {
-  const GridCell(this.col, this.row);
-
-  final int col;
-  final int row;
-
-  @override
-  List<Object> get props => [col, row];
 }
