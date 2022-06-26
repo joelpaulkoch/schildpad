@@ -176,50 +176,37 @@ class HomeGridTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return HomeGridDragTarget(columnStart, rowStart);
-  }
-}
-
-class HomeGridDragTarget extends ConsumerWidget {
-  const HomeGridDragTarget(
-    this.column,
-    this.row, {
-    Key? key,
-  }) : super(key: key);
-  final int column;
-  final int row;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
     return DragTarget<AppData>(
         onWillAccept: (_) {
           final willAccept =
               ref.read(homeGridPlacementsProvider.notifier).canAdd(
-                    column,
-                    row,
+                    columnStart,
+                    rowStart,
                     1,
                     1,
                   );
-          dev.log('($column, $row) will accept: $willAccept');
+          dev.log('($columnStart, $rowStart) will accept: $willAccept');
           return willAccept;
         },
         onAccept: (AppData? data) {
-          dev.log('dropped: ${data?.name} in ($column, $row)');
+          dev.log('dropped: ${data?.name} in ($columnStart, $rowStart)');
 
           if (ref
               .read(homeGridPlacementsProvider.notifier)
               .addPlacement(HomeGridPlacement(
-                columnStart: column,
-                rowStart: row,
+                columnStart: columnStart,
+                rowStart: rowStart,
                 columnSpan: 1,
                 rowSpan: 1,
               ))) {
-            ref.read(appProvider(GridCell(column, row)).notifier).state = data;
+            ref
+                .read(appProvider(GridCell(columnStart, rowStart)).notifier)
+                .state = data;
           }
 
           ref.read(showTrashProvider.notifier).state = false;
         },
-        builder: (_, __, ___) => HomeGridElement(column, row));
+        builder: (_, __, ___) => HomeGridElement(columnStart, rowStart));
   }
 }
 
