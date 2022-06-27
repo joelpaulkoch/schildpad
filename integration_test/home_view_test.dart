@@ -269,7 +269,8 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
 
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500);
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
       await tester.pumpAndSettle();
 
       final installedAppsViewFinder = find.byType(InstalledAppsView);
@@ -500,7 +501,8 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
 
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500);
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
       await tester.pumpAndSettle();
 
       final installedAppsViewFinder = find.byType(InstalledAppsView);
