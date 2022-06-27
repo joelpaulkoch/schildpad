@@ -27,15 +27,7 @@ class HomeGridStateNotifier extends StateNotifier<List<HomeGridPlacement>> {
   HomeGridStateNotifier(this.columnCount, this.rowCount)
       : isOccupied = List.generate(
             columnCount, (_) => List.generate(rowCount, (_) => false)),
-        super(List.generate(
-            columnCount,
-            (colIndex) => List.generate(
-                rowCount,
-                (rowIndex) => HomeGridPlacement(
-                    columnStart: colIndex,
-                    rowStart: rowIndex,
-                    columnSpan: 1,
-                    rowSpan: 1))).expand((element) => element).toList());
+        super(_generateBasicPlacements(0, 0, columnCount, rowCount));
 
   final int columnCount;
   final int rowCount;
@@ -99,7 +91,12 @@ class HomeGridStateNotifier extends StateNotifier<List<HomeGridPlacement>> {
 
     if (state.remove(placementToRemove)) {
       _freeCells(placementToRemove);
-      state = [...state];
+
+      state = [
+        ...state,
+        ..._generateBasicPlacements(columnStart, rowStart,
+            placementToRemove.columnSpan, placementToRemove.rowSpan)
+      ];
     }
   }
 
@@ -115,13 +112,19 @@ class HomeGridStateNotifier extends StateNotifier<List<HomeGridPlacement>> {
     }
     return true;
   }
+}
 
-  AppData? at(int column, int row) {
-    return state
-        .firstWhere((placement) =>
-            placement.columnStart == column && placement.rowStart == row)
-        .appData;
-  }
+List<HomeGridPlacement> _generateBasicPlacements(
+    int columnStart, int rowStart, int columnSpan, int rowSpan) {
+  return List.generate(
+      columnSpan,
+      (colIndex) => List.generate(
+          rowSpan,
+          (rowIndex) => HomeGridPlacement(
+              columnStart: columnStart + colIndex,
+              rowStart: rowStart + rowIndex,
+              columnSpan: 1,
+              rowSpan: 1))).expand((element) => element).toList();
 }
 
 class GridCell extends Equatable {

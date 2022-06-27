@@ -65,6 +65,76 @@ void main() {
       expect(newPosition, isNot(firstPosition));
     });
     testWidgets(
+        'After moving an app on the home view to an empty spot it should be possible to move it back',
+        (WidgetTester tester) async {
+      final testApp = AppData(
+          icon: const Icon(
+            Icons.ac_unit_sharp,
+            color: Colors.cyanAccent,
+          ),
+          name: 'testApp',
+          packageName: 'testPackage',
+          launch: () {});
+
+      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
+      homeGridStateNotifier.addPlacement(HomeGridPlacement(
+        columnStart: 0,
+        rowStart: 0,
+        columnSpan: 1,
+        rowSpan: 1,
+        appData: testApp,
+      ));
+
+      runApp(ProviderScope(overrides: [
+        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+      ], child: app.SchildpadApp()));
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the HomeView
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      // and there is exactly one app
+      final testAppFinder = find.byType(InstalledAppIcon);
+      expect(testAppFinder, findsOneWidget);
+      final firstPosition = tester.getCenter(testAppFinder);
+
+      // When:
+      // I long press
+      final longPressDragGesture =
+          await tester.startGesture(tester.getCenter(testAppFinder));
+      await tester.pumpAndSettle();
+      // and drag it to somewhere else
+      await longPressDragGesture.moveBy(const Offset(0, 200));
+      await tester.pumpAndSettle();
+      // and drop it there
+      await longPressDragGesture.up();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // it is moved to this place
+      final newTestAppFinder = find.byType(InstalledAppIcon);
+      expect(newTestAppFinder, findsOneWidget);
+      final newPosition = tester.getCenter(newTestAppFinder);
+      expect(newPosition, isNot(firstPosition));
+
+      // And:
+      // When I drag it back
+      final moveBackGesture = await tester.startGesture(newPosition);
+      await tester.pumpAndSettle();
+      await moveBackGesture.moveTo(firstPosition);
+      await tester.pumpAndSettle();
+      await moveBackGesture.up();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // it is moved back
+      final movedBackTestAppFinder = find.byType(InstalledAppIcon);
+      expect(movedBackTestAppFinder, findsOneWidget);
+      final movedBackPosition = tester.getCenter(movedBackTestAppFinder);
+      expect(movedBackPosition, firstPosition);
+    });
+    testWidgets(
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
       final firstTestApp = AppData(
