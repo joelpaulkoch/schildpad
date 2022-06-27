@@ -25,7 +25,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // InstalledAppsView is not openend
+      // InstalledAppsView is not opened
       expect(find.byType(InstalledAppsView), findsNothing);
     });
     testWidgets('Swiping up should open InstalledAppsView',
