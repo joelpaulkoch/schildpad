@@ -35,6 +35,7 @@ class HomeView extends ConsumerWidget {
                     context.push('/apps');
                   }
                 },
+                onLongPress: () => context.push('/widgets'),
                 child: const HomeViewGrid())),
       ],
     ));
