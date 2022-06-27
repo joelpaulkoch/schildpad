@@ -23,6 +23,7 @@ class HomeView extends ConsumerWidget {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (showTrash) const TrashArea(),
         Expanded(
             flex: rowCount,
             child: GestureDetector(
@@ -35,7 +36,6 @@ class HomeView extends ConsumerWidget {
                   }
                 },
                 child: const HomeViewGrid())),
-        if (showTrash) const TrashArea()
       ],
     ));
   }

@@ -119,10 +119,13 @@ void main() {
       expect(newPosition, isNot(firstPosition));
 
       // And:
-      // When I drag it back
+      // When I drag it back to its place inside the grid
       final moveBackGesture = await tester.startGesture(newPosition);
       await tester.pumpAndSettle();
-      await moveBackGesture.moveTo(firstPosition);
+      await moveBackGesture.moveBy(const Offset(50, 0));
+      await tester.pumpAndSettle();
+      final homeGridPosition = tester.getTopLeft(find.byType(HomeViewGrid));
+      await moveBackGesture.moveTo(homeGridPosition + firstPosition);
       await tester.pumpAndSettle();
       await moveBackGesture.up();
       await tester.pumpAndSettle();
