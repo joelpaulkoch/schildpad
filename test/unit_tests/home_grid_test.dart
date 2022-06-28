@@ -8,6 +8,7 @@ void main() {
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final homeGridNotifier = HomeGridStateNotifier(1, 1);
 
@@ -32,6 +33,7 @@ void main() {
       rowStart: 0,
       columnSpan: 2,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final homeGridNotifier = HomeGridStateNotifier(1, 1);
 
@@ -45,18 +47,20 @@ void main() {
 
     expect(homeGridNotifier.addPlacement(gridPlacement), isFalse);
   });
-  test('addding two 1x1 HomeGridPlacements to a 2x1 grid should work', () {
+  test('adding two 1x1 HomeGridPlacements to a 2x1 grid should work', () {
     final firstHomeGridPlacement = HomeGridPlacement(
       columnStart: 0,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final secondHomeGridPlacement = HomeGridPlacement(
       columnStart: 1,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final homeGridNotifier = HomeGridStateNotifier(2, 1);
 
@@ -81,19 +85,21 @@ void main() {
     expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isTrue);
   });
   test(
-      'addding two 1x1 HomeGridPlacements at the same position to a 2x1 grid should not work',
+      'adding two 1x1 HomeGridPlacements at the same position to a 2x1 grid should not work',
       () {
     final firstHomeGridPlacement = HomeGridPlacement(
       columnStart: 0,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final secondHomeGridPlacement = HomeGridPlacement(
       columnStart: 0,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final homeGridNotifier = HomeGridStateNotifier(2, 1);
 
@@ -125,12 +131,14 @@ void main() {
       rowStart: 0,
       columnSpan: 2,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final secondHomeGridPlacement = HomeGridPlacement(
       columnStart: 1,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final homeGridNotifier = HomeGridStateNotifier(2, 1);
 
@@ -161,24 +169,28 @@ void main() {
       rowStart: 0,
       columnSpan: 2,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
     final secondHomeGridPlacement = HomeGridPlacement(
       columnStart: 4,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 6,
+      gridElementData: HomeGridElementData(),
     );
     final thirdHomeGridPlacement = HomeGridPlacement(
       columnStart: 1,
       rowStart: 5,
       columnSpan: 1,
       rowSpan: 3,
+      gridElementData: HomeGridElementData(),
     );
     final fourthHomeGridPlacement = HomeGridPlacement(
       columnStart: 2,
       rowStart: 2,
       columnSpan: 1,
       rowSpan: 1,
+      gridElementData: HomeGridElementData(),
     );
 
     final homeGridNotifier = HomeGridStateNotifier(5, 10);
@@ -226,12 +238,14 @@ void main() {
       rowStart: 3,
       columnSpan: 2,
       rowSpan: 3,
+      gridElementData: HomeGridElementData(),
     );
     final secondHomeGridPlacement = HomeGridPlacement(
       columnStart: 2,
       rowStart: 0,
       columnSpan: 1,
       rowSpan: 6,
+      gridElementData: HomeGridElementData(),
     );
 
     final homeGridNotifier = HomeGridStateNotifier(5, 10);

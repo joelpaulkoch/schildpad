@@ -28,7 +28,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -82,7 +82,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -163,14 +163,14 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: firstTestApp,
+        gridElementData: HomeGridElementData(appData: firstTestApp),
       ));
       homeGridStateNotifier.addPlacement(HomeGridPlacement(
         columnStart: 0,
         rowStart: 1,
         columnSpan: 1,
         rowSpan: 1,
-        appData: secondTestApp,
+        gridElementData: HomeGridElementData(appData: secondTestApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -231,7 +231,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -318,7 +318,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -377,14 +377,14 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: firstTestApp,
+        gridElementData: HomeGridElementData(appData: firstTestApp),
       ));
       homeGridStateNotifier.addPlacement(HomeGridPlacement(
         columnStart: 0,
         rowStart: 1,
         columnSpan: 1,
         rowSpan: 1,
-        appData: secondTestApp,
+        gridElementData: HomeGridElementData(appData: secondTestApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -438,7 +438,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -491,7 +491,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: appOnHomeView,
+        gridElementData: HomeGridElementData(appData: appOnHomeView),
       ));
 
       runApp(ProviderScope(overrides: [
@@ -559,7 +559,7 @@ void main() {
         rowStart: 0,
         columnSpan: 1,
         rowSpan: 1,
-        appData: testApp,
+        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [

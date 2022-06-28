@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
@@ -87,7 +88,12 @@ class HomeGridStateNotifier extends StateNotifier<List<HomeGridPlacement>> {
             placement.columnStart == columnStart &&
             placement.rowStart == rowStart,
         orElse: () => HomeGridPlacement(
-            columnStart: -1, rowStart: -1, columnSpan: 0, rowSpan: 0));
+              columnStart: -1,
+              rowStart: -1,
+              columnSpan: 0,
+              rowSpan: 0,
+              gridElementData: HomeGridElementData(),
+            ));
 
     if (state.remove(placementToRemove)) {
       _freeCells(placementToRemove);
@@ -121,10 +127,12 @@ List<HomeGridPlacement> _generateBasicPlacements(
       (colIndex) => List.generate(
           rowSpan,
           (rowIndex) => HomeGridPlacement(
-              columnStart: columnStart + colIndex,
-              rowStart: rowStart + rowIndex,
-              columnSpan: 1,
-              rowSpan: 1))).expand((element) => element).toList();
+                columnStart: columnStart + colIndex,
+                rowStart: rowStart + rowIndex,
+                columnSpan: 1,
+                rowSpan: 1,
+                gridElementData: HomeGridElementData(),
+              ))).expand((element) => element).toList();
 }
 
 class GridCell extends Equatable {
@@ -144,7 +152,7 @@ class HomeGridPlacement extends GridPlacement {
     required int rowStart,
     required int columnSpan,
     required int rowSpan,
-    this.appData,
+    required this.gridElementData,
   }) : super(
             key: key,
             columnStart: columnStart,
@@ -154,12 +162,12 @@ class HomeGridPlacement extends GridPlacement {
             child: HomeGridTile(
               columnStart,
               rowStart,
-              appData: appData,
+              gridElementData: gridElementData,
             )) {
     dev.log('rebuilding HomeGridPlacement ($columnStart, $rowStart)');
   }
 
-  final AppData? appData;
+  final HomeGridElementData gridElementData;
 
   bool isInside(HomeGridPlacement other) {
     final colStart = columnStart;
@@ -185,17 +193,16 @@ class HomeGridTile extends ConsumerWidget {
     this.columnStart,
     this.rowStart, {
     Key? key,
-    this.appData,
+    required this.gridElementData,
   }) : super(key: key);
 
   final int columnStart;
   final int rowStart;
-  final AppData? appData;
+  final HomeGridElementData gridElementData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding tile ($columnStart, $rowStart), with $appData');
-    return DragTarget<AppData>(
+    return DragTarget<HomeGridElementData>(
         onWillAccept: (_) {
           final willAccept =
               ref.read(homeGridPlacementsProvider.notifier).canAdd(
@@ -204,24 +211,25 @@ class HomeGridTile extends ConsumerWidget {
                     1,
                     1,
                   );
-          dev.log('($columnStart, $rowStart) will accept: $willAccept');
           return willAccept;
         },
-        onAccept: (AppData? data) {
-          dev.log('dropped: ${data?.name} in ($columnStart, $rowStart)');
-
-          if (ref.read(homeGridPlacementsProvider.notifier).addPlacement(
-              HomeGridPlacement(
-                  columnStart: columnStart,
-                  rowStart: rowStart,
-                  columnSpan: 1,
-                  rowSpan: 1,
-                  appData: data))) {}
-
+        onAccept: (HomeGridElementData? data) {
+          final gridElementData = data;
+          if (gridElementData != null) {
+            if (ref.read(homeGridPlacementsProvider.notifier).addPlacement(
+                HomeGridPlacement(
+                    columnStart: columnStart,
+                    rowStart: rowStart,
+                    columnSpan: 1,
+                    rowSpan: 1,
+                    gridElementData: gridElementData))) {}
+          }
           ref.read(showTrashProvider.notifier).state = false;
         },
-        builder: (_, __, ___) =>
-            HomeGridElement(columnStart, rowStart, appData: appData));
+        builder: (_, __, ___) => HomeGridElement(columnStart, rowStart,
+            gridElementData: HomeGridElementData(
+                appData: gridElementData.appData,
+                appWidgetData: gridElementData.appWidgetData)));
   }
 }
 
@@ -230,17 +238,16 @@ class HomeGridElement extends ConsumerWidget {
     this.columnStart,
     this.rowStart, {
     Key? key,
-    this.appData,
+    required this.gridElementData,
   }) : super(key: key);
 
   final int columnStart;
   final int rowStart;
-  final AppData? appData;
+  final HomeGridElementData gridElementData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding element ($columnStart, $rowStart), with $appData');
-    final app = appData;
+    final app = gridElementData.appData;
     if (app != null) {
       return InstalledAppIcon(
           app: app,
@@ -257,6 +264,23 @@ class HomeGridElement extends ConsumerWidget {
             ref.read(showTrashProvider.notifier).state = false;
           });
     }
+    final appWidget = gridElementData.appWidgetData;
+    if (appWidget != null) {
+      return SizedBox.expand(
+        child: Card(
+          elevation: 10,
+          color: Colors.deepOrange,
+          child: Text(appWidget.label),
+        ),
+      );
+    }
     return const SizedBox.expand();
   }
+}
+
+class HomeGridElementData {
+  final AppData? appData;
+  final AppWidgetData? appWidgetData;
+
+  HomeGridElementData({this.appData, this.appWidgetData});
 }

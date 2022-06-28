@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class InstalledAppWidgetsView extends StatelessWidget {
@@ -32,31 +35,76 @@ class AppWidgetsList extends ConsumerWidget {
         data: (widgets) {
           widgets.sort((a, b) =>
               a.appName.toLowerCase().compareTo(b.appName.toLowerCase()));
-          final appName = widgets.map((w) => w.appName).toSet();
+          final appNames = widgets.map((w) => w.appName).toSet();
           return ListView(
             children: ListTile.divideTiles(
                     color: Colors.white,
                     context: context,
-                    tiles: appName
-                        .map((a) => Material(
+                    tiles: appNames
+                        .map((appName) => Material(
                             color: Colors.transparent,
                             child: ListTile(
                               title: Text(
-                                a,
+                                appName,
                                 style: const TextStyle(color: Colors.white),
                               ),
                               subtitle: Column(
                                 children: widgets
-                                    .where((widget) => (widget.appName == a))
-                                    .map((widget) => Card(
-                                          color: Colors.transparent,
-                                          child: ListTile(
-                                            leading: widget.icon,
-                                            title: Text(
-                                              widget.label,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                  color: Colors.white),
+                                    .where(
+                                        (widget) => (widget.appName == appName))
+                                    .map((widget) => LongPressDraggable(
+                                          data: HomeGridElementData(
+                                              appWidgetData:
+                                                  const AppWidgetData(
+                                                      icon: Icon(Icons
+                                                          .account_balance),
+                                                      label: 'label',
+                                                      appName: 'appName',
+                                                      packageName:
+                                                          'packageName',
+                                                      componentName:
+                                                          'componentName')),
+                                          maxSimultaneousDrags: 1,
+                                          feedback: SizedBox(
+                                            width: 100,
+                                            height: 100,
+                                            child: Container(
+                                              color: Colors.deepOrange,
+                                            ),
+                                          ),
+                                          childWhenDragging:
+                                              const SizedBox.shrink(),
+                                          onDragStarted: () {
+                                            context.push('/');
+                                            ref
+                                                .read(
+                                                    showTrashProvider.notifier)
+                                                .state = true;
+                                          },
+                                          onDraggableCanceled: (_, __) {
+                                            ref
+                                                .read(
+                                                    showTrashProvider.notifier)
+                                                .state = false;
+                                            context.go('/');
+                                          },
+                                          onDragEnd: (_) {
+                                            ref
+                                                .read(
+                                                    showTrashProvider.notifier)
+                                                .state = false;
+                                            context.go('/');
+                                          },
+                                          child: Card(
+                                            color: Colors.transparent,
+                                            child: ListTile(
+                                              leading: widget.icon,
+                                              title: Text(
+                                                widget.label,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
                                         ))
