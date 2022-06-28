@@ -1,271 +1,231 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/flexible_grid/flexible_grid.dart';
 
 void main() {
-  test('adding a 1x1 GridPlacement to a 1x1 grid should work', () {
-    final gridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+  test('adding a 1x1 grid tile to a 1x1 grid should work', () {
+    const gridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final homeGridNotifier = HomeGridStateNotifier(1, 1);
+    final homeGridNotifier = FlexibleGridStateNotifier(1, 1);
 
     expect(
-        homeGridNotifier.canAdd(
-            gridPlacement.columnStart!,
-            gridPlacement.rowStart!,
-            gridPlacement.columnSpan,
-            gridPlacement.rowSpan),
+        homeGridNotifier.canAdd(gridTile.column, gridTile.row,
+            gridTile.columnSpan, gridTile.rowSpan),
         isTrue);
 
-    homeGridNotifier.addPlacement(gridPlacement);
-    final storedPlacement = homeGridNotifier.debugState.first;
-    expect(storedPlacement.columnStart, gridPlacement.columnStart);
-    expect(storedPlacement.rowStart, gridPlacement.rowStart);
-    expect(storedPlacement.columnSpan, gridPlacement.columnSpan);
-    expect(storedPlacement.rowSpan, gridPlacement.rowSpan);
+    homeGridNotifier.addTile(gridTile);
+    final storedTile = homeGridNotifier.debugState.first;
+    expect(storedTile.column, gridTile.column);
+    expect(storedTile.row, gridTile.row);
+    expect(storedTile.columnSpan, gridTile.columnSpan);
+    expect(storedTile.rowSpan, gridTile.rowSpan);
   });
-  test('adding a 2x1 HomeGridPlacement to a 1x1 grid should not work', () {
-    final gridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+  test('adding a 2x1 FlexibleGridTile to a 1x1 grid should not work', () {
+    const gridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 2,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final homeGridNotifier = HomeGridStateNotifier(1, 1);
+    final homeGridNotifier = FlexibleGridStateNotifier(1, 1);
 
     expect(
-        homeGridNotifier.canAdd(
-            gridPlacement.columnStart!,
-            gridPlacement.rowStart!,
-            gridPlacement.columnSpan,
-            gridPlacement.rowSpan),
+        homeGridNotifier.canAdd(gridTile.column, gridTile.row,
+            gridTile.columnSpan, gridTile.rowSpan),
         isFalse);
 
-    expect(homeGridNotifier.addPlacement(gridPlacement), isFalse);
+    expect(homeGridNotifier.addTile(gridTile), isFalse);
   });
-  test('adding two 1x1 HomeGridPlacements to a 2x1 grid should work', () {
-    final firstHomeGridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+  test('adding two 1x1 HomeGridTiles to a 2x1 grid should work', () {
+    const firstHomeGridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final secondHomeGridPlacement = HomeGridPlacement(
-      columnStart: 1,
-      rowStart: 0,
+    const secondHomeGridTile = FlexibleGridTile(
+      column: 1,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final homeGridNotifier = HomeGridStateNotifier(2, 1);
+    final homeGridNotifier = FlexibleGridStateNotifier(2, 1);
+
+    expect(
+        homeGridNotifier.canAdd(firstHomeGridTile.column, firstHomeGridTile.row,
+            firstHomeGridTile.columnSpan, firstHomeGridTile.rowSpan),
+        isTrue);
+
+    expect(homeGridNotifier.addTile(firstHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            firstHomeGridPlacement.columnStart!,
-            firstHomeGridPlacement.rowStart!,
-            firstHomeGridPlacement.columnSpan,
-            firstHomeGridPlacement.rowSpan),
+            secondHomeGridTile.column,
+            secondHomeGridTile.row,
+            secondHomeGridTile.columnSpan,
+            secondHomeGridTile.rowSpan),
         isTrue);
 
-    expect(homeGridNotifier.addPlacement(firstHomeGridPlacement), isTrue);
-
-    expect(
-        homeGridNotifier.canAdd(
-            secondHomeGridPlacement.columnStart!,
-            secondHomeGridPlacement.rowStart!,
-            secondHomeGridPlacement.columnSpan,
-            secondHomeGridPlacement.rowSpan),
-        isTrue);
-
-    expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isTrue);
+    expect(homeGridNotifier.addTile(secondHomeGridTile), isTrue);
   });
   test(
-      'adding two 1x1 HomeGridPlacements at the same position to a 2x1 grid should not work',
+      'adding two 1x1 HomeGridTiles at the same position to a 2x1 grid should not work',
       () {
-    final firstHomeGridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+    const firstHomeGridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final secondHomeGridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+    const secondHomeGridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final homeGridNotifier = HomeGridStateNotifier(2, 1);
+    final homeGridNotifier = FlexibleGridStateNotifier(2, 1);
 
     expect(
-        homeGridNotifier.canAdd(
-            firstHomeGridPlacement.columnStart!,
-            firstHomeGridPlacement.rowStart!,
-            firstHomeGridPlacement.columnSpan,
-            firstHomeGridPlacement.rowSpan),
+        homeGridNotifier.canAdd(firstHomeGridTile.column, firstHomeGridTile.row,
+            firstHomeGridTile.columnSpan, firstHomeGridTile.rowSpan),
         isTrue);
 
-    expect(homeGridNotifier.addPlacement(firstHomeGridPlacement), isTrue);
+    expect(homeGridNotifier.addTile(firstHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            secondHomeGridPlacement.columnStart!,
-            secondHomeGridPlacement.rowStart!,
-            secondHomeGridPlacement.columnSpan,
-            secondHomeGridPlacement.rowSpan),
+            secondHomeGridTile.column,
+            secondHomeGridTile.row,
+            secondHomeGridTile.columnSpan,
+            secondHomeGridTile.rowSpan),
         isFalse);
 
-    expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isFalse);
+    expect(homeGridNotifier.addTile(secondHomeGridTile), isFalse);
   });
-  test(
-      'adding a 1x1 HomeGridPlacement to a fully occupied grid should not work',
+  test('adding a 1x1 FlexibleGridTile to a fully occupied grid should not work',
       () {
-    final firstHomeGridPlacement = HomeGridPlacement(
-      columnStart: 0,
-      rowStart: 0,
+    const firstHomeGridTile = FlexibleGridTile(
+      column: 0,
+      row: 0,
       columnSpan: 2,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final secondHomeGridPlacement = HomeGridPlacement(
-      columnStart: 1,
-      rowStart: 0,
+    const secondHomeGridTile = FlexibleGridTile(
+      column: 1,
+      row: 0,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final homeGridNotifier = HomeGridStateNotifier(2, 1);
+    final homeGridNotifier = FlexibleGridStateNotifier(2, 1);
 
     expect(
-        homeGridNotifier.canAdd(
-            firstHomeGridPlacement.columnStart!,
-            firstHomeGridPlacement.rowStart!,
-            firstHomeGridPlacement.columnSpan,
-            firstHomeGridPlacement.rowSpan),
+        homeGridNotifier.canAdd(firstHomeGridTile.column, firstHomeGridTile.row,
+            firstHomeGridTile.columnSpan, firstHomeGridTile.rowSpan),
         isTrue);
 
-    expect(homeGridNotifier.addPlacement(firstHomeGridPlacement), isTrue);
+    expect(homeGridNotifier.addTile(firstHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            secondHomeGridPlacement.columnStart!,
-            secondHomeGridPlacement.rowStart!,
-            secondHomeGridPlacement.columnSpan,
-            secondHomeGridPlacement.rowSpan),
+            secondHomeGridTile.column,
+            secondHomeGridTile.row,
+            secondHomeGridTile.columnSpan,
+            secondHomeGridTile.rowSpan),
         isFalse);
 
-    expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isFalse);
+    expect(homeGridNotifier.addTile(secondHomeGridTile), isFalse);
   });
-  test('adding non overlapping HomeGridPlacements to a 5x10 grid should work',
-      () {
-    final firstHomeGridPlacement = HomeGridPlacement(
-      columnStart: 1,
-      rowStart: 0,
+  test('adding non overlapping HomeGridTiles to a 5x10 grid should work', () {
+    const firstHomeGridTile = FlexibleGridTile(
+      column: 1,
+      row: 0,
       columnSpan: 2,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
-    final secondHomeGridPlacement = HomeGridPlacement(
-      columnStart: 4,
-      rowStart: 0,
+    const secondHomeGridTile = FlexibleGridTile(
+      column: 4,
+      row: 0,
       columnSpan: 1,
       rowSpan: 6,
-      gridElementData: HomeGridElementData(),
     );
-    final thirdHomeGridPlacement = HomeGridPlacement(
-      columnStart: 1,
-      rowStart: 5,
+    const thirdHomeGridTile = FlexibleGridTile(
+      column: 1,
+      row: 5,
       columnSpan: 1,
       rowSpan: 3,
-      gridElementData: HomeGridElementData(),
     );
-    final fourthHomeGridPlacement = HomeGridPlacement(
-      columnStart: 2,
-      rowStart: 2,
+    const fourthHomeGridTile = FlexibleGridTile(
+      column: 2,
+      row: 2,
       columnSpan: 1,
       rowSpan: 1,
-      gridElementData: HomeGridElementData(),
     );
 
-    final homeGridNotifier = HomeGridStateNotifier(5, 10);
+    final homeGridNotifier = FlexibleGridStateNotifier(5, 10);
+
+    expect(
+        homeGridNotifier.canAdd(firstHomeGridTile.column, firstHomeGridTile.row,
+            firstHomeGridTile.columnSpan, firstHomeGridTile.rowSpan),
+        isTrue);
+    expect(homeGridNotifier.addTile(firstHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            firstHomeGridPlacement.columnStart!,
-            firstHomeGridPlacement.rowStart!,
-            firstHomeGridPlacement.columnSpan,
-            firstHomeGridPlacement.rowSpan),
+            secondHomeGridTile.column,
+            secondHomeGridTile.row,
+            secondHomeGridTile.columnSpan,
+            secondHomeGridTile.rowSpan),
         isTrue);
-    expect(homeGridNotifier.addPlacement(firstHomeGridPlacement), isTrue);
+
+    expect(homeGridNotifier.addTile(secondHomeGridTile), isTrue);
+
+    expect(
+        homeGridNotifier.canAdd(thirdHomeGridTile.column, thirdHomeGridTile.row,
+            thirdHomeGridTile.columnSpan, thirdHomeGridTile.rowSpan),
+        isTrue);
+    expect(homeGridNotifier.addTile(thirdHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            secondHomeGridPlacement.columnStart!,
-            secondHomeGridPlacement.rowStart!,
-            secondHomeGridPlacement.columnSpan,
-            secondHomeGridPlacement.rowSpan),
+            fourthHomeGridTile.column,
+            fourthHomeGridTile.row,
+            fourthHomeGridTile.columnSpan,
+            fourthHomeGridTile.rowSpan),
         isTrue);
-
-    expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isTrue);
-
-    expect(
-        homeGridNotifier.canAdd(
-            thirdHomeGridPlacement.columnStart!,
-            thirdHomeGridPlacement.rowStart!,
-            thirdHomeGridPlacement.columnSpan,
-            thirdHomeGridPlacement.rowSpan),
-        isTrue);
-    expect(homeGridNotifier.addPlacement(thirdHomeGridPlacement), isTrue);
-
-    expect(
-        homeGridNotifier.canAdd(
-            fourthHomeGridPlacement.columnStart!,
-            fourthHomeGridPlacement.rowStart!,
-            fourthHomeGridPlacement.columnSpan,
-            fourthHomeGridPlacement.rowSpan),
-        isTrue);
-    expect(homeGridNotifier.addPlacement(fourthHomeGridPlacement), isTrue);
+    expect(homeGridNotifier.addTile(fourthHomeGridTile), isTrue);
   });
   test('adding an overlapping element to a 5x10 grid should not work', () {
-    final firstHomeGridPlacement = HomeGridPlacement(
-      columnStart: 1,
-      rowStart: 3,
+    const firstHomeGridTile = FlexibleGridTile(
+      column: 1,
+      row: 3,
       columnSpan: 2,
       rowSpan: 3,
-      gridElementData: HomeGridElementData(),
     );
-    final secondHomeGridPlacement = HomeGridPlacement(
-      columnStart: 2,
-      rowStart: 0,
+    const secondHomeGridTile = FlexibleGridTile(
+      column: 2,
+      row: 0,
       columnSpan: 1,
       rowSpan: 6,
-      gridElementData: HomeGridElementData(),
     );
 
-    final homeGridNotifier = HomeGridStateNotifier(5, 10);
+    final homeGridNotifier = FlexibleGridStateNotifier(5, 10);
 
     expect(
-        homeGridNotifier.canAdd(
-            firstHomeGridPlacement.columnStart!,
-            firstHomeGridPlacement.rowStart!,
-            firstHomeGridPlacement.columnSpan,
-            firstHomeGridPlacement.rowSpan),
+        homeGridNotifier.canAdd(firstHomeGridTile.column, firstHomeGridTile.row,
+            firstHomeGridTile.columnSpan, firstHomeGridTile.rowSpan),
         isTrue);
-    expect(homeGridNotifier.addPlacement(firstHomeGridPlacement), isTrue);
+    expect(homeGridNotifier.addTile(firstHomeGridTile), isTrue);
 
     expect(
         homeGridNotifier.canAdd(
-            secondHomeGridPlacement.columnStart!,
-            secondHomeGridPlacement.rowStart!,
-            secondHomeGridPlacement.columnSpan,
-            secondHomeGridPlacement.rowSpan),
+            secondHomeGridTile.column,
+            secondHomeGridTile.row,
+            secondHomeGridTile.columnSpan,
+            secondHomeGridTile.rowSpan),
         isFalse);
-    expect(homeGridNotifier.addPlacement(secondHomeGridPlacement), isFalse);
+    expect(homeGridNotifier.addTile(secondHomeGridTile), isFalse);
   });
 }

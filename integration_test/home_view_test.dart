@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/main.dart' as app;
@@ -22,17 +24,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -76,17 +79,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -157,24 +161,26 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: firstTestApp),
       ));
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 1,
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 1,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: secondTestApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: firstTestApp))),
+        homeGridElementDataProvider(const GridCell(0, 1)).overrideWithValue(
+            StateController(HomeGridElementData(appData: secondTestApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -225,17 +231,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -312,17 +319,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -371,24 +379,26 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: firstTestApp),
       ));
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 1,
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 1,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: secondTestApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: firstTestApp))),
+        homeGridElementDataProvider(const GridCell(0, 1)).overrideWithValue(
+            StateController(HomeGridElementData(appData: secondTestApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -432,17 +442,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp))),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -485,17 +496,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: appOnHomeView),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: appOnHomeView))),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -553,17 +565,18 @@ void main() {
           packageName: 'testPackage',
           launch: () {});
 
-      final homeGridStateNotifier = HomeGridStateNotifier(4, 5);
-      homeGridStateNotifier.addPlacement(HomeGridPlacement(
-        columnStart: 0,
-        rowStart: 0,
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
         columnSpan: 1,
         rowSpan: 1,
-        gridElementData: HomeGridElementData(appData: testApp),
       ));
 
       runApp(ProviderScope(overrides: [
-        homeGridPlacementsProvider.overrideWithValue(homeGridStateNotifier)
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
