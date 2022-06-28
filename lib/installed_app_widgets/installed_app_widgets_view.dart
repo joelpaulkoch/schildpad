@@ -50,20 +50,11 @@ class AppWidgetsList extends ConsumerWidget {
                               ),
                               subtitle: Column(
                                 children: widgets
-                                    .where(
-                                        (widget) => (widget.appName == appName))
-                                    .map((widget) => LongPressDraggable(
+                                    .where((appWidget) =>
+                                        (appWidget.appName == appName))
+                                    .map((appWidget) => LongPressDraggable(
                                           data: HomeGridElementData(
-                                              appWidgetData:
-                                                  const AppWidgetData(
-                                                      icon: Icon(Icons
-                                                          .account_balance),
-                                                      label: 'label',
-                                                      appName: 'appName',
-                                                      packageName:
-                                                          'packageName',
-                                                      componentName:
-                                                          'componentName')),
+                                              appWidgetData: appWidget),
                                           maxSimultaneousDrags: 1,
                                           feedback: SizedBox(
                                             width: 100,
@@ -98,9 +89,9 @@ class AppWidgetsList extends ConsumerWidget {
                                           child: Card(
                                             color: Colors.transparent,
                                             child: ListTile(
-                                              leading: widget.icon,
+                                              leading: appWidget.icon,
                                               title: Text(
-                                                widget.label,
+                                                appWidget.label,
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                     color: Colors.white),

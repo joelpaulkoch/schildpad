@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/main.dart' as app;
 
@@ -63,16 +64,18 @@ void main() {
       await Future.delayed(const Duration(seconds: 1), () {});
       await tester.pumpAndSettle();
 
-      await longPressDragGesture.moveBy(const Offset(0, 300));
+      await longPressDragGesture.moveBy(const Offset(-100, 300));
       await tester.pumpAndSettle();
 
       // Then:
       // I can drop it on the HomeView and it is added
       await longPressDragGesture.up();
       await tester.pumpAndSettle();
+      await Future.delayed(const Duration(seconds: 3), () {});
+      await tester.pumpAndSettle();
 
       expect(homeViewFinder, findsOneWidget);
-      expect(installedAppWidgetFinder, findsOneWidget);
+      expect(find.byType(AppWidget), findsOneWidget);
     });
   });
 }
