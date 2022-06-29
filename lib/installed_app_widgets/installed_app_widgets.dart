@@ -20,7 +20,11 @@ final installedAppWidgetsProvider =
           label: w.label,
           appName: w.appName,
           packageName: w.packageName,
-          componentName: w.componentName));
+          componentName: w.componentName,
+          targetWidth: w.targetWidth,
+          targetHeight: w.targetHeight,
+          minWidth: w.minWidth,
+          minHeight: w.minHeight));
   return installedAppWidgetsData.toList();
 });
 
@@ -44,7 +48,11 @@ class AppWidgetData {
       required this.appName,
       required this.packageName,
       required this.componentName,
-      this.appWidgetId});
+      this.appWidgetId,
+      required this.targetWidth,
+      required this.targetHeight,
+      required this.minWidth,
+      required this.minHeight});
 
   final Widget icon;
   final String label;
@@ -53,7 +61,23 @@ class AppWidgetData {
   final String componentName;
 
   final int? appWidgetId;
-//TODO add size
+
+  final int targetWidth;
+  final int targetHeight;
+  final int minWidth;
+  final int minHeight;
+
+  AppWidgetData copyWith(int appWidgetId) => AppWidgetData(
+      icon: icon,
+      label: label,
+      appName: appName,
+      packageName: packageName,
+      componentName: componentName,
+      appWidgetId: appWidgetId,
+      targetWidth: targetWidth,
+      targetHeight: targetHeight,
+      minWidth: minWidth,
+      minHeight: minHeight);
 }
 
 class AppWidget extends ConsumerWidget {

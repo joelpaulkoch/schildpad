@@ -13,7 +13,11 @@ void main() {
         label: 'firstWidget',
         appName: 'firstApp',
         packageName: 'com.widget.first',
-        componentName: 'firstComp');
+        componentName: 'firstComp',
+        targetHeight: 1,
+        targetWidth: 1,
+        minWidth: 1,
+        minHeight: 1);
     final appWidgetsList = [firstAppWidget];
 
     // WHEN: we visualize it using AppWidgetsList
@@ -35,13 +39,21 @@ void main() {
         label: 'firstWidget',
         appName: 'firstApp',
         packageName: 'com.widget.first',
-        componentName: 'firstComp');
+        componentName: 'firstComp',
+        targetHeight: 1,
+        targetWidth: 1,
+        minWidth: 1,
+        minHeight: 1);
     const secondAppWidget = AppWidgetData(
         icon: Icon(Icons.add_business),
         label: 'secondWidget',
         appName: 'secondApp',
         packageName: 'com.widget.second',
-        componentName: 'secondComp');
+        componentName: 'secondComp',
+        targetHeight: 1,
+        targetWidth: 1,
+        minWidth: 1,
+        minHeight: 1);
     final appWidgetsList = [firstAppWidget, secondAppWidget];
 
     // WHEN: we visualize them using AppWidgetsList

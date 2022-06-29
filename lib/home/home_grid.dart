@@ -66,6 +66,8 @@ class HomeGridElement extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final columnCount = ref.watch(homeColumnCountProvider);
+    final rowCount = ref.watch(homeRowCountProvider);
     final gridElementData =
         ref.watch(homeGridElementDataProvider(GridCell(columnStart, rowStart)));
     final app = gridElementData.appData;
@@ -75,8 +77,8 @@ class HomeGridElement extends ConsumerWidget {
         final willAccept = ref.read(homeGridTilesProvider.notifier).canAdd(
               columnStart,
               rowStart,
-              data.columnSpan,
-              data.rowSpan,
+              data.getColumnSpan(context, columnCount),
+              data.getRowSpan(context, rowCount),
             );
         dev.log('($columnStart, $rowStart) will accept: $willAccept');
         return willAccept;
@@ -87,8 +89,8 @@ class HomeGridElement extends ConsumerWidget {
       if (ref.read(homeGridTilesProvider.notifier).addTile(FlexibleGridTile(
           column: columnStart,
           row: rowStart,
-          columnSpan: data.columnSpan,
-          rowSpan: data.rowSpan))) {
+          columnSpan: data.getColumnSpan(context, columnCount),
+          rowSpan: data.getRowSpan(context, rowCount)))) {
         ref
             .read(homeGridElementDataProvider(GridCell(columnStart, rowStart))
                 .notifier)
@@ -126,15 +128,8 @@ class HomeGridElement extends ConsumerWidget {
                 .maybeMap(data: (id) => id.value, orElse: () => null);
 
         if (widgetId != null) {
-          final dataWithId = AppWidgetData(
-              icon: appWidget.icon,
-              label: appWidget.label,
-              appName: appWidget.appName,
-              packageName: appWidget.packageName,
-              componentName: appWidget.componentName,
-              appWidgetId: widgetId);
           return AppWidget(
-              appWidgetData: dataWithId,
+              appWidgetData: appWidget.copyWith(widgetId),
               onDragStarted: () {
                 ref.read(showTrashProvider.notifier).state = true;
               },
@@ -169,8 +164,37 @@ class HomeGridElementData {
 
   bool get isEmpty => appData == null && appWidgetData == null;
 
-  // TODO add appWidgetData
-  int get columnSpan => (appData != null) ? 1 : 3;
+  int getColumnSpan(BuildContext context, int columnCount) {
+    if (appData != null) {
+      return 1;
+    }
+    final widgetData = appWidgetData;
+    if (widgetData != null) {
+      if (widgetData.targetWidth == 0) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final columnWidth = screenWidth / columnCount;
+        final columnSpan = (widgetData.minWidth / columnWidth).ceil();
+        return (columnSpan <= columnCount) ? columnSpan : columnCount;
+      }
+      return widgetData.targetWidth;
+    }
+    return 1;
+  }
 
-  int get rowSpan => (appData != null) ? 1 : 1;
+  int getRowSpan(BuildContext context, int rowCount) {
+    if (appData != null) {
+      return 1;
+    }
+    final widgetData = appWidgetData;
+    if (widgetData != null) {
+      if (widgetData.targetHeight == 0) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        final rowHeight = screenHeight / rowCount;
+        final rowSpan = (widgetData.minHeight / rowHeight).ceil();
+        return (rowSpan <= rowCount) ? rowSpan : rowCount;
+      }
+      return widgetData.targetHeight;
+    }
+    return 1;
+  }
 }
