@@ -142,7 +142,8 @@ class InstalledAppWidgetView extends StatelessWidget {
         );
       },
       onCreatePlatformView: (params) {
-        return PlatformViewsService.initSurfaceAndroidView(
+        // TODO check if initSurfaceAndroidView can be used
+        return PlatformViewsService.initExpensiveAndroidView(
           id: params.id,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,

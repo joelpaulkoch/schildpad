@@ -155,12 +155,6 @@ class HomeGridElement extends ConsumerWidget {
                 ref.read(showTrashProvider.notifier).state = false;
               });
         }
-        return const SizedBox.expand(
-            child: Card(
-                color: Colors.amber,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                )));
       }
       return const SizedBox.expand();
     });
