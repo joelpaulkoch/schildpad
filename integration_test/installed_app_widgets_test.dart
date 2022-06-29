@@ -50,12 +50,12 @@ void main() {
       expect(installedAppWidgetsViewFinder, findsOneWidget);
 
       // wait to load widgets
-      await Future.delayed(const Duration(seconds: 5), () {});
+      await Future.delayed(const Duration(seconds: 60), () {});
       await tester.pumpAndSettle();
 
       // When:
       // I long press and drag an app widget
-      final installedAppWidgetFinder = find.byType(Card).first;
+      final installedAppWidgetFinder = find.byType(AppWidgetListTile).first;
       expect(installedAppWidgetFinder, findsOneWidget);
 
       final longPressDragGesture =

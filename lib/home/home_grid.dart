@@ -170,13 +170,7 @@ class HomeGridElementData {
     }
     final widgetData = appWidgetData;
     if (widgetData != null) {
-      if (widgetData.targetWidth == 0) {
-        final screenWidth = MediaQuery.of(context).size.width;
-        final columnWidth = screenWidth / columnCount;
-        final columnSpan = (widgetData.minWidth / columnWidth).ceil();
-        return (columnSpan <= columnCount) ? columnSpan : columnCount;
-      }
-      return widgetData.targetWidth;
+      widgetData.getColumnSpan(context, columnCount);
     }
     return 1;
   }
@@ -187,13 +181,7 @@ class HomeGridElementData {
     }
     final widgetData = appWidgetData;
     if (widgetData != null) {
-      if (widgetData.targetHeight == 0) {
-        final screenHeight = MediaQuery.of(context).size.height;
-        final rowHeight = screenHeight / rowCount;
-        final rowSpan = (widgetData.minHeight / rowHeight).ceil();
-        return (rowSpan <= rowCount) ? rowSpan : rowCount;
-      }
-      return widgetData.targetHeight;
+      widgetData.getRowSpan(context, rowCount);
     }
     return 1;
   }

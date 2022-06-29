@@ -12,6 +12,10 @@ void main() {
         icon: Icon(Icons.account_balance),
         label: 'firstWidget',
         appName: 'firstApp',
+        preview: Icon(
+          Icons.account_balance,
+          color: Colors.deepOrange,
+        ),
         packageName: 'com.widget.first',
         componentName: 'firstComp',
         targetHeight: 1,
@@ -38,6 +42,10 @@ void main() {
         icon: Icon(Icons.account_balance),
         label: 'firstWidget',
         appName: 'firstApp',
+        preview: Icon(
+          Icons.account_balance,
+          color: Colors.deepOrange,
+        ),
         packageName: 'com.widget.first',
         componentName: 'firstComp',
         targetHeight: 1,
@@ -48,6 +56,10 @@ void main() {
         icon: Icon(Icons.add_business),
         label: 'secondWidget',
         appName: 'secondApp',
+        preview: Icon(
+          Icons.account_balance,
+          color: Colors.deepOrange,
+        ),
         packageName: 'com.widget.second',
         componentName: 'secondComp',
         targetHeight: 1,
@@ -66,14 +78,16 @@ void main() {
     expect(firstAppWidgetFinder, findsOneWidget);
     final firstAppGroupFinder = find.ancestor(
         of: firstAppWidgetFinder,
-        matching: find.widgetWithText(ListTile, firstAppWidget.appName));
+        matching: find.widgetWithText(
+            AppWidgetGroupListTile, firstAppWidget.appName));
     expect(firstAppGroupFinder, findsOneWidget);
 
     final secondAppWidgetFinder = find.text(secondAppWidget.label);
     expect(secondAppWidgetFinder, findsOneWidget);
     final secondAppGroupFinder = find.ancestor(
         of: secondAppWidgetFinder,
-        matching: find.widgetWithText(ListTile, secondAppWidget.appName));
+        matching: find.widgetWithText(
+            AppWidgetGroupListTile, secondAppWidget.appName));
     expect(secondAppGroupFinder, findsOneWidget);
   });
 }

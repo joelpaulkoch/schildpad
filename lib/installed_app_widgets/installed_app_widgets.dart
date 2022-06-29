@@ -19,6 +19,7 @@ final installedAppWidgetsProvider =
           icon: Image.memory(w.icon.data as Uint8List),
           label: w.label,
           appName: w.appName,
+          preview: Image.memory(w.preview.data as Uint8List),
           packageName: w.packageName,
           componentName: w.componentName,
           targetWidth: w.targetWidth,
@@ -46,6 +47,7 @@ class AppWidgetData {
       {required this.icon,
       required this.label,
       required this.appName,
+      required this.preview,
       required this.packageName,
       required this.componentName,
       this.appWidgetId,
@@ -57,6 +59,7 @@ class AppWidgetData {
   final Widget icon;
   final String label;
   final String appName;
+  final Widget preview;
   final String packageName;
   final String componentName;
 
@@ -71,6 +74,7 @@ class AppWidgetData {
       icon: icon,
       label: label,
       appName: appName,
+      preview: preview,
       packageName: packageName,
       componentName: componentName,
       appWidgetId: appWidgetId,
@@ -78,6 +82,42 @@ class AppWidgetData {
       targetHeight: targetHeight,
       minWidth: minWidth,
       minHeight: minHeight);
+
+  double getWidth(BuildContext context, int columnCount) {
+    if (targetWidth == 0) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      return (minWidth <= screenWidth) ? minWidth.toDouble() : screenWidth;
+    }
+    return (targetWidth * columnCount).toDouble();
+  }
+
+  double getHeight(BuildContext context, int rowCount) {
+    if (targetHeight == 0) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      return (minHeight <= screenHeight) ? minHeight.toDouble() : screenHeight;
+    }
+    return (targetHeight * rowCount).toDouble();
+  }
+
+  int getColumnSpan(BuildContext context, int columnCount) {
+    if (targetWidth == 0) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final columnWidth = screenWidth / columnCount;
+      final columnSpan = (minWidth / columnWidth).ceil();
+      return (columnSpan <= columnCount) ? columnSpan : columnCount;
+    }
+    return targetWidth;
+  }
+
+  int getRowSpan(BuildContext context, int rowCount) {
+    if (targetHeight == 0) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      final rowHeight = screenHeight / rowCount;
+      final rowSpan = (minHeight / rowHeight).ceil();
+      return (rowSpan <= rowCount) ? rowSpan : rowCount;
+    }
+    return targetHeight;
+  }
 }
 
 class AppWidget extends ConsumerWidget {

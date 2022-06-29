@@ -131,6 +131,7 @@ class MainActivity : FlutterActivity() {
                         description = provider.loadDescription(context).toString()
                         targetWidth = provider.targetCellWidth
                         targetHeight = provider.targetCellHeight
+//                        val previewLayout = provider.previewLayout
                     }
                     icon = AppWidgetKt.drawableData {
                         val bmp: Bitmap? =
@@ -139,6 +140,22 @@ class MainActivity : FlutterActivity() {
                             data = ByteString.copyFrom(bmp.convertToByteArray())
                         }
                     }
+                    preview = AppWidgetKt.drawableData {
+                        val bmp: Bitmap? =
+                            provider.loadPreviewImage(context, DisplayMetrics.DENSITY_LOW)
+                                ?.toBitmap()
+                        if (bmp != null) {
+                            data = ByteString.copyFrom(bmp.convertToByteArray())
+                        } else {
+                            val bmpIcon: Bitmap? =
+                                provider.loadIcon(context, DisplayMetrics.DENSITY_DEFAULT)
+                                    .toBitmap()
+                            if (bmpIcon != null) {
+                                data = ByteString.copyFrom(bmpIcon.convertToByteArray())
+                            }
+                        }
+                    }
+
                 }
                 appWidgets += widget
             }
