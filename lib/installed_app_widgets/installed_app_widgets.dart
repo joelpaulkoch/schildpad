@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,19 @@ final installedAppWidgetsProvider =
   return installedAppWidgetsData.toList();
 });
 
+final appWidgetIdProvider =
+    FutureProvider.family<int, String>((ref, componentName) async {
+  return await _createWidget(componentName);
+});
+
+Future<int> _createWidget(String componentName) async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  final int appWidgetId =
+      await platform.invokeMethod('getWidgetId', [componentName]);
+  dev.log('got widget id for $componentName: $appWidgetId');
+  return appWidgetId;
+}
+
 class AppWidgetData {
   const AppWidgetData(
       {required this.icon,
@@ -40,13 +54,6 @@ class AppWidgetData {
 
   final int? appWidgetId;
 //TODO add size
-}
-
-Future<int> createWidget(String componentName) async {
-  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  final int appWidgetId =
-      await platform.invokeMethod('createAndBindWidget', [componentName]);
-  return appWidgetId;
 }
 
 class AppWidget extends ConsumerWidget {
@@ -68,29 +75,38 @@ class AppWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var appWidgetId = appWidgetData.appWidgetId;
+    assert(appWidgetId != null);
     return LongPressDraggable(
         data: HomeGridElementData(appWidgetData: appWidgetData),
         maxSimultaneousDrags: 1,
-        feedback: Card(
-          color: Colors.amber,
-          child: Text(appWidgetData.label),
+        childWhenDragging: const SizedBox.shrink(),
+        feedback: SizedBox(
+          width: 200,
+          height: 100,
+          child: Card(
+            color: Colors.amber,
+            child: Text(appWidgetData.label),
+          ),
         ),
+        onDragStarted: onDragStarted,
+        onDragCompleted: onDragCompleted,
+        onDraggableCanceled: onDraggableCanceled,
+        onDragEnd: onDragEnd,
         child: (appWidgetId != null)
             ? InstalledAppWidgetView(appWidgetId: appWidgetId)
             : SizedBox.expand(
                 child: Card(
-                color: Colors.deepOrangeAccent,
+                color: Colors.amber,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Icon(
-                      Icons.bubble_chart_outlined,
+                      Icons.bubble_chart,
                       color: Colors.white,
                     ),
                     Icon(
-                      Icons.adb,
+                      Icons.adb_outlined,
                       color: Colors.white,
-                    ),
+                    )
                   ],
                 ),
               )));

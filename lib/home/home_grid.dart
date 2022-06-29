@@ -72,15 +72,18 @@ class HomeGridElement extends ConsumerWidget {
     return DragTarget<HomeGridElementData>(onWillAccept: (draggedData) {
       final data = draggedData;
       if (data != null) {
-        return ref.read(homeGridTilesProvider.notifier).canAdd(
+        final willAccept = ref.read(homeGridTilesProvider.notifier).canAdd(
               columnStart,
               rowStart,
               data.columnSpan,
               data.rowSpan,
             );
+        dev.log('($columnStart, $rowStart) will accept: $willAccept');
+        return willAccept;
       }
       return false;
     }, onAccept: (data) {
+      dev.log('dropped in ($columnStart, $rowStart)');
       if (ref.read(homeGridTilesProvider.notifier).addTile(FlexibleGridTile(
           column: columnStart,
           row: rowStart,
@@ -117,27 +120,47 @@ class HomeGridElement extends ConsumerWidget {
       }
       final appWidget = gridElementData.appWidgetData;
       if (appWidget != null) {
-        return AppWidget(
-            appWidgetData: appWidget,
-            onDragStarted: () {
-              ref.read(showTrashProvider.notifier).state = true;
-            },
-            onDragCompleted: () {
-              dev.log(
-                  'removing ${appWidget.label} from ($columnStart, $rowStart)');
-              ref
-                  .read(homeGridTilesProvider.notifier)
-                  .removeTile(columnStart, rowStart);
-              // TODO check if necessary
-              ref
-                  .read(homeGridElementDataProvider(
-                          GridCell(columnStart, rowStart))
-                      .notifier)
-                  .state = HomeGridElementData();
-            },
-            onDraggableCanceled: (_, __) {
-              ref.read(showTrashProvider.notifier).state = false;
-            });
+        final widgetId = appWidget.appWidgetId ??
+            ref
+                .watch(appWidgetIdProvider(appWidget.componentName))
+                .maybeMap(data: (id) => id.value, orElse: () => null);
+
+        if (widgetId != null) {
+          final dataWithId = AppWidgetData(
+              icon: appWidget.icon,
+              label: appWidget.label,
+              appName: appWidget.appName,
+              packageName: appWidget.packageName,
+              componentName: appWidget.componentName,
+              appWidgetId: widgetId);
+          return AppWidget(
+              appWidgetData: dataWithId,
+              onDragStarted: () {
+                ref.read(showTrashProvider.notifier).state = true;
+              },
+              onDragCompleted: () {
+                dev.log(
+                    'removing ${appWidget.label} from ($columnStart, $rowStart)');
+                ref
+                    .read(homeGridTilesProvider.notifier)
+                    .removeTile(columnStart, rowStart);
+                // TODO check if necessary
+                ref
+                    .read(homeGridElementDataProvider(
+                            GridCell(columnStart, rowStart))
+                        .notifier)
+                    .state = HomeGridElementData();
+              },
+              onDraggableCanceled: (_, __) {
+                ref.read(showTrashProvider.notifier).state = false;
+              });
+        }
+        return const SizedBox.expand(
+            child: Card(
+                color: Colors.amber,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                )));
       }
       return const SizedBox.expand();
     });
@@ -153,7 +176,7 @@ class HomeGridElementData {
   bool get isEmpty => appData == null && appWidgetData == null;
 
   // TODO add appWidgetData
-  int get columnSpan => (appData != null) ? 1 : 2;
+  int get columnSpan => (appData != null) ? 1 : 3;
 
-  int get rowSpan => (appData != null) ? 1 : 2;
+  int get rowSpan => (appData != null) ? 1 : 1;
 }

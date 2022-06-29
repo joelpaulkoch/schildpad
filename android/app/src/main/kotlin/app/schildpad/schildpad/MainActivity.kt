@@ -59,14 +59,14 @@ class MainActivity : FlutterActivity() {
                     val widgets = getInstalledAppWidgets()
                     result.success(widgets.toByteArray())
                 }
-                ("createAndBindWidget") -> {
+                ("getWidgetId") -> {
                     val args = call.arguments as List<String>
                     val componentName = args.first()
                     val widgetId = createAndBindWidget(componentName)
                     if (widgetId != null) result.success(widgetId) else result.error(
                         "FAILED",
-                        "Could not create widget",
-                        "Could not find widget corresponding to $componentName"
+                        "No widget id",
+                        "Could neither find existing widget corresponding to $componentName nor create a new one"
                     )
                 }
                 else -> {
@@ -144,6 +144,20 @@ class MainActivity : FlutterActivity() {
             }
         }
         return installedAppWidgets
+    }
+
+    private fun getWidgetId(componentName: String): Int? {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+
+        val existingIds = appWidgetManager.getAppWidgetIds(provider?.provider)
+
+        if (existingIds.isEmpty()) {
+            return createAndBindWidget(componentName)
+        }
+        return existingIds.first()
+
     }
 
     private fun createAndBindWidget(componentName: String): Int? {

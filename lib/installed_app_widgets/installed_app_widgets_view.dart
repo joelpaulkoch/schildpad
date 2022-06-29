@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +58,10 @@ class AppWidgetsList extends ConsumerWidget {
                                           data: HomeGridElementData(
                                               appWidgetData: appWidget),
                                           maxSimultaneousDrags: 1,
-                                          feedback: SizedBox(
-                                            width: 100,
+                                          feedback: const SizedBox(
+                                            width: 200,
                                             height: 100,
-                                            child: Container(
+                                            child: Card(
                                               color: Colors.deepOrange,
                                             ),
                                           ),
@@ -129,6 +131,7 @@ class InstalledAppWidgetView extends StatelessWidget {
       throw UnsupportedError('Unsupported platform view');
     }
 
+    dev.log('building new native widget view with id: $appWidgetId');
     return PlatformViewLink(
       viewType: viewType,
       surfaceFactory: (context, controller) {
