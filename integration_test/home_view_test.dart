@@ -669,5 +669,68 @@ void main() {
       final appWidgetContextMenuFinder = find.byType(AppWidgetContextMenu);
       expect(appWidgetContextMenuFinder, findsOneWidget);
     });
+    testWidgets(
+        'Using the trash in the context menu should remove the app widget from the home view',
+        (WidgetTester tester) async {
+      const testAppWidget = AppWidgetData(
+          icon: Icon(
+            Icons.ac_unit_sharp,
+            color: Colors.cyanAccent,
+          ),
+          packageName: 'testPackage',
+          label: 'testAppWidget',
+          preview: Icon(
+            Icons.ac_unit_sharp,
+            color: Colors.cyanAccent,
+          ),
+          appName: 'testApp',
+          targetWidth: 3,
+          targetHeight: 1,
+          componentName: 'testComponent',
+          minHeight: 0,
+          minWidth: 0,
+          appWidgetId: 0);
+
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
+        columnSpan: 3,
+        rowSpan: 1,
+      ));
+
+      runApp(ProviderScope(overrides: [
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appWidgetData: testAppWidget))),
+        nativeAppWidgetProvider(testAppWidget.appWidgetId!)
+            .overrideWithValue(Card(
+          color: Colors.deepOrange,
+          child: testAppWidget.icon,
+        ))
+      ], child: app.SchildpadApp()));
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the HomeView
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      // and there is exactly one app widget
+      final testAppWidgetFinder = find.byType(AppWidget);
+      expect(testAppWidgetFinder, findsOneWidget);
+
+      // And:
+      // I open the context menu and click on the trash button
+      await tester.longPress(testAppWidgetFinder);
+      await tester.pumpAndSettle();
+      final trashButtonFinder = find.byIcon(Icons.delete_outline_rounded);
+      expect(trashButtonFinder, findsOneWidget);
+      await tester.press(trashButtonFinder);
+      await tester.pumpAndSettle();
+
+      // Then:
+      // the app widget is removed from the home view
+      expect(testAppWidgetFinder, findsNothing);
+    });
   });
 }
