@@ -64,4 +64,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.google.protobuf:protobuf-kotlin:3.21.1"
+    implementation "androidx.core:core-ktx:1.8.0"
+
 }

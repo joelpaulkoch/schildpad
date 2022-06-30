@@ -1,0 +1,34 @@
+syntax = "proto3";
+package schildpad;
+
+// [START java_declaration]
+option java_multiple_files = true;
+option java_package = "app.schildpad.schildpad.protos";
+option java_outer_classname = "InstalledAppWidgetsProtos";
+// [END java_declaration]
+
+message AppWidget {
+  string packageName = 1;
+  string componentName = 2;
+
+  string appName = 3;
+  string label = 4;
+  string description = 5;
+
+  message DrawableData{
+    bytes data = 1;
+  }
+
+  DrawableData icon = 6;
+  DrawableData preview = 7;
+
+  int32 targetWidth = 8;
+  int32 targetHeight = 9;
+
+  int32 minWidth = 10;
+  int32 minHeight = 11;
+}
+
+message InstalledAppWidgets{
+  repeated AppWidget appWidgets = 1;
+}
