@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 
 class HomeView extends ConsumerWidget {
@@ -13,6 +14,9 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final rowCount = ref.watch(homeRowCountProvider);
     final showTrash = ref.watch(showTrashProvider);
+    final pageCount = ref.watch(pageCountProvider);
+    final leftPagesCount = ref.watch(leftPagesProvider);
+    final initialPage = ref.watch(initialPageProvider);
     return SafeArea(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -30,7 +34,10 @@ class HomeView extends ConsumerWidget {
                   }
                 },
                 onLongPress: () => context.push('/widgets'),
-                child: const HomeViewGrid())),
+                child: PageView(
+                    controller: PageController(initialPage: initialPage),
+                    children: List.generate(pageCount,
+                        (index) => HomeViewGrid(index - leftPagesCount))))),
       ],
     ));
   }
