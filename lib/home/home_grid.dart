@@ -128,27 +128,23 @@ class HomeGridElement extends ConsumerWidget {
                 .maybeMap(data: (id) => id.value, orElse: () => null);
 
         if (widgetId != null) {
-          return AppWidget(
-              appWidgetData: appWidget.copyWith(widgetId),
-              onDragStarted: () {
-                ref.read(showTrashProvider.notifier).state = true;
+          final showAppWidgetMenu = ref.watch(showAppWidgetContextMenuProvider);
+          return Stack(alignment: AlignmentDirectional.center, children: [
+            GestureDetector(
+              onLongPress: () {
+                ref.read(showAppWidgetContextMenuProvider.notifier).state =
+                    true;
               },
-              onDragCompleted: () {
-                dev.log(
-                    'removing ${appWidget.label} from ($columnStart, $rowStart)');
-                ref
-                    .read(homeGridTilesProvider.notifier)
-                    .removeTile(columnStart, rowStart);
-                // TODO check if necessary
-                ref
-                    .read(homeGridElementDataProvider(
-                            GridCell(columnStart, rowStart))
-                        .notifier)
-                    .state = HomeGridElementData();
-              },
-              onDraggableCanceled: (_, __) {
-                ref.read(showTrashProvider.notifier).state = false;
-              });
+              child: AppWidget(
+                appWidgetData: appWidget.copyWith(widgetId),
+              ),
+            ),
+            if (showAppWidgetMenu)
+              AppWidgetContextMenu(
+                columnStart: columnStart,
+                rowStart: rowStart,
+              )
+          ]);
         }
       }
       return const SizedBox.expand();

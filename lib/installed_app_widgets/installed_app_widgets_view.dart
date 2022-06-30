@@ -1,10 +1,4 @@
-import 'dart:developer' as dev;
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
@@ -152,54 +146,6 @@ class AppWidgetListTile extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class InstalledAppWidgetView extends StatelessWidget {
-  const InstalledAppWidgetView({Key? key, required this.appWidgetId})
-      : super(key: key);
-
-  final int appWidgetId;
-
-  @override
-  Widget build(BuildContext context) {
-    // This is used in the platform side to register the view.
-    const String viewType = 'app.schildpad.schildpad/appwidgetview';
-    // Pass parameters to the platform side.
-    Map<String, dynamic> creationParams = <String, dynamic>{
-      'appWidgetId': appWidgetId
-    };
-
-    if (defaultTargetPlatform != TargetPlatform.android) {
-      throw UnsupportedError('Unsupported platform view');
-    }
-
-    dev.log('building new native widget view with id: $appWidgetId');
-    return PlatformViewLink(
-      viewType: viewType,
-      surfaceFactory: (context, controller) {
-        return AndroidViewSurface(
-          controller: controller as AndroidViewController,
-          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-        );
-      },
-      onCreatePlatformView: (params) {
-        // TODO check if initSurfaceAndroidView can be used
-        return PlatformViewsService.initExpensiveAndroidView(
-          id: params.id,
-          viewType: viewType,
-          layoutDirection: TextDirection.ltr,
-          creationParams: creationParams,
-          creationParamsCodec: const StandardMessageCodec(),
-          onFocus: () {
-            params.onFocusChanged(true);
-          },
-        )
-          ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-          ..create();
-      },
     );
   }
 }

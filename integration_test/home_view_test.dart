@@ -6,6 +6,7 @@ import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/home/trash.dart';
+import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/main.dart' as app;
@@ -606,6 +607,67 @@ void main() {
       // it is removed from the home view
       final newTestAppFinder = find.byType(InstalledAppIcon);
       expect(newTestAppFinder, findsNothing);
+    });
+  });
+  group('app widgets', () {
+    testWidgets('Long press on an app widget should show its context menu',
+        (WidgetTester tester) async {
+      const testAppWidget = AppWidgetData(
+          icon: Icon(
+            Icons.ac_unit_sharp,
+            color: Colors.cyanAccent,
+          ),
+          packageName: 'testPackage',
+          label: 'testAppWidget',
+          preview: Icon(
+            Icons.ac_unit_sharp,
+            color: Colors.cyanAccent,
+          ),
+          appName: 'testApp',
+          targetWidth: 3,
+          targetHeight: 1,
+          componentName: 'testComponent',
+          minHeight: 0,
+          minWidth: 0,
+          appWidgetId: 0);
+
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      homeGridStateNotifier.addTile(const FlexibleGridTile(
+        column: 0,
+        row: 0,
+        columnSpan: 3,
+        rowSpan: 1,
+      ));
+
+      runApp(ProviderScope(overrides: [
+        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
+            StateController(HomeGridElementData(appWidgetData: testAppWidget))),
+        nativeAppWidgetProvider(testAppWidget.appWidgetId!)
+            .overrideWithValue(Card(
+          color: Colors.deepOrange,
+          child: testAppWidget.icon,
+        ))
+      ], child: app.SchildpadApp()));
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the HomeView
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      // and there is exactly one app widget
+      final testAppWidgetFinder = find.byType(AppWidget);
+      expect(testAppWidgetFinder, findsOneWidget);
+
+      // When:
+      // I long press
+      await tester.longPress(testAppWidgetFinder);
+      await tester.pumpAndSettle();
+
+      // Then:
+      // its context menu is shown
+      final appWidgetContextMenuFinder = find.byType(AppWidgetContextMenu);
+      expect(appWidgetContextMenuFinder, findsOneWidget);
     });
   });
 }
