@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
@@ -62,16 +61,7 @@ class InstalledAppsGrid extends ConsumerWidget {
                     app: app,
                     showAppName: true,
                     onDragStarted: () {
-                      context.push('/');
-                      ref.read(showTrashProvider.notifier).state = true;
-                    },
-                    onDraggableCanceled: (_, __) {
-                      ref.read(showTrashProvider.notifier).state = false;
-                      context.go('/');
-                    },
-                    onDragEnd: (_) {
-                      ref.read(showTrashProvider.notifier).state = false;
-                      context.go('/');
+                      context.pop();
                     }))
                 .toList(),
             orElse: () => []));

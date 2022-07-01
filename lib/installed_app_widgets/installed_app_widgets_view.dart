@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class InstalledAppWidgetsView extends StatelessWidget {
@@ -110,16 +109,7 @@ class AppWidgetListTile extends ConsumerWidget {
           child: appWidgetData.preview),
       childWhenDragging: const SizedBox.shrink(),
       onDragStarted: () {
-        context.push('/');
-        ref.read(showTrashProvider.notifier).state = true;
-      },
-      onDraggableCanceled: (_, __) {
-        ref.read(showTrashProvider.notifier).state = false;
-        context.go('/');
-      },
-      onDragEnd: (_) {
-        ref.read(showTrashProvider.notifier).state = false;
-        context.go('/');
+        context.pop();
       },
       child: Card(
         color: Colors.transparent,

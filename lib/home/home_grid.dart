@@ -108,25 +108,8 @@ class HomeGridElement extends ConsumerWidget {
     }, builder: (_, __, ___) {
       if (app != null) {
         return InstalledAppIcon(
-            app: app,
-            onDragStarted: () {
-              ref.read(showTrashProvider.notifier).state = true;
-            },
-            onDragCompleted: () {
-              dev.log('removing ${app.name} from ($columnStart, $rowStart)');
-              ref
-                  .read(homeGridTilesProvider(pageIndex).notifier)
-                  .removeTile(columnStart, rowStart);
-              // TODO check if necessary
-              ref
-                  .read(homeGridElementDataProvider(
-                          PagedGridCell(pageIndex, columnStart, rowStart))
-                      .notifier)
-                  .state = HomeGridElementData();
-            },
-            onDraggableCanceled: (_, __) {
-              ref.read(showTrashProvider.notifier).state = false;
-            });
+          app: app,
+        );
       }
       final appWidget = gridElementData.appWidgetData;
       if (appWidget != null) {
