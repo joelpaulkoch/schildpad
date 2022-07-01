@@ -76,7 +76,6 @@ class AppWidgetGroupListTile extends StatelessWidget {
             ),
             Column(
               children: appWidgets
-                  .where((appWidget) => (appWidget.appName == groupTitle))
                   .map((appWidget) => AppWidgetListTile(
                         appWidgetData: appWidget,
                       ))
