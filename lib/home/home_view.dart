@@ -18,27 +18,39 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final initialPage = ref.watch(initialPageProvider);
     return SafeArea(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (showTrash) const TrashArea(),
-        Expanded(
-            flex: rowCount,
-            child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onVerticalDragEnd: (details) {
-                  final primaryVelocity = details.primaryVelocity ?? 0;
-                  // on swipe up
-                  if (primaryVelocity < 0) {
-                    context.push('/apps');
-                  }
-                },
-                onLongPress: () => context.push('/widgets'),
-                child: PageView(
-                    controller: PageController(initialPage: initialPage),
-                    children: List.generate(pageCount,
-                        (index) => HomeViewGrid(index - leftPagesCount))))),
-      ],
-    ));
+        child: Stack(children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showTrash) const Expanded(flex: 1, child: TrashArea()),
+          Expanded(
+              flex: rowCount,
+              child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onVerticalDragEnd: (details) {
+                    final primaryVelocity = details.primaryVelocity ?? 0;
+                    // on swipe up
+                    if (primaryVelocity < 0) {
+                      context.push('/apps');
+                    }
+                  },
+                  onLongPress: () => context.push('/widgets'),
+                  child: PageView(
+                      controller: PageController(initialPage: initialPage),
+                      children: List.generate(pageCount,
+                          (index) => HomeViewGrid(index - leftPagesCount))))),
+        ],
+      ),
+      DragTarget(
+          hitTestBehavior: HitTestBehavior.translucent,
+          onWillAccept: (_) {
+            ref.read(showTrashProvider.notifier).state = true;
+            return false;
+          },
+          onLeave: (_) {
+            ref.read(showTrashProvider.notifier).state = false;
+          },
+          builder: (_, __, ___) => const SizedBox.expand())
+    ]));
   }
 }
