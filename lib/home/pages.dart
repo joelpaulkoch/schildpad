@@ -28,31 +28,38 @@ final pagesProvider =
 const pagesBoxName = 'pages';
 
 class PagesStateNotifier extends StateNotifier<PageCounter> {
-  PagesStateNotifier() : super(const PageCounter(0, 0)) {
-    final box = Hive.box<int>(pagesBoxName);
-    final leftPages = box.get('leftPages') ?? 0;
-    final rightPages = box.get('rightPages') ?? 0;
+  PagesStateNotifier()
+      : hiveBox = Hive.box<int>(pagesBoxName),
+        super(const PageCounter(0, 0)) {
+    final leftPages = hiveBox.get('leftPages') ?? 0;
+    final rightPages = hiveBox.get('rightPages') ?? 0;
 
     state = PageCounter(leftPages, rightPages);
   }
 
+  Box<int> hiveBox;
+
   void addLeftPage() {
     state = PageCounter(state.leftPages + 1, state.rightPages);
+    hiveBox.put('leftPages', state.leftPages);
   }
 
   void addRightPage() {
     state = PageCounter(state.leftPages, state.rightPages + 1);
+    hiveBox.put('rightPages', state.rightPages);
   }
 
   void removeLeftPage() {
     if (state.leftPages > 0) {
       state = PageCounter(state.leftPages - 1, state.rightPages);
+      hiveBox.put('leftPages', state.leftPages);
     }
   }
 
   void removeRightPage() {
     if (state.rightPages > 0) {
       state = PageCounter(state.leftPages, state.rightPages - 1);
+      hiveBox.put('rightPages', state.rightPages);
     }
   }
 }

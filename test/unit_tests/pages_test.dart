@@ -6,7 +6,12 @@ void main() {
   group('PagesStateNotifier tests', () {
     setUpAll(() async {
       await Hive.initFlutter();
+    });
+    setUp(() async {
       await Hive.openBox<int>(pagesBoxName);
+    });
+    tearDown(() async {
+      await Hive.deleteFromDisk();
     });
     test('A new PagesStateNotifier should have 0 left and 0 right pages', () {
       final pagesStateNotifier = PagesStateNotifier();
