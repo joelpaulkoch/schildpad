@@ -1,8 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/pages.dart';
 
 void main() {
   group('PagesStateNotifier tests', () {
+    setUpAll(() async {
+      await Hive.initFlutter();
+      await Hive.openBox<int>(pagesBoxName);
+    });
     test('A new PagesStateNotifier should have 0 left and 0 right pages', () {
       final pagesStateNotifier = PagesStateNotifier();
       expect(pagesStateNotifier.debugState.leftPages, 0);

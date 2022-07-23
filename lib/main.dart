@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/theme/theme.dart';
 
-void main() {
+Future setUpHive() async {
+  await Hive.initFlutter();
+  await Hive.openBox<int>(pagesBoxName);
+}
+
+void main() async {
+  await setUpHive();
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemStatusBarContrastEnforced: true,

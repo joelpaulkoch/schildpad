@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 final leftPagesProvider = Provider<int>((ref) {
   return ref.watch(pagesProvider).leftPages;
@@ -24,8 +25,16 @@ final pagesProvider =
   return PagesStateNotifier();
 });
 
+const pagesBoxName = 'pages';
+
 class PagesStateNotifier extends StateNotifier<PageCounter> {
-  PagesStateNotifier() : super(const PageCounter(0, 0));
+  PagesStateNotifier() : super(const PageCounter(0, 0)) {
+    final box = Hive.box<int>(pagesBoxName);
+    final leftPages = box.get('leftPages') ?? 0;
+    final rightPages = box.get('rightPages') ?? 0;
+
+    state = PageCounter(leftPages, rightPages);
+  }
 
   void addLeftPage() {
     state = PageCounter(state.leftPages + 1, state.rightPages);
