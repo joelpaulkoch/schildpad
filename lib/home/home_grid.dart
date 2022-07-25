@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/flexible_grid/flexible_grid.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
@@ -15,27 +16,30 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
-final homeGridTilesProvider =
-    StateNotifierProvider<FlexibleGridStateNotifier, List<FlexibleGridTile>>(
-        (ref) {
+final homeGridTilesProvider = StateNotifierProvider.family<
+    FlexibleGridStateNotifier, List<FlexibleGridTile>, int>((ref, pageIndex) {
   final columns = ref.watch(homeColumnCountProvider);
   final rows = ref.watch(homeRowCountProvider);
   return FlexibleGridStateNotifier(columns, rows);
 });
 
-final homeGridElementDataProvider = StateProvider //TODO check .autoDispose
-    .family<HomeGridElementData, GridCell>((ref, gridCell) {
+final homeGridElementDataProvider =
+    StateProvider.family<HomeGridElementData, PagedGridCell>(
+        (ref, pageGridCell) {
   return HomeGridElementData();
 });
 
 class HomeViewGrid extends ConsumerWidget {
-  const HomeViewGrid({
+  const HomeViewGrid(
+    this.pageIndex, {
     Key? key,
   }) : super(key: key);
 
+  final int pageIndex;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeGridTiles = ref.watch(homeGridTilesProvider);
+    final homeGridTiles = ref.watch(homeGridTilesProvider(pageIndex));
     final columns = ref.watch(homeColumnCountProvider);
     final rows = ref.watch(homeRowCountProvider);
     dev.log('rebuilding HomeViewGrid');
@@ -48,7 +52,7 @@ class HomeViewGrid extends ConsumerWidget {
             FlexibleGridChild(
               column: tile.column,
               row: tile.row,
-              child: HomeGridElement(tile.column, tile.row),
+              child: HomeGridElement(pageIndex, tile.column, tile.row),
             ),
         ]);
   }
@@ -56,11 +60,13 @@ class HomeViewGrid extends ConsumerWidget {
 
 class HomeGridElement extends ConsumerWidget {
   const HomeGridElement(
+    this.pageIndex,
     this.columnStart,
     this.rowStart, {
     Key? key,
   }) : super(key: key);
 
+  final int pageIndex;
   final int columnStart;
   final int rowStart;
 
@@ -68,57 +74,60 @@ class HomeGridElement extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final gridElementData =
-        ref.watch(homeGridElementDataProvider(GridCell(columnStart, rowStart)));
+    final gridElementData = ref.watch(homeGridElementDataProvider(
+        PagedGridCell(pageIndex, columnStart, rowStart)));
     final app = gridElementData.appData;
     return DragTarget<HomeGridElementData>(onWillAccept: (draggedData) {
       final data = draggedData;
       if (data != null) {
-        final willAccept = ref.read(homeGridTilesProvider.notifier).canAdd(
-              columnStart,
-              rowStart,
-              data.getColumnSpan(context, columnCount),
-              data.getRowSpan(context, rowCount),
-            );
+        final willAccept =
+            ref.read(homeGridTilesProvider(pageIndex).notifier).canAdd(
+                  columnStart,
+                  rowStart,
+                  data.getColumnSpan(context, columnCount),
+                  data.getRowSpan(context, rowCount),
+                );
         dev.log('($columnStart, $rowStart) will accept: $willAccept');
         return willAccept;
       }
       return false;
     }, onAccept: (data) {
       dev.log('dropped in ($columnStart, $rowStart)');
-      if (ref.read(homeGridTilesProvider.notifier).addTile(FlexibleGridTile(
-          column: columnStart,
-          row: rowStart,
-          columnSpan: data.getColumnSpan(context, columnCount),
-          rowSpan: data.getRowSpan(context, rowCount)))) {
+      if (ref.read(homeGridTilesProvider(pageIndex).notifier).addTile(
+          FlexibleGridTile(
+              column: columnStart,
+              row: rowStart,
+              columnSpan: data.getColumnSpan(context, columnCount),
+              rowSpan: data.getRowSpan(context, rowCount)))) {
         ref
-            .read(homeGridElementDataProvider(GridCell(columnStart, rowStart))
+            .read(homeGridElementDataProvider(
+                    PagedGridCell(pageIndex, columnStart, rowStart))
                 .notifier)
             .state = data;
+
+        final originColumn = data.originColumn;
+        final originRow = data.originRow;
+        if (originColumn != null && originRow != null) {
+          dev.log('removing element from ($columnStart, $rowStart)');
+          ref
+              .read(homeGridElementDataProvider(
+                      PagedGridCell(pageIndex, originColumn, originRow))
+                  .notifier)
+              .state = HomeGridElementData();
+          ref
+              .read(homeGridTilesProvider(pageIndex).notifier)
+              .removeTile(originColumn, originRow);
+        }
       }
       ref.read(showTrashProvider.notifier).state = false;
     }, builder: (_, __, ___) {
       if (app != null) {
         return InstalledAppIcon(
-            app: app,
-            onDragStarted: () {
-              ref.read(showTrashProvider.notifier).state = true;
-            },
-            onDragCompleted: () {
-              dev.log('removing ${app.name} from ($columnStart, $rowStart)');
-              ref
-                  .read(homeGridTilesProvider.notifier)
-                  .removeTile(columnStart, rowStart);
-              // TODO check if necessary
-              ref
-                  .read(homeGridElementDataProvider(
-                          GridCell(columnStart, rowStart))
-                      .notifier)
-                  .state = HomeGridElementData();
-            },
-            onDraggableCanceled: (_, __) {
-              ref.read(showTrashProvider.notifier).state = false;
-            });
+          app: app,
+          pageIndex: pageIndex,
+          column: columnStart,
+          row: rowStart,
+        );
       }
       final appWidget = gridElementData.appWidgetData;
       if (appWidget != null) {
@@ -141,6 +150,7 @@ class HomeGridElement extends ConsumerWidget {
             ),
             if (showAppWidgetMenu)
               AppWidgetContextMenu(
+                pageIndex: pageIndex,
                 columnStart: columnStart,
                 rowStart: rowStart,
               )
@@ -153,10 +163,18 @@ class HomeGridElement extends ConsumerWidget {
 }
 
 class HomeGridElementData {
+  HomeGridElementData(
+      {this.appData,
+      this.appWidgetData,
+      this.originPageIndex,
+      this.originColumn,
+      this.originRow});
+
   final AppData? appData;
   final AppWidgetData? appWidgetData;
-
-  HomeGridElementData({this.appData, this.appWidgetData});
+  final int? originPageIndex;
+  final int? originColumn;
+  final int? originRow;
 
   bool get isEmpty => appData == null && appWidgetData == null;
 

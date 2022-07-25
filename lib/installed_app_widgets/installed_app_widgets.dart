@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/proto/installed_app_widgets.pb.dart';
 
 final installedAppWidgetsProvider =
@@ -163,10 +163,12 @@ class AppWidget extends ConsumerWidget {
 class AppWidgetContextMenu extends ConsumerWidget {
   const AppWidgetContextMenu({
     Key? key,
+    required this.pageIndex,
     required this.columnStart,
     required this.rowStart,
   }) : super(key: key);
 
+  final int pageIndex;
   final int columnStart;
   final int rowStart;
 
@@ -188,12 +190,12 @@ class AppWidgetContextMenu extends ConsumerWidget {
               onPressed: () {
                 dev.log('removing app widget from ($columnStart, $rowStart)');
                 ref
-                    .read(homeGridTilesProvider.notifier)
+                    .read(homeGridTilesProvider(pageIndex).notifier)
                     .removeTile(columnStart, rowStart);
                 // TODO check if necessary
                 ref
                     .read(homeGridElementDataProvider(
-                            GridCell(columnStart, rowStart))
+                            PagedGridCell(pageIndex, columnStart, rowStart))
                         .notifier)
                     .state = HomeGridElementData();
                 ref.read(showAppWidgetContextMenuProvider.notifier).state =

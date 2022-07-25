@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
@@ -62,16 +61,7 @@ class InstalledAppsGrid extends ConsumerWidget {
                     app: app,
                     showAppName: true,
                     onDragStarted: () {
-                      context.push('/');
-                      ref.read(showTrashProvider.notifier).state = true;
-                    },
-                    onDraggableCanceled: (_, __) {
-                      ref.read(showTrashProvider.notifier).state = false;
-                      context.go('/');
-                    },
-                    onDragEnd: (_) {
-                      ref.read(showTrashProvider.notifier).state = false;
-                      context.go('/');
+                      context.pop();
                     }))
                 .toList(),
             orElse: () => []));
@@ -86,7 +76,10 @@ class InstalledAppIcon extends ConsumerWidget {
       this.onDragStarted,
       this.onDragCompleted,
       this.onDraggableCanceled,
-      this.onDragEnd})
+      this.onDragEnd,
+      this.pageIndex,
+      this.column,
+      this.row})
       : super(key: key);
 
   final AppData app;
@@ -96,10 +89,18 @@ class InstalledAppIcon extends ConsumerWidget {
   final Function(Velocity, Offset)? onDraggableCanceled;
   final Function(DraggableDetails)? onDragEnd;
 
+  final int? pageIndex;
+  final int? column;
+  final int? row;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return LongPressDraggable(
-      data: HomeGridElementData(appData: app),
+      data: HomeGridElementData(
+          appData: app,
+          originPageIndex: pageIndex,
+          originColumn: column,
+          originRow: row),
       maxSimultaneousDrags: 1,
       feedback:
           SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
