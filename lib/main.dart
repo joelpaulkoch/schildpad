@@ -7,6 +7,7 @@ import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/overview/overview_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
 Future setUpHive() async {
@@ -46,6 +47,11 @@ class SchildpadApp extends StatelessWidget {
         path: '/widgets',
         builder: (BuildContext context, GoRouterState state) =>
             const InstalledAppWidgetsView(),
+      ),
+      GoRoute(
+        path: OverviewScreen.routeName,
+        builder: (BuildContext context, GoRouterState state) =>
+            const OverviewScreen(),
       ),
     ],
   );

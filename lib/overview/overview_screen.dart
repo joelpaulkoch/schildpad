@@ -6,6 +6,8 @@ import 'package:schildpad/home/pages.dart';
 class OverviewScreen extends ConsumerWidget {
   const OverviewScreen({Key? key}) : super(key: key);
 
+  static const routeName = '/overview';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
