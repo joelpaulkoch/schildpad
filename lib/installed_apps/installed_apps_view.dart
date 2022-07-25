@@ -76,7 +76,10 @@ class InstalledAppIcon extends ConsumerWidget {
       this.onDragStarted,
       this.onDragCompleted,
       this.onDraggableCanceled,
-      this.onDragEnd})
+      this.onDragEnd,
+      this.pageIndex,
+      this.column,
+      this.row})
       : super(key: key);
 
   final AppData app;
@@ -86,10 +89,18 @@ class InstalledAppIcon extends ConsumerWidget {
   final Function(Velocity, Offset)? onDraggableCanceled;
   final Function(DraggableDetails)? onDragEnd;
 
+  final int? pageIndex;
+  final int? column;
+  final int? row;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return LongPressDraggable(
-      data: HomeGridElementData(appData: app),
+      data: HomeGridElementData(
+          appData: app,
+          originPageIndex: pageIndex,
+          originColumn: column,
+          originRow: row),
       maxSimultaneousDrags: 1,
       feedback:
           SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),

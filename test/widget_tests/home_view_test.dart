@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
@@ -19,6 +21,15 @@ AppData _getTestApp() => AppData(
     packageName: 'testPackage',
     launch: () {});
 void main() {
+  setUpAll(() async {
+    await Hive.initFlutter();
+  });
+  setUp(() async {
+    await Hive.openBox<int>(pagesBoxName);
+  });
+  tearDown(() async {
+    await Hive.deleteFromDisk();
+  });
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
@@ -33,9 +44,10 @@ void main() {
       // GIVEN:
       // I am on the HomeView and there is exactly one app
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -73,9 +85,10 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -144,11 +157,13 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp()))),
-        homeGridElementDataProvider(const GridCell(0, 1)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp()))),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -199,9 +214,10 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -239,9 +255,10 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -288,11 +305,13 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp()))),
-        homeGridElementDataProvider(const GridCell(0, 1)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp()))),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -336,9 +355,10 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp()))),
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp()))),
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -381,9 +401,10 @@ void main() {
         ));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-            StateController(HomeGridElementData(appData: _getTestApp())))
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -458,9 +479,9 @@ void main() {
 
       await tester.pumpWidget(ProviderScope(
           overrides: [
-            homeGridTilesProvider.overrideWithValue(homeGridStateNotifier),
-            homeGridElementDataProvider(const GridCell(0, 0)).overrideWithValue(
-                StateController(
+            homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+            homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+                .overrideWithValue(StateController(
                     HomeGridElementData(appWidgetData: testAppWidget))),
             nativeAppWidgetProvider(testAppWidget.appWidgetId!)
                 .overrideWithValue(Card(

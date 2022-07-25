@@ -23,8 +23,9 @@ final homeGridTilesProvider = StateNotifierProvider.family<
   return FlexibleGridStateNotifier(columns, rows);
 });
 
-final homeGridElementDataProvider = StateProvider //TODO check .autoDispose
-    .family<HomeGridElementData, PagedGridCell>((ref, pageGridCell) {
+final homeGridElementDataProvider =
+    StateProvider.family<HomeGridElementData, PagedGridCell>(
+        (ref, pageGridCell) {
   return HomeGridElementData();
 });
 
@@ -103,12 +104,29 @@ class HomeGridElement extends ConsumerWidget {
                     PagedGridCell(pageIndex, columnStart, rowStart))
                 .notifier)
             .state = data;
+
+        final originColumn = data.originColumn;
+        final originRow = data.originRow;
+        if (originColumn != null && originRow != null) {
+          dev.log('removing element from ($columnStart, $rowStart)');
+          ref
+              .read(homeGridElementDataProvider(
+                      PagedGridCell(pageIndex, originColumn, originRow))
+                  .notifier)
+              .state = HomeGridElementData();
+          ref
+              .read(homeGridTilesProvider(pageIndex).notifier)
+              .removeTile(originColumn, originRow);
+        }
       }
       ref.read(showTrashProvider.notifier).state = false;
     }, builder: (_, __, ___) {
       if (app != null) {
         return InstalledAppIcon(
           app: app,
+          pageIndex: pageIndex,
+          column: columnStart,
+          row: rowStart,
         );
       }
       final appWidget = gridElementData.appWidgetData;
@@ -145,10 +163,18 @@ class HomeGridElement extends ConsumerWidget {
 }
 
 class HomeGridElementData {
+  HomeGridElementData(
+      {this.appData,
+      this.appWidgetData,
+      this.originPageIndex,
+      this.originColumn,
+      this.originRow});
+
   final AppData? appData;
   final AppWidgetData? appWidgetData;
-
-  HomeGridElementData({this.appData, this.appWidgetData});
+  final int? originPageIndex;
+  final int? originColumn;
+  final int? originRow;
 
   bool get isEmpty => appData == null && appWidgetData == null;
 
