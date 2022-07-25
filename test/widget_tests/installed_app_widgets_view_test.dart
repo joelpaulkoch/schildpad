@@ -90,4 +90,54 @@ void main() {
             AppWidgetGroupListTile, secondAppWidget.appName));
     expect(secondAppGroupFinder, findsOneWidget);
   });
+  /*testWidgets('Long press on an app widget should show its context menu',
+      (WidgetTester tester) async {
+    const testAppWidget = AppWidgetData(
+        icon: Icon(
+          Icons.ac_unit_sharp,
+          color: Colors.cyanAccent,
+        ),
+        packageName: 'testPackage',
+        label: 'testAppWidget',
+        preview: Icon(
+          Icons.ac_unit_sharp,
+          color: Colors.cyanAccent,
+        ),
+        appName: 'testApp',
+        targetWidth: 3,
+        targetHeight: 1,
+        componentName: 'testComponent',
+        minHeight: 0,
+        minWidth: 0,
+        appWidgetId: 0);
+
+    await tester.pumpWidget(ProviderScope(
+        overrides: [
+          nativeAppWidgetProvider(testAppWidget.appWidgetId!)
+              .overrideWithValue(Card(
+            color: Colors.deepOrange,
+            child: testAppWidget.icon,
+          ))
+        ],
+        child: const MaterialApp(
+            home: AppWidget(
+          appWidgetData: testAppWidget,
+        ))));
+    await tester.pumpAndSettle();
+
+    // GIVEN:
+    // an app widget
+    final testAppWidgetFinder = find.byType(AppWidget);
+    expect(testAppWidgetFinder, findsOneWidget);
+
+    // WHEN:
+    // I long press
+    await tester.longPress(testAppWidgetFinder);
+    await tester.pumpAndSettle();
+
+    // THEN:
+    // its context menu is shown
+    final appWidgetContextMenuFinder = find.byType(AppWidgetContextMenu);
+    expect(appWidgetContextMenuFinder, findsOneWidget);
+  });*/
 }
