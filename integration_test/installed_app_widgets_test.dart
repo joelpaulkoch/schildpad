@@ -26,7 +26,7 @@ void main() {
 
       // Then:
       // InstalledAppWidgetsView is opened
-      expect(find.byType(InstalledAppWidgetsView), findsOneWidget);
+      expect(find.byType(AppWidgetsScreen), findsOneWidget);
     });
   });
   group('add app widgets to home view', () {
@@ -44,8 +44,7 @@ void main() {
       await tester.longPress(homeViewFinder);
       await tester.pumpAndSettle();
 
-      final installedAppWidgetsViewFinder =
-          find.byType(InstalledAppWidgetsView);
+      final installedAppWidgetsViewFinder = find.byType(AppWidgetsScreen);
       expect(installedAppWidgetsViewFinder, findsOneWidget);
 
       // wait to load widgets

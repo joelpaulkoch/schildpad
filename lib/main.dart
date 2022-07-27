@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/overview/overview_screen.dart';
+import 'package:schildpad/settings/settings.dart';
 import 'package:schildpad/theme/theme.dart';
 
 Future setUpHive() async {
@@ -34,9 +35,9 @@ class SchildpadApp extends StatelessWidget {
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: '/',
+        path: HomeScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeView(),
+            const HomeScreen(),
       ),
       GoRoute(
         path: '/apps',
@@ -44,14 +45,19 @@ class SchildpadApp extends StatelessWidget {
             const InstalledAppsView(),
       ),
       GoRoute(
-        path: '/widgets',
+        path: AppWidgetsScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
-            const InstalledAppWidgetsView(),
+            const AppWidgetsScreen(),
       ),
       GoRoute(
         path: OverviewScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
             const OverviewScreen(),
+      ),
+      GoRoute(
+        path: SettingsScreen.routeName,
+        builder: (BuildContext context, GoRouterState state) =>
+            const SettingsScreen(),
       ),
     ],
   );

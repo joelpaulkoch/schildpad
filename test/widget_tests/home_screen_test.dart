@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
@@ -28,51 +28,9 @@ void main() {
   tearDown(() async {
     await Hive.deleteFromDisk();
   });
-  group('move apps on HomeView tests', () {
-    testWidgets('Moving an app on the home view to an empty spot should work',
-        (WidgetTester tester) async {
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
-
-      // GIVEN:
-      // I am on the HomeView and there is exactly one app
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: _getTestApp())))
-      ], child: const MaterialApp(home: HomeView())));
-      await tester.pumpAndSettle();
-
-      final testAppFinder = find.byType(InstalledAppIcon);
-      final firstPosition = tester.getCenter(testAppFinder);
-
-      // WHEN:
-      // I long press
-      final longPressDragGesture =
-          await tester.startGesture(tester.getCenter(testAppFinder));
-      await tester.pumpAndSettle();
-      // and drag it to somewhere else
-      await longPressDragGesture.moveBy(const Offset(0, 200));
-      await tester.pumpAndSettle();
-      // and drop it there
-      await longPressDragGesture.up();
-      await tester.pumpAndSettle();
-
-      // THEN:
-      // the app is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
-      final newPosition = tester.getCenter(newTestAppFinder);
-      expect(newTestAppFinder, findsOneWidget);
-      expect(newPosition, isNot(firstPosition));
-    });
+  group('trash area', () {
     testWidgets(
-        'After moving an app on the home view to an empty spot it should be possible to move it back',
+        'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
         ..addTile(const FlexibleGridTile(
@@ -87,17 +45,53 @@ void main() {
         homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
             .overrideWithValue(
                 StateController(HomeGridElementData(appData: _getTestApp())))
-      ], child: const MaterialApp(home: HomeView())));
+      ], child: const MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
+      // I am on the HomeScreen
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppIcon);
       expect(testAppFinder, findsOneWidget);
-      final firstPosition = tester.getCenter(testAppFinder);
+
+      // WHEN:
+      // I long press
+      final longPressDragGesture =
+          await tester.startGesture(tester.getCenter(testAppFinder));
+      await tester.pumpAndSettle();
+      // and drag it to somewhere else
+      await longPressDragGesture.moveBy(const Offset(0, 200));
+      await tester.pumpAndSettle();
+
+      // THEN:
+      // the trash area shows up
+      final trashFinder = find.byType(TrashArea);
+      expect(trashFinder, findsOneWidget);
+    });
+    testWidgets(
+        'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
+        (WidgetTester tester) async {
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
+        ..addTile(const FlexibleGridTile(
+          column: 0,
+          row: 0,
+          columnSpan: 1,
+          rowSpan: 1,
+        ));
+
+      await tester.pumpWidget(ProviderScope(overrides: [
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
+      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpAndSettle();
+
+      // GIVEN:
+      // I am on the HomeScreen
+      // and there is exactly one app
+      final testAppFinder = find.byType(InstalledAppIcon);
+      expect(testAppFinder, findsOneWidget);
 
       // WHEN:
       // I long press
@@ -112,33 +106,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // THEN:
-      // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
-      expect(newTestAppFinder, findsOneWidget);
-      final newPosition = tester.getCenter(newTestAppFinder);
-      expect(newPosition, isNot(firstPosition));
-
-      // And:
-      // WHEN I drag it back to its place inside the grid
-      final moveBackGesture = await tester.startGesture(newPosition);
-      await tester.pumpAndSettle();
-      await moveBackGesture.moveBy(const Offset(50, 0));
-      await tester.pumpAndSettle();
-      final homeGridPosition = tester.getTopLeft(find.byType(HomeViewGrid));
-      await moveBackGesture.moveTo(homeGridPosition + firstPosition);
-      await tester.pumpAndSettle();
-      await moveBackGesture.up();
-      await tester.pumpAndSettle();
-
-      // THEN:
-      // it is moved back
-      final movedBackTestAppFinder = find.byType(InstalledAppIcon);
-      expect(movedBackTestAppFinder, findsOneWidget);
-      final movedBackPosition = tester.getCenter(movedBackTestAppFinder);
-      expect(movedBackPosition, firstPosition);
+      // the trash area is not shown
+      final trashFinder = find.byType(TrashArea);
+      expect(trashFinder, findsNothing);
     });
     testWidgets(
-        'Moving an app on the home view to an occupied spot should not work',
+        'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
         ..addTile(const FlexibleGridTile(
@@ -162,13 +135,11 @@ void main() {
         homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
             .overrideWithValue(
                 StateController(HomeGridElementData(appData: _getTestApp())))
-      ], child: const MaterialApp(home: HomeView())));
+      ], child: const MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
+      // I am on the HomeScreen
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppIcon);
       expect(testAppFinder, findsNWidgets(2));
@@ -189,82 +160,97 @@ void main() {
       await tester.pumpAndSettle();
 
       // THEN:
-      // it is not moved to this place and everything is still the same
-      final newTestAppFinder = find.byType(InstalledAppIcon);
-      expect(newTestAppFinder, findsNWidgets(2));
-      final newFirstTestAppPosition = tester.getCenter(newTestAppFinder.first);
-      final newSecondTestAppPosition = tester.getCenter(newTestAppFinder.at(1));
-
-      expect(newFirstTestAppPosition, firstTestAppPosition);
-      expect(newSecondTestAppPosition, secondTestAppPosition);
+      // the trash area is not shown
+      final trashFinder = find.byType(TrashArea);
+      expect(trashFinder, findsNothing);
     });
-  });
-  group('app widgets', () {
     testWidgets(
-        'Using the trash in the context menu should remove the app widget from the home view',
+        'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      const testAppWidget = AppWidgetData(
-          icon: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          packageName: 'testPackage',
-          label: 'testAppWidget',
-          preview: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          appName: 'testApp',
-          targetWidth: 3,
-          targetHeight: 1,
-          componentName: 'testComponent',
-          minHeight: 0,
-          minWidth: 0,
-          appWidgetId: 0);
-
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
         ..addTile(const FlexibleGridTile(
           column: 0,
           row: 0,
-          columnSpan: 3,
+          columnSpan: 1,
           rowSpan: 1,
         ));
 
-      await tester.pumpWidget(ProviderScope(
-          overrides: [
-            homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-            homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-                .overrideWithValue(StateController(
-                    HomeGridElementData(appWidgetData: testAppWidget))),
-            nativeAppWidgetProvider(testAppWidget.appWidgetId!)
-                .overrideWithValue(Card(
-              color: Colors.deepOrange,
-              child: testAppWidget.icon,
-            ))
-          ],
-          child: const MaterialApp(
-            home: HomeView(),
-          )));
+      await tester.pumpWidget(ProviderScope(overrides: [
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp()))),
+      ], child: const MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
-      // I am on the HomeView
-      // and there is exactly one app widget
-      final testAppWidgetFinder = find.byType(AppWidget);
-      expect(testAppWidgetFinder, findsOneWidget);
+      // I am on the HomeScreen
+      // and there is exactly one app
+      final testAppFinder = find.byType(InstalledAppIcon);
+      expect(testAppFinder, findsOneWidget);
 
-      // And:
-      // I open the context menu and click on the trash button
-      await tester.longPress(testAppWidgetFinder);
+      // WHEN:
+      // I long press
+      final longPressDragGesture =
+          await tester.startGesture(tester.getCenter(testAppFinder));
       await tester.pumpAndSettle();
-      final trashButtonFinder = find.byIcon(Icons.delete_outline_rounded);
-      expect(trashButtonFinder, findsOneWidget);
-      await tester.press(trashButtonFinder);
+      // and drag it to to the trash area
+      final trashAreaFinder = find.byType(TrashArea);
+      expect(trashAreaFinder, findsOneWidget);
+      await longPressDragGesture.moveTo(tester.getCenter(trashAreaFinder));
+      await tester.pumpAndSettle();
+      // and drop it there
+      await longPressDragGesture.up();
       await tester.pumpAndSettle();
 
       // THEN:
-      // the app widget is removed from the home view
-      expect(testAppWidgetFinder, findsNothing);
+      // the trash area is not shown
+      final trashFinder = find.byType(TrashArea);
+      expect(trashFinder, findsNothing);
+    });
+    testWidgets(
+        'Moving an app on the home view to the trash area should remove the app',
+        (WidgetTester tester) async {
+      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
+        ..addTile(const FlexibleGridTile(
+          column: 0,
+          row: 0,
+          columnSpan: 1,
+          rowSpan: 1,
+        ));
+
+      await tester.pumpWidget(ProviderScope(overrides: [
+        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
+            .overrideWithValue(
+                StateController(HomeGridElementData(appData: _getTestApp())))
+      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpAndSettle();
+
+      // GIVEN:
+      // I am on the HomeScreen
+      // and there is exactly one app
+      final testAppFinder = find.byType(InstalledAppIcon);
+      expect(testAppFinder, findsOneWidget);
+
+      // WHEN:
+      // I long press
+      final longPressDragGesture =
+          await tester.startGesture(tester.getCenter(testAppFinder));
+      await tester.pumpAndSettle();
+      // and drag it to to the trash area
+      final trashAreaFinder = find.byType(TrashArea);
+      expect(trashAreaFinder, findsOneWidget);
+      await longPressDragGesture.moveTo(tester.getCenter(trashAreaFinder));
+      await tester.pumpAndSettle();
+      // and drop it there
+      await longPressDragGesture.up();
+      await tester.pumpAndSettle();
+
+      // THEN:
+      // it is removed from the home view
+      final newTestAppFinder = find.byType(InstalledAppIcon);
+      expect(newTestAppFinder, findsNothing);
     });
   });
 }

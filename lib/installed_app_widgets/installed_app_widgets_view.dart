@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
-class InstalledAppWidgetsView extends StatelessWidget {
-  const InstalledAppWidgetsView({Key? key}) : super(key: key);
+class AppWidgetsScreen extends StatelessWidget {
+  const AppWidgetsScreen({Key? key}) : super(key: key);
+
+  static const routeName = '/appwidgets';
 
   @override
   Widget build(BuildContext context) {
