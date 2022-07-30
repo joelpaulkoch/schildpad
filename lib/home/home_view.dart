@@ -13,8 +13,9 @@ class HomeView extends ConsumerWidget {
     final pageCount = ref.watch(pageCountProvider);
     final leftPagesCount = ref.watch(leftPagesProvider);
     final initialPage = ref.watch(initialPageProvider);
+    final pageController = PageController(initialPage: initialPage);
     return PageView(
-        controller: PageController(initialPage: initialPage),
+        controller: pageController,
         children: List.generate(
             pageCount, (index) => HomeViewGrid(index - leftPagesCount)));
   }

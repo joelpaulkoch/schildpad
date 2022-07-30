@@ -43,11 +43,36 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger, APPS_CHANNEL
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
-            if (call.method == "getInstalledApps") {
-                val widgets = getInstalledApps()
-                result.success(widgets.toByteArray())
-            } else {
-                result.notImplemented()
+            when (call.method) {
+                ("getInstalledApps") -> {
+                    val widgets = getInstalledApps()
+                    result.success(widgets.toByteArray())
+                }
+                ("getApplicationIds") -> {
+                    val applicationIds = getApplicationIds()
+                    result.succes(applicationIds)
+                }
+                ("getApplicationLabel") -> {
+                    val args = call.arguments as List<String>
+                    val packageName = args.first()
+                    val label = getApplicationLabel(packageName)
+                    result.succes(label)
+                }
+                ("getApplicationLaunchComponent") -> {
+                    val args = call.arguments as List<String>
+                    val packageName = args.first()
+                    val launchComponent = getApplicationLaunchComponent(packageName)
+                    result.succes(launchComponent)
+                }
+                ("getApplicationIcon") -> {
+                    val args = call.arguments as List<String>
+                    val packageName = args.first()
+                    val icon = getApplicationIcon(packageName)
+                    result.succes(icon)
+                }
+                else -> {
+                    result.notImplemented()
+                }
             }
         }
         MethodChannel(
@@ -58,6 +83,28 @@ class MainActivity : FlutterActivity() {
                 ("getInstalledAppWidgets") -> {
                     val widgets = getInstalledAppWidgets()
                     result.success(widgets.toByteArray())
+                }
+                ("getApplicationWidgetIds") -> {
+                    val widgetIds = getApplicationWidgetIds()
+                    result.success(widgetIds)
+                }
+                ("getApplicationId") -> {
+                    val args = call.arguments as List<String>
+                    val componentName = args.first()
+                    val applicationId = getApplicationId(componentName)
+                    result.success(applicationId)
+                }
+                ("getApplicationWidgetLabel") -> {
+                    val args = call.arguments as List<String>
+                    val componentName = args.first()
+                    val label = getApplicationWidgetLabel(componentName)
+                    result.success(label)
+                }
+                ("getApplicationWidgetPreview") -> {
+                    val args = call.arguments as List<String>
+                    val componentName = args.first()
+                    val preview = getApplicationWidgetPreview(componentName)
+                    result.success(preview)
                 }
                 ("getWidgetId") -> {
                     val args = call.arguments as List<String>
@@ -76,6 +123,84 @@ class MainActivity : FlutterActivity() {
         }
 
     }
+
+    // apps
+    private fun getApplicationIds() : List<String> {
+        val packageInfos =
+            packageManager.getInstalledPackages(0)
+                .filter { it.applicationInfo.enabled }
+                .filter { (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
+
+        return packageInfos.map{package -> package.packageName}
+    }
+
+    private fun getApplicationLabel(packageName : String) : String? {
+        val appInfo = packageManager.getApplicationInfo(packageName, 0)
+        return packageManager.getApplicationLabel(appInfo).toString()
+    }
+
+    private fun getApplicationLaunchComponent(packageName : String) : String? {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        return launchIntentComponent = launchIntent?.component.className
+    }
+
+    private fun getApplicationIcon(packageName : String) : ByteArray {
+        val iconBmp = packageManager.getApplicationIcon(packageName).toBitmap()
+        return iconBmp.convertToByteArray()
+    }
+
+    // app widgets
+    private fun getApplicationWidgetIds() : List<String> {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val providers = appWidgetManager.installedProviders
+        return providers.map{provider -> provider.provider.className}
+    }
+
+    private fun getApplicationId(providerComponentName : String) : String? {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+        return provider.provider.packageName
+    }
+
+    private fun getApplicationWidgetLabel(providerComponentName : String) : String? {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+        return provider.loadLabel(packageManager)
+    }
+
+    private fun getApplicationWidgetPreview(providerComponentName  : String) : ByteArray {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+        val bmp: Bitmap? = provider.loadPreviewImage(context, DisplayMetrics.DENSITY_LOW)
+                                ?.toBitmap()
+        if (bmp != null) {
+            return bmp.convertToByteArray()
+        } else {
+            val bmpIcon: Bitmap? =
+                provider.loadIcon(context, DisplayMetrics.DENSITY_DEFAULT)
+                    .toBitmap()
+            if (bmpIcon != null) {
+                bmpIcon.convertToByteArray()
+            }
+        }
+    }
+
+     private fun getApplicationWidgetSizes(providerComponentName : String) : HashMap<String, Int> {
+        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
+        val provider =
+            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
+        
+        val minWidth = provider.minWidth
+        val minHeight = provider.minHeight
+        val targetWidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) provider.targetCellWidth else null
+        val targetHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) provider.targetCellHeight else null
+
+        return mapOf("minWidth" to minWidth, "minHeight" to minHeight)
+    }
+
 
     private fun getInstalledApps(): InstalledApps {
         val packageInfos =
