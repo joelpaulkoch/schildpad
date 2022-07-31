@@ -1,12 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO might change to Stream
+import 'package:flutter/services.dart';
+
 Future<List<String>> getApplicationWidgetIds() async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
   final List<String> applicationWidgetIds =
