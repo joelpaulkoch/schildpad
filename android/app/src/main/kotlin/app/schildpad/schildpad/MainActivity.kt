@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
@@ -138,16 +139,10 @@ class MainActivity : FlutterActivity() {
 
     // apps
     private fun getApplicationIds(): List<String> {
-        val packageInfos =
-            packageManager.getInstalledPackages(0)
-                .filter { it.applicationInfo.enabled }
-                .filter { (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
-
-        return packageInfos.sortedBy {
-            it.applicationInfo.loadLabel(
-                packageManager
-            ).toString().lowercase()
-        }.map { packageInfo -> packageInfo.packageName }
+        val launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        val userHandle = launcherApps.profiles.first()
+        val apps = launcherApps.getActivityList(null, userHandle)
+        return apps.sortedBy { it.label.toString().lowercase() }.map { app -> app.applicationInfo.packageName }
     }
 
     private fun getApplicationLabel(packageName: String): String? {
