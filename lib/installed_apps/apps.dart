@@ -1,17 +1,16 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO might change to Stream
 Future<List<String>> getApplicationIds() async {
   const platform = MethodChannel('schildpad.schildpad.app/apps');
-  final List<String> applicationIds =
-      await platform.invokeMethod('getApplicationIds');
-  return applicationIds;
+  final List applicationIds = await platform.invokeMethod('getApplicationIds');
+  return applicationIds.cast<String>();
 }
 
 Future<String> getApplicationLabel(String applicationId) async {
@@ -61,9 +60,10 @@ final _appLaunchFunctionProvider =
   return await getApplicationLaunchFunction(packageName);
 });
 
-final _appIconProvider =
-    FutureProvider.family<Uint8List, String>((ref, packageName) async {
-  return await getApplicationIcon(packageName);
+final appIconImageProvider =
+    FutureProvider.family<Image, String>((ref, packageName) async {
+  final appIcon = await getApplicationIcon(packageName);
+  return Image.memory(appIcon);
 });
 
 final _appIconSizeProvider = Provider<double>((ref) {
@@ -80,7 +80,7 @@ class AppIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appIconSize = ref.watch(_appIconSizeProvider);
-    final appIcon = ref.watch(_appIconProvider(packageName));
+    final appIconImage = ref.watch(appIconImageProvider(packageName));
     final appLaunch = ref.watch(_appLaunchFunctionProvider(packageName));
     final appLabel = ref.watch(_appLabelProvider(packageName));
     return Material(
@@ -91,9 +91,9 @@ class AppIcon extends ConsumerWidget {
             IconButton(
               iconSize: appIconSize,
               padding: EdgeInsets.zero,
-              icon: appIcon.maybeWhen(
-                  data: (appIcon) => Image.memory(appIcon),
-                  orElse: () => const CircularProgressIndicator()),
+              icon: appIconImage.maybeWhen(
+                  data: (appIcon) => appIcon,
+                  orElse: () => const Icon(Icons.android_outlined)),
               onPressed: appLaunch.maybeWhen(
                   data: (launchFunction) => launchFunction,
                   orElse: () {

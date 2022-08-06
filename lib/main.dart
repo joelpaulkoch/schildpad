@@ -16,7 +16,7 @@ Future setUpHive() async {
   await Hive.openBox<int>(pagesBoxName);
 }
 
-void main() async {
+Future<void> main() async {
   await setUpHive();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

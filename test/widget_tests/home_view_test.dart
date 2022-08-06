@@ -10,14 +10,10 @@ import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-AppData _getTestApp() => AppData(
-    icon: const Icon(
-      Icons.ac_unit_sharp,
-      color: Colors.cyanAccent,
-    ),
-    name: 'testApp',
-    packageName: 'testPackage',
-    launch: () {});
+AppData _getTestApp() => const AppData(
+      packageName: 'testPackage',
+    );
+
 void main() {
   setUpAll(() async {
     await Hive.initFlutter();
@@ -49,7 +45,7 @@ void main() {
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       final firstPosition = tester.getCenter(testAppFinder);
 
       // WHEN:
@@ -66,7 +62,7 @@ void main() {
 
       // THEN:
       // the app is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newTestAppFinder, findsOneWidget);
       expect(newPosition, isNot(firstPosition));
@@ -95,7 +91,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
 
@@ -113,7 +109,7 @@ void main() {
 
       // THEN:
       // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsOneWidget);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newPosition, isNot(firstPosition));
@@ -132,7 +128,7 @@ void main() {
 
       // THEN:
       // it is moved back
-      final movedBackTestAppFinder = find.byType(InstalledAppIcon);
+      final movedBackTestAppFinder = find.byType(InstalledAppDraggable);
       expect(movedBackTestAppFinder, findsOneWidget);
       final movedBackPosition = tester.getCenter(movedBackTestAppFinder);
       expect(movedBackPosition, firstPosition);
@@ -170,7 +166,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -190,7 +186,7 @@ void main() {
 
       // THEN:
       // it is not moved to this place and everything is still the same
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNWidgets(2));
       final newFirstTestAppPosition = tester.getCenter(newTestAppFinder.first);
       final newSecondTestAppPosition = tester.getCenter(newTestAppFinder.at(1));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/home_grid.dart';
@@ -14,17 +15,21 @@ import 'package:schildpad/main.dart' as app;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    await Hive.initFlutter();
+  });
+  setUp(() async {
+    await Hive.openBox<int>(pagesBoxName);
+  });
+  tearDown(() async {
+    await Hive.deleteFromDisk();
+  });
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -47,7 +52,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
 
@@ -65,7 +70,7 @@ void main() {
 
       // Then:
       // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsOneWidget);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newPosition, isNot(firstPosition));
@@ -73,14 +78,9 @@ void main() {
     testWidgets(
         'After moving an app on the home view to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -103,7 +103,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
 
@@ -121,7 +121,7 @@ void main() {
 
       // Then:
       // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsOneWidget);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newPosition, isNot(firstPosition));
@@ -140,7 +140,7 @@ void main() {
 
       // Then:
       // it is moved back
-      final movedBackTestAppFinder = find.byType(InstalledAppIcon);
+      final movedBackTestAppFinder = find.byType(InstalledAppDraggable);
       expect(movedBackTestAppFinder, findsOneWidget);
       final movedBackPosition = tester.getCenter(movedBackTestAppFinder);
       expect(movedBackPosition, firstPosition);
@@ -148,22 +148,12 @@ void main() {
     testWidgets(
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
-      final firstTestApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'firstTestApp',
-          packageName: 'testPackage',
-          launch: () {});
-      final secondTestApp = AppData(
-          icon: const Icon(
-            Icons.account_balance,
-            color: Colors.deepOrange,
-          ),
-          name: 'secondTestApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const firstTestApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
+      const secondTestApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -195,7 +185,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -215,7 +205,7 @@ void main() {
 
       // Then:
       // it is not moved to this place and everything is still the same
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNWidgets(2));
       final newFirstTestAppPosition = tester.getCenter(newTestAppFinder.first);
       final newSecondTestAppPosition = tester.getCenter(newTestAppFinder.at(1));
@@ -228,14 +218,9 @@ void main() {
     testWidgets(
         'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -258,7 +243,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -278,7 +263,7 @@ void main() {
     testWidgets(
         'Dragging an app from the installed apps view to the home view should cause the trash area to show up',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
@@ -299,7 +284,7 @@ void main() {
 
       // When:
       // I long press and drag an InstalledAppButton
-      final installedAppFinder = find.byType(InstalledAppIcon).first;
+      final installedAppFinder = find.byType(InstalledAppDraggable).first;
       expect(installedAppFinder, findsOneWidget);
 
       final longPressDragGesture =
@@ -317,14 +302,9 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -347,7 +327,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -370,22 +350,12 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      final firstTestApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'firstTestApp',
-          packageName: 'testPackage',
-          launch: () {});
-      final secondTestApp = AppData(
-          icon: const Icon(
-            Icons.account_balance,
-            color: Colors.deepOrange,
-          ),
-          name: 'secondTestApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const firstTestApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
+      const secondTestApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -417,7 +387,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -443,14 +413,9 @@ void main() {
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -473,7 +438,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -498,14 +463,9 @@ void main() {
     testWidgets(
         'After dropping an app dragged from the installed apps view to the home view on an occupied spot the trash area should not be shown',
         (WidgetTester tester) async {
-      final appOnHomeView = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const appOnHomeView = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -541,7 +501,7 @@ void main() {
 
       // When:
       // I long press and drag an InstalledAppButton
-      final installedAppFinder = find.byType(InstalledAppIcon).first;
+      final installedAppFinder = find.byType(InstalledAppDraggable).first;
       expect(installedAppFinder, findsOneWidget);
 
       final longPressDragGesture =
@@ -551,7 +511,7 @@ void main() {
       await longPressDragGesture.moveBy(const Offset(100, 100));
       await tester.pumpAndSettle();
 
-      final appFinder = find.byType(InstalledAppIcon);
+      final appFinder = find.byType(InstalledAppDraggable);
       expect(appFinder, findsOneWidget);
       // And:
       // I drop it on a spot occupied by an app
@@ -568,14 +528,9 @@ void main() {
     testWidgets(
         'Moving an app on the home view to the trash area should remove the app',
         (WidgetTester tester) async {
-      final testApp = AppData(
-          icon: const Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          name: 'testApp',
-          packageName: 'testPackage',
-          launch: () {});
+      const testApp = AppData(
+        packageName: 'com.android.calculator2',
+      );
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -598,7 +553,7 @@ void main() {
       final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -617,7 +572,7 @@ void main() {
 
       // Then:
       // it is removed from the home view
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNothing);
     });
   });
@@ -629,7 +584,7 @@ void main() {
             Icons.ac_unit_sharp,
             color: Colors.cyanAccent,
           ),
-          packageName: 'testPackage',
+          packageName: 'com.android.calculator2',
           label: 'testAppWidget',
           preview: Icon(
             Icons.ac_unit_sharp,
@@ -690,7 +645,7 @@ void main() {
             Icons.ac_unit_sharp,
             color: Colors.cyanAccent,
           ),
-          packageName: 'testPackage',
+          packageName: 'com.android.calculator2',
           label: 'testAppWidget',
           preview: Icon(
             Icons.ac_unit_sharp,

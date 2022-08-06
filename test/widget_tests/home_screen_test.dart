@@ -10,14 +10,10 @@ import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-AppData _getTestApp() => AppData(
-    icon: const Icon(
-      Icons.ac_unit_sharp,
-      color: Colors.cyanAccent,
-    ),
-    name: 'testApp',
-    packageName: 'testPackage',
-    launch: () {});
+AppData _getTestApp() => const AppData(
+      packageName: 'testPackage',
+    );
+
 void main() {
   setUpAll(() async {
     await Hive.initFlutter();
@@ -51,7 +47,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -90,7 +86,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -141,7 +137,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -186,7 +182,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -230,7 +226,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppIcon);
+      final testAppFinder = find.byType(InstalledAppDraggable);
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -249,7 +245,7 @@ void main() {
 
       // THEN:
       // it is removed from the home view
-      final newTestAppFinder = find.byType(InstalledAppIcon);
+      final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNothing);
     });
   });

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/home_screen.dart';
+import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/main.dart' as app;
 
@@ -10,12 +11,12 @@ void main() {
   group('navigate to InstalledAppsView tests', () {
     testWidgets('Swiping down should not open InstalledAppsView',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
 
       // When:
@@ -30,11 +31,11 @@ void main() {
     });
     testWidgets('Swiping up should open InstalledAppsView',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
 
       // When:
@@ -53,12 +54,12 @@ void main() {
     testWidgets(
         'Long pressing app icon from installed apps view should enable drag and drop to home view',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
       // I am on the InstalledAppsView
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
 
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
@@ -69,12 +70,11 @@ void main() {
       expect(installedAppsViewFinder, findsOneWidget);
 
       // wait to load apps
-      await Future.delayed(const Duration(seconds: 5), () {});
       await tester.pumpAndSettle();
 
       // When:
       // I long press and drag an InstalledAppButton
-      final installedAppFinder = find.byType(InstalledAppIcon).first;
+      final installedAppFinder = find.byType(InstalledAppDraggable).first;
       expect(installedAppFinder, findsOneWidget);
 
       final longPressDragGesture =
@@ -85,11 +85,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // I can drop it on the HomeView and it is added
+      // I can drop it on the HomeScreen and it is added
       await longPressDragGesture.up();
       await tester.pumpAndSettle();
       expect(homeViewFinder, findsOneWidget);
-      expect(installedAppFinder, findsOneWidget);
+      expect(find.byType(AppIcon), findsOneWidget);
     });
   });
 }

@@ -6,6 +6,7 @@ import 'package:schildpad/flexible_grid/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
@@ -122,8 +123,9 @@ class HomeGridElement extends ConsumerWidget {
       ref.read(showTrashProvider.notifier).state = false;
     }, builder: (_, __, ___) {
       if (app != null) {
-        return InstalledAppIcon(
+        return InstalledAppDraggable(
           app: app,
+          appIcon: AppIcon(packageName: app.packageName),
           pageIndex: pageIndex,
           column: columnStart,
           row: rowStart,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
@@ -51,27 +52,30 @@ class InstalledAppsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final installedApps = ref.watch(installedAppsProvider);
+    final appPackages = ref.watch(appPackagesProvider);
     final columnCount = ref.watch(_columnCountProvider);
     return SliverGrid.count(
         crossAxisCount: columnCount,
-        children: installedApps.maybeWhen(
+        children: appPackages.maybeWhen(
             data: (appsList) => appsList
-                .map((app) => InstalledAppIcon(
-                    app: app,
-                    showAppName: true,
-                    onDragStarted: () {
-                      context.pop();
-                    }))
+                .map((packageName) => InstalledAppDraggable(
+                      app: AppData(packageName: packageName),
+                      appIcon: AppIcon(
+                        packageName: packageName,
+                        showAppName: true,
+                      ),
+                      onDragStarted: context.pop,
+                    ))
                 .toList(),
             orElse: () => []));
   }
 }
 
-class InstalledAppIcon extends ConsumerWidget {
-  const InstalledAppIcon(
+class InstalledAppDraggable extends ConsumerWidget {
+  const InstalledAppDraggable(
       {Key? key,
       required this.app,
+      required this.appIcon,
       this.showAppName = false,
       this.onDragStarted,
       this.onDragCompleted,
@@ -93,8 +97,11 @@ class InstalledAppIcon extends ConsumerWidget {
   final int? column;
   final int? row;
 
+  final Widget appIcon;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appIconImage = ref.watch(appIconImageProvider(app.packageName));
     return LongPressDraggable(
       data: HomeGridElementData(
           appData: app,
@@ -102,37 +109,17 @@ class InstalledAppIcon extends ConsumerWidget {
           originColumn: column,
           originRow: row),
       maxSimultaneousDrags: 1,
-      feedback:
-          SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
+      feedback: SizedBox(
+          width: _appIconSize,
+          height: _appIconSize,
+          child: appIconImage.maybeWhen(
+              data: (icon) => icon, orElse: () => const Icon(Icons.adb))),
       childWhenDragging: const SizedBox.shrink(),
       onDragStarted: onDragStarted,
       onDragCompleted: onDragCompleted,
       onDraggableCanceled: onDraggableCanceled,
       onDragEnd: onDragEnd,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            IconButton(
-              iconSize: _appIconSize,
-              padding: EdgeInsets.zero,
-              icon: app.icon,
-              onPressed: app.launch,
-              splashColor: Colors.transparent,
-            ),
-            if (showAppName)
-              Text(
-                app.name,
-                style: Theme.of(context).textTheme.caption,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-          ],
-        ),
-      ),
+      child: Material(type: MaterialType.transparency, child: appIcon),
     );
   }
 }

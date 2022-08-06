@@ -11,7 +11,7 @@ void main() {
   group('navigate to InstalledAppWidgetsView tests', () {
     testWidgets('Long press should open InstalledAppWidgetsView',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
@@ -33,7 +33,7 @@ void main() {
     testWidgets(
         'Long pressing an app widget from installed app widgets view should enable drag and drop to home view',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
