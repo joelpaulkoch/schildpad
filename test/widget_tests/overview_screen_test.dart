@@ -7,7 +7,7 @@ import 'package:schildpad/overview/overview_screen.dart';
 
 void main() {
   setUpAll(() async {
-    await Hive.initFlutter();
+    await Hive.initFlutter('schildpad/overview_screen_test');
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);

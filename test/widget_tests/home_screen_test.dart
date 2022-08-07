@@ -16,7 +16,7 @@ AppData _getTestApp() => const AppData(
 
 void main() {
   setUpAll(() async {
-    await Hive.initFlutter();
+    await Hive.initFlutter('schildpad/home_screen_test');
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);

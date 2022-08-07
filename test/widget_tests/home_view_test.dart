@@ -16,7 +16,7 @@ AppData _getTestApp() => const AppData(
 
 void main() {
   setUpAll(() async {
-    await Hive.initFlutter();
+    await Hive.initFlutter('schildpad/home_view_test');
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
@@ -24,6 +24,7 @@ void main() {
   tearDown(() async {
     await Hive.deleteFromDisk();
   });
+
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {

@@ -5,7 +5,7 @@ import 'package:schildpad/home/pages.dart';
 void main() {
   group('PagesStateNotifier tests', () {
     setUpAll(() async {
-      await Hive.initFlutter();
+      await Hive.initFlutter('schildpad/pages_test');
     });
     setUp(() async {
       await Hive.openBox<int>(pagesBoxName);
