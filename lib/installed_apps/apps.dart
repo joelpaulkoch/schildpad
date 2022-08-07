@@ -7,6 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+class AppData {
+  const AppData({
+    required this.packageName,
+  });
+
+  final String packageName;
+}
+
 Future<List<String>> getApplicationIds() async {
   const platform = MethodChannel('schildpad.schildpad.app/apps');
   final List applicationIds = await platform.invokeMethod('getApplicationIds');
