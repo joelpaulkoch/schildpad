@@ -186,7 +186,8 @@ class HomeGridElementData {
     }
     final widgetData = appWidgetData;
     if (widgetData != null) {
-      return widgetData.getColumnSpan(context, columnCount);
+      // return widgetData.getColumnSpan(context, columnCount);
+      return 2;
     }
     return 1;
   }
@@ -197,7 +198,8 @@ class HomeGridElementData {
     }
     final widgetData = appWidgetData;
     if (widgetData != null) {
-      return widgetData.getRowSpan(context, rowCount);
+      // return widgetData.getRowSpan(context, rowCount);
+      return 1;
     }
     return 1;
   }

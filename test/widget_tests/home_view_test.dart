@@ -199,24 +199,8 @@ void main() {
     testWidgets(
         'Using the trash in the context menu should remove the app widget from the home view',
         (WidgetTester tester) async {
-      const testAppWidget = AppWidgetData(
-          icon: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          packageName: 'testPackage',
-          label: 'testAppWidget',
-          preview: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-          appName: 'testApp',
-          targetWidth: 3,
-          targetHeight: 1,
-          componentName: 'testComponent',
-          minHeight: 0,
-          minWidth: 0,
-          appWidgetId: 0);
+      const testAppWidget =
+          AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
       final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
         ..addTile(const FlexibleGridTile(
@@ -233,9 +217,12 @@ void main() {
                 .overrideWithValue(StateController(
                     HomeGridElementData(appWidgetData: testAppWidget))),
             nativeAppWidgetProvider(testAppWidget.appWidgetId!)
-                .overrideWithValue(Card(
+                .overrideWithValue(const Card(
               color: Colors.deepOrange,
-              child: testAppWidget.icon,
+              child: Icon(
+                Icons.ac_unit_sharp,
+                color: Colors.cyanAccent,
+              ),
             ))
           ],
           child: const MaterialApp(

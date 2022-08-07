@@ -1,5 +1,4 @@
 import 'dart:developer' as dev;
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -9,28 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/installed_app_widgets/proto/installed_app_widgets.pb.dart';
-
-final installedAppWidgetsProvider =
-    FutureProvider<List<AppWidgetData>>((ref) async {
-  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  final Uint8List result =
-      await platform.invokeMethod('getInstalledAppWidgets');
-  final installedAppWidgets = InstalledAppWidgets.fromBuffer(result);
-  final installedAppWidgetsData = installedAppWidgets.appWidgets.map((w) =>
-      AppWidgetData(
-          icon: Image.memory(w.icon.data as Uint8List),
-          label: w.label,
-          appName: w.appName,
-          preview: Image.memory(w.preview.data as Uint8List),
-          packageName: w.packageName,
-          componentName: w.componentName,
-          targetWidth: w.targetWidth,
-          targetHeight: w.targetHeight,
-          minWidth: w.minWidth,
-          minHeight: w.minHeight));
-  return installedAppWidgetsData.toList();
-});
 
 final appWidgetIdProvider =
     FutureProvider.family<int, String>((ref, componentName) async {
@@ -46,81 +23,19 @@ Future<int> _createWidget(String componentName) async {
 }
 
 class AppWidgetData {
-  const AppWidgetData(
-      {required this.icon,
-      required this.label,
-      required this.appName,
-      required this.preview,
-      required this.packageName,
-      required this.componentName,
-      this.appWidgetId,
-      required this.targetWidth,
-      required this.targetHeight,
-      required this.minWidth,
-      required this.minHeight});
+  const AppWidgetData({
+    required this.componentName,
+    this.appWidgetId,
+  });
 
-  final Widget icon;
-  final String label;
-  final String appName;
-  final Widget preview;
-  final String packageName;
   final String componentName;
 
   final int? appWidgetId;
 
-  final int targetWidth;
-  final int targetHeight;
-  final int minWidth;
-  final int minHeight;
-
   AppWidgetData copyWith(int appWidgetId) => AppWidgetData(
-      icon: icon,
-      label: label,
-      appName: appName,
-      preview: preview,
-      packageName: packageName,
-      componentName: componentName,
-      appWidgetId: appWidgetId,
-      targetWidth: targetWidth,
-      targetHeight: targetHeight,
-      minWidth: minWidth,
-      minHeight: minHeight);
-
-  double getWidth(BuildContext context, int columnCount) {
-    if (targetWidth == 0) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      return (minWidth <= screenWidth) ? minWidth.toDouble() : screenWidth;
-    }
-    return (targetWidth * columnCount).toDouble();
-  }
-
-  double getHeight(BuildContext context, int rowCount) {
-    if (targetHeight == 0) {
-      final screenHeight = MediaQuery.of(context).size.height;
-      return (minHeight <= screenHeight) ? minHeight.toDouble() : screenHeight;
-    }
-    return (targetHeight * rowCount).toDouble();
-  }
-
-  int getColumnSpan(BuildContext context, int columnCount) {
-    if (targetWidth == 0) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final columnWidth = screenWidth / columnCount;
-      final columnSpan = (minWidth / columnWidth).ceil();
-      return (columnSpan <= columnCount) ? columnSpan : columnCount;
-    }
-    return targetWidth;
-  }
-
-  int getRowSpan(BuildContext context, int rowCount) {
-    if (targetHeight == 0) {
-      final screenHeight = MediaQuery.of(context).size.height;
-      final rowHeight = screenHeight / rowCount;
-      final rowSpan = (minHeight / rowHeight).ceil();
-      return (rowSpan <= rowCount) ? rowSpan : rowCount;
-    }
-    return targetHeight;
-  }
+        componentName: componentName,
+        appWidgetId: appWidgetId,
+      );
 }
 
 final showAppWidgetContextMenuProvider = StateProvider<bool>((ref) {

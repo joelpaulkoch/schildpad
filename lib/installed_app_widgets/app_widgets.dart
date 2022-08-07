@@ -1,12 +1,21 @@
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Future<List<String>> getApplicationWidgetIds() async {
+Future<List<String>> getAllApplicationWidgetIds() async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  final List<String> applicationWidgetIds =
-      await platform.invokeMethod('getApplicationWidgetIds');
-  return applicationWidgetIds;
+  final List applicationWidgetIds =
+      await platform.invokeMethod('getAllApplicationWidgetIds');
+  return applicationWidgetIds.cast<String>();
+}
+
+Future<List<String>> getApplicationWidgetIds(String packageName) async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  final List applicationWidgetIds =
+      await platform.invokeMethod('getApplicationWidgetIds', [packageName]);
+  return applicationWidgetIds.cast<String>();
 }
 
 Future<String> getApplicationId(String applicationWidgetId) async {
@@ -14,6 +23,13 @@ Future<String> getApplicationId(String applicationWidgetId) async {
   final String applicationId =
       await platform.invokeMethod('getApplicationId', [applicationWidgetId]);
   return applicationId;
+}
+
+Future<List<String>> getAllApplicationIdsWithWidgets() async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  final List applicationWidgetIds =
+      await platform.invokeMethod('getAllApplicationIdsWithWidgets');
+  return applicationWidgetIds.cast<String>();
 }
 
 // TODO description
@@ -35,7 +51,7 @@ Future<Uint8List> getApplicationWidgetPreview(
 Future<AppWidgetSizes> getApplicationWidgetSizes(
     String applicationWidgetId) async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  final Map<String, int> sizes = await platform
+  final Map sizes = await platform
       .invokeMethod('getApplicationWidgetSizes', [applicationWidgetId]);
   return AppWidgetSizes(
     minWidth: sizes['minWidth'] ?? 0,
@@ -63,3 +79,32 @@ class AppWidgetSizes {
   final int maxWidth;
   final int maxHeight;
 }
+
+final applicationWidgetIdsProvider = FutureProvider<List<String>>((ref) async {
+  return await getAllApplicationWidgetIds();
+});
+
+final appPackageApplicationWidgetIdsProvider =
+    FutureProvider.family<List<String>, String>((ref, packageName) async {
+  return await getApplicationWidgetIds(packageName);
+});
+
+final appWidgetSizesProvider = FutureProvider.family<AppWidgetSizes, String>(
+    (ref, applicationWidgetId) async {
+  return getApplicationWidgetSizes(applicationWidgetId);
+});
+
+final appWidgetPreviewProvider = FutureProvider.autoDispose
+    .family<Widget, String>((ref, applicationWidgetId) async {
+  final preview = await getApplicationWidgetPreview(applicationWidgetId);
+  return Image.memory(preview);
+});
+
+final appWidgetLabelProvider = FutureProvider.autoDispose
+    .family<String, String>((ref, applicationWidgetId) async {
+  return await getApplicationWidgetLabel(applicationWidgetId);
+});
+
+final appsWithWidgetsProvider = FutureProvider<List<String>>((ref) async {
+  return await getAllApplicationIdsWithWidgets();
+});

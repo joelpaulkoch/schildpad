@@ -50,7 +50,7 @@ final appPackagesProvider = FutureProvider<List<String>>((ref) async {
   return await getApplicationIds();
 });
 
-final _appLabelProvider =
+final appLabelProvider =
     FutureProvider.family<String, String>((ref, packageName) async {
   return await getApplicationLabel(packageName);
 });
@@ -82,7 +82,7 @@ class AppIcon extends ConsumerWidget {
     final appIconSize = ref.watch(_appIconSizeProvider);
     final appIconImage = ref.watch(appIconImageProvider(packageName));
     final appLaunch = ref.watch(_appLaunchFunctionProvider(packageName));
-    final appLabel = ref.watch(_appLabelProvider(packageName));
+    final appLabel = ref.watch(appLabelProvider(packageName));
     return Material(
         type: MaterialType.transparency,
         child: Column(
