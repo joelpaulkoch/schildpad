@@ -85,13 +85,13 @@ bool canAdd(List<FlexibleGridTile> tiles, int columnCount, int rowCount,
 
   for (var col = columnStart; col < columnStart + columnSpan; col++) {
     for (var row = rowStart; row < rowStart + rowSpan; row++) {
-      if (tiles.any((tile) => _isInsideTile(col, row, tile))) return false;
+      if (tiles.any((tile) => isInsideTile(col, row, tile))) return false;
     }
   }
   return true;
 }
 
-bool _isInsideTile(int column, int row, FlexibleGridTile tile) =>
+bool isInsideTile(int column, int row, FlexibleGridTile tile) =>
     tile.column <= column &&
     column < tile.column + tile.columnSpan &&
     tile.row <= row &&
