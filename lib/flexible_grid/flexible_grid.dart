@@ -93,9 +93,9 @@ bool canAdd(List<FlexibleGridTile> tiles, int columnCount, int rowCount,
 
 bool _isInsideTile(int column, int row, FlexibleGridTile tile) =>
     tile.column <= column &&
-    column <= tile.column + tile.columnSpan &&
+    column < tile.column + tile.columnSpan &&
     tile.row <= row &&
-    row <= tile.row + tile.rowSpan;
+    row < tile.row + tile.rowSpan;
 
 List<FlexibleGridTile> addTile(List<FlexibleGridTile> tiles, int columnCount,
     int rowCount, FlexibleGridTile tile) {
