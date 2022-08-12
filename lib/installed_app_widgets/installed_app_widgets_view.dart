@@ -6,22 +6,6 @@ import 'package:schildpad/installed_app_widgets/app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 
-class AppWidgetsScreen extends StatelessWidget {
-  const AppWidgetsScreen({Key? key}) : super(key: key);
-
-  static const routeName = '/appwidgets';
-
-  @override
-  Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Scaffold(
-        backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
-        body: AppWidgetsList(),
-      ),
-    );
-  }
-}
-
 class AppWidgetsList extends ConsumerWidget {
   const AppWidgetsList({
     Key? key,

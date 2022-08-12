@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/installed_apps/apps.dart';
+import 'package:schildpad/settings/settings.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
   return 3;
@@ -16,8 +17,8 @@ class InstalledAppsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
+    return const Scaffold(
+      backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
@@ -25,17 +26,10 @@ class InstalledAppsView extends StatelessWidget {
           snap: false,
           floating: false,
           actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.settings_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-              splashRadius: 20,
-            ),
+            SettingsIconButton(),
           ],
         ),
-        const SliverPadding(
+        SliverPadding(
             padding: EdgeInsets.fromLTRB(
                 _gridPadding, 0, _gridPadding, _gridPadding),
             sliver: InstalledAppsGrid())

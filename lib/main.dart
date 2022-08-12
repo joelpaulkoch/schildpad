@@ -6,10 +6,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
+import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/overview/overview_screen.dart';
-import 'package:schildpad/settings/settings.dart';
+import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
 Future setUpHive() async {

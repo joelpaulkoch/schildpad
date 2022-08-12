@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
+import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({

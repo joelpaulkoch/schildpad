@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:schildpad/settings/settings_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class SettingsIconButton extends StatelessWidget {
+  const SettingsIconButton({
+    Key? key,
+  }) : super(key: key);
 
-  static const routeName = '/settings';
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return IconButton(
+      icon: const Icon(
+        Icons.settings_outlined,
+        color: Colors.white,
+      ),
+      onPressed: () => context.pushNamed(SettingsScreen.routeName),
+      splashRadius: 20,
+    );
   }
 }
