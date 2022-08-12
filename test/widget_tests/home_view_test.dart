@@ -10,8 +10,14 @@ import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-AppData _getTestApp() => const AppData(
-      packageName: 'testPackage',
+Widget _getTestApp(int page, int col, int row) => InstalledAppDraggable(
+      app: const AppData(
+        packageName: 'testPackage',
+      ),
+      appIcon: const Icon(Icons.adb),
+      pageIndex: page,
+      column: col,
+      row: row,
     );
 
 void main() {
@@ -28,21 +34,18 @@ void main() {
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)));
 
       // GIVEN:
       // I am on the HomeView and there is exactly one app
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -53,10 +56,14 @@ void main() {
       // I long press
       final longPressDragGesture =
           await tester.startGesture(tester.getCenter(testAppFinder));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
       // and drag it to somewhere else
-      await longPressDragGesture.moveBy(const Offset(0, 200));
+      final emptyGridCellFinder = find.byType(HomeGridEmptyCell);
+      expect(emptyGridCellFinder, findsWidgets);
+      await longPressDragGesture
+          .moveTo(tester.getCenter(emptyGridCellFinder.first));
       await tester.pumpAndSettle();
+
       // and drop it there
       await longPressDragGesture.up();
       await tester.pumpAndSettle();
@@ -71,19 +78,18 @@ void main() {
     testWidgets(
         'After moving an app on the home view to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 2, 1)
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: SizedBox.expand(child: _getTestApp(0, 0, 0))));
 
       await tester.pumpWidget(ProviderScope(overrides: [
+        homeColumnCountProvider.overrideWithValue(2),
+        homeRowCountProvider.overrideWithValue(1),
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -100,9 +106,13 @@ void main() {
       // I long press
       final longPressDragGesture =
           await tester.startGesture(tester.getCenter(testAppFinder));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Duration(milliseconds: 500));
       // and drag it to somewhere else
-      await longPressDragGesture.moveBy(const Offset(0, 200));
+      final emptyGridCellFinder = find.byType(HomeGridEmptyCell);
+      expect(emptyGridCellFinder, findsWidgets);
+
+      await longPressDragGesture
+          .moveTo(tester.getCenter(emptyGridCellFinder.first));
       await tester.pumpAndSettle();
       // and drop it there
       await longPressDragGesture.up();
@@ -118,11 +128,8 @@ void main() {
       // And:
       // WHEN I drag it back to its place inside the grid
       final moveBackGesture = await tester.startGesture(newPosition);
-      await tester.pumpAndSettle();
-      await moveBackGesture.moveBy(const Offset(50, 0));
-      await tester.pumpAndSettle();
-      final homeGridPosition = tester.getTopLeft(find.byType(HomeViewGrid));
-      await moveBackGesture.moveTo(homeGridPosition + firstPosition);
+      await tester.pumpAndSettle(Duration(milliseconds: 500));
+      await moveBackGesture.moveTo(firstPosition);
       await tester.pumpAndSettle();
       await moveBackGesture.up();
       await tester.pumpAndSettle();
@@ -137,28 +144,22 @@ void main() {
     testWidgets(
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ))
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 1,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)))
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 1,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 1, 0)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: _getTestApp()))),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: _getTestApp())))
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -203,20 +204,18 @@ void main() {
       const testAppWidget =
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5)
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
         ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 3,
-          rowSpan: 1,
-        ));
+            column: 0,
+            row: 0,
+            columnSpan: 3,
+            rowSpan: 1,
+            child: HomeGridWidget(
+                appWidget: testAppWidget, pageIndex: 0, column: 0, row: 0)));
 
       await tester.pumpWidget(ProviderScope(
           overrides: [
             homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-            homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-                .overrideWithValue(StateController(
-                    HomeGridElementData(appWidgetData: testAppWidget))),
             nativeAppWidgetProvider(testAppWidget.appWidgetId!)
                 .overrideWithValue(const Card(
               color: Colors.deepOrange,
@@ -234,7 +233,7 @@ void main() {
       // GIVEN:
       // I am on the HomeView
       // and there is exactly one app widget
-      final testAppWidgetFinder = find.byType(AppWidget);
+      final testAppWidgetFinder = find.byType(HomeGridWidget);
       expect(testAppWidgetFinder, findsOneWidget);
 
       // And:

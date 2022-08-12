@@ -9,14 +9,13 @@ import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
-import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/main.dart' as app;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
-    await Hive.initFlutter();
+    await Hive.initFlutter('integration_test');
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
@@ -27,29 +26,30 @@ void main() {
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
-
-      runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp)))
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -78,34 +78,35 @@ void main() {
     testWidgets(
         'After moving an app on the home view to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
-
-      runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp)))
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
-      expect(testAppFinder, findsOneWidget);
-      final firstPosition = tester.getCenter(testAppFinder);
+      expect(testAppFinder, findsWidgets);
+      final firstPosition = tester.getCenter(testAppFinder.first);
 
       // When:
       // I long press
@@ -148,41 +149,43 @@ void main() {
     testWidgets(
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
-      const firstTestApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-      const secondTestApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 1,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
-
-      runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: firstTestApp))),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: secondTestApp)))
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeViewFinder = find.byType(HomeView);
+      expect(homeViewFinder, findsOneWidget);
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+
+      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(installedAppsViewFinder, findsOneWidget);
+      expect(installedAppFinder, findsWidgets);
+      final setup2LongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setup2LongPressDragGesture.moveBy(const Offset(100, 200));
+      await tester.pumpAndSettle();
+      await setup2LongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -218,11 +221,7 @@ void main() {
     testWidgets(
         'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -232,9 +231,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -302,11 +298,7 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -316,9 +308,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -350,14 +339,7 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      const firstTestApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-      const secondTestApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -373,12 +355,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: firstTestApp))),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 1))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: secondTestApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -413,11 +389,7 @@ void main() {
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -427,9 +399,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp))),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -463,11 +432,7 @@ void main() {
     testWidgets(
         'After dropping an app dragged from the installed apps view to the home view on an occupied spot the trash area should not be shown',
         (WidgetTester tester) async {
-      const appOnHomeView = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -477,9 +442,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: appOnHomeView))),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -528,11 +490,7 @@ void main() {
     testWidgets(
         'Moving an app on the home view to the trash area should remove the app',
         (WidgetTester tester) async {
-      const testApp = AppData(
-        packageName: 'com.android.calculator2',
-      );
-
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -542,9 +500,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(
-                StateController(HomeGridElementData(appData: testApp)))
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -582,19 +537,16 @@ void main() {
       const testAppWidget =
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 3,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addTile(const FlexibleGridTile(
+          column: 0,
+          row: 0,
+          columnSpan: 3,
+          rowSpan: 1,
+        ));
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(StateController(
-                HomeGridElementData(appWidgetData: testAppWidget))),
         nativeAppWidgetProvider(testAppWidget.appWidgetId!)
             .overrideWithValue(const Card(
           color: Colors.deepOrange,
@@ -630,7 +582,7 @@ void main() {
       const testAppWidget =
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
-      final homeGridStateNotifier = FlexibleGridStateNotifier(4, 5);
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
         column: 0,
         row: 0,
@@ -640,9 +592,6 @@ void main() {
 
       runApp(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
-        homeGridElementDataProvider(const PagedGridCell(0, 0, 0))
-            .overrideWithValue(StateController(
-                HomeGridElementData(appWidgetData: testAppWidget))),
         nativeAppWidgetProvider(testAppWidget.appWidgetId!)
             .overrideWithValue(const Card(
           color: Colors.deepOrange,

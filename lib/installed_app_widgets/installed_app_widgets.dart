@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/pages.dart';
 
 final appWidgetIdProvider =
     FutureProvider.family<int, String>((ref, componentName) async {
@@ -107,12 +106,6 @@ class AppWidgetContextMenu extends ConsumerWidget {
                 ref
                     .read(homeGridTilesProvider(pageIndex).notifier)
                     .removeTile(columnStart, rowStart);
-                // TODO check if necessary
-                ref
-                    .read(homeGridElementDataProvider(
-                            PagedGridCell(pageIndex, columnStart, rowStart))
-                        .notifier)
-                    .state = HomeGridElementData();
                 ref.read(showAppWidgetContextMenuProvider.notifier).state =
                     false;
               },

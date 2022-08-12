@@ -122,7 +122,9 @@ class AppWidgetListTile extends ConsumerWidget {
 
     return LongPressDraggable(
       data: HomeGridElementData(
-          appWidgetData: AppWidgetData(componentName: applicationWidgetId)),
+          appWidgetData: AppWidgetData(componentName: applicationWidgetId),
+          columnSpan: 2,
+          rowSpan: 1),
       maxSimultaneousDrags: 1,
       feedback: ConstrainedBox(
           constraints: BoxConstraints.tight(Size(

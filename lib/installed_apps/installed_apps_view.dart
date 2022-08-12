@@ -104,6 +104,8 @@ class InstalledAppDraggable extends ConsumerWidget {
     return LongPressDraggable(
       data: HomeGridElementData(
           appData: app,
+          columnSpan: 1,
+          rowSpan: 1,
           originPageIndex: pageIndex,
           originColumn: column,
           originRow: row),

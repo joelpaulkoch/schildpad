@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/home/pages.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
   return false;
@@ -23,11 +22,6 @@ class TrashArea extends ConsumerWidget {
         if (originPageIndex != null &&
             originColumn != null &&
             originRow != null) {
-          ref
-              .read(homeGridElementDataProvider(
-                      PagedGridCell(originPageIndex, originColumn, originRow))
-                  .notifier)
-              .state = HomeGridElementData();
           ref
               .read(homeGridTilesProvider(originPageIndex).notifier)
               .removeTile(originColumn, originRow);
