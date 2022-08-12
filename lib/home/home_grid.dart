@@ -50,21 +50,23 @@ class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
 
 class HomeViewGrid extends ConsumerWidget {
   const HomeViewGrid(
-    this.pageIndex, {
+    this.pageIndex,
+    this.columnCount,
+    this.rowCount, {
     Key? key,
   }) : super(key: key);
 
   final int pageIndex;
+  final int columnCount;
+  final int rowCount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final columns = ref.watch(homeColumnCountProvider);
-    final rows = ref.watch(homeRowCountProvider);
     dev.log('rebuilding HomeViewGrid');
     final homeGridTiles = ref.watch(homeGridTilesProvider(pageIndex));
     final defaultTiles = [];
-    for (var col = 0; col < columns; col++) {
-      for (var row = 0; row < rows; row++) {
+    for (var col = 0; col < columnCount; col++) {
+      for (var row = 0; row < rowCount; row++) {
         if (!homeGridTiles.any((tile) => fg.isInsideTile(col, row, tile))) {
           defaultTiles.add(fg.FlexibleGridTile(
               column: col,
@@ -76,8 +78,8 @@ class HomeViewGrid extends ConsumerWidget {
     }
 
     return fg.FlexibleGrid(
-        columnCount: columns,
-        rowCount: rows,
+        columnCount: columnCount,
+        rowCount: rowCount,
         gridTiles: [...homeGridTiles, ...defaultTiles]);
   }
 }
