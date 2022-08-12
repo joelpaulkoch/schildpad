@@ -22,12 +22,12 @@ Future openHiveBoxes() async {
 
   final leftPages = pages.get('leftPages') ?? 0;
   final rightPages = pages.get('rightPages') ?? 0;
-  await Hive.openBox<String>(getHiveBoxName(0));
+  await Hive.openBox<List<String>>(getHomeDataHiveBoxName(0));
   for (var i = 1; i <= leftPages; i++) {
-    await Hive.openBox<String>(getHiveBoxName(i));
+    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(i));
   }
   for (var i = 1; i <= rightPages; i++) {
-    await Hive.openBox<String>(getHiveBoxName(i));
+    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(i));
   }
 }
 

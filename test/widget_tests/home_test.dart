@@ -26,7 +26,7 @@ main() {
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
-    await Hive.openBox<String>(getHiveBoxName(0));
+    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(0));
   });
   tearDown(() async {});
   tearDownAll(() async {});

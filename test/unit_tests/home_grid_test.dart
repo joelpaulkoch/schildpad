@@ -7,7 +7,7 @@ void main() {
     await Hive.initFlutter('schildpad/home_grid_test');
   });
   setUp(() async {
-    await Hive.openBox<String>(getHiveBoxName(0));
+    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(0));
   });
   tearDown(() async {
     await Hive.deleteFromDisk();

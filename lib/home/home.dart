@@ -17,9 +17,9 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
-String getHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
+String getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
 
-String getHiveKey(int column, int row) => '${column}_$row';
+String getHomeDataHiveKey(int column, int row) => '${column}_$row';
 
 final homeGridTilesProvider =
     Provider.family<List<FlexibleGridTile>, int>((ref, pageIndex) {
@@ -40,25 +40,38 @@ final homeGridStateProvider = StateNotifierProvider.family<
 
 class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount)
-      : hiveBox = Hive.box<String>(getHiveBoxName(pageIndex)),
+      : hiveBox = Hive.box<List<String>>(getHomeDataHiveBoxName(pageIndex)),
         super([]) {
     var tiles = <FlexibleGridTile>[];
     for (String key in hiveBox.keys) {
       final colRow = key.split('_');
       final col = int.parse(colRow[0]);
       final row = int.parse(colRow[1]);
-      final String appPackage = hiveBox.get(key) ?? '';
+      final List elementData = hiveBox.get(key) ?? [];
 
-      final tile = FlexibleGridTile(
+      Widget? tileChild;
+      if (elementData.length == 1) {
+        final appPackage = elementData.cast<String>().first;
+        tileChild = InstalledAppDraggable(
+          app: AppData(packageName: appPackage),
+          appIcon: AppIcon(packageName: appPackage),
+          pageIndex: pageIndex,
           column: col,
           row: row,
-          child: InstalledAppDraggable(
-            app: AppData(packageName: appPackage),
-            appIcon: AppIcon(packageName: appPackage),
+        );
+      } else if (elementData.length == 2) {
+        final appWidgetData = elementData.cast<String>();
+        final componentName = appWidgetData.first;
+        final appWidgetId = int.parse(appWidgetData.elementAt(1));
+        tileChild = HomeGridWidget(
+            appWidget: AppWidgetData(
+                componentName: componentName, appWidgetId: appWidgetId),
             pageIndex: pageIndex,
             column: col,
-            row: row,
-          ));
+            row: row);
+      }
+
+      final tile = FlexibleGridTile(column: col, row: row, child: tileChild);
 
       tiles = addTile(tiles, columnCount, rowCount, tile);
     }
@@ -69,7 +82,7 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   final int columnCount;
   final int rowCount;
 
-  Box<String> hiveBox;
+  Box<List<String>> hiveBox;
 
   bool canAddElement(int column, int row, HomeGridElementData data) {
     return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
@@ -78,8 +91,11 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
   void addElement(int column, int row, HomeGridElementData data) {
     Widget? widgetToAdd;
+    List<String> dataToPersist = [];
 
     final app = data.appData;
+    final appWidget = data.appWidgetData;
+
     if (app != null) {
       widgetToAdd = InstalledAppDraggable(
         app: app,
@@ -88,11 +104,12 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         column: column,
         row: row,
       );
-    }
-    final appWidget = data.appWidgetData;
-    if (appWidget != null) {
+      dataToPersist.add(app.packageName);
+    } else if (appWidget != null) {
       widgetToAdd = HomeGridWidget(
           appWidget: appWidget, pageIndex: pageIndex, column: column, row: row);
+      dataToPersist.add(appWidget.componentName);
+      dataToPersist.add('${appWidget.appWidgetId}');
     }
 
     final tileToAdd = FlexibleGridTile(
@@ -105,15 +122,15 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
     final stateBefore = state;
     state = addTile(state, columnCount, rowCount, tileToAdd);
     if (state != stateBefore) {
-      dev.log('saving app in ($column, $row)');
-      hiveBox.put(getHiveKey(column, row), 'p');
+      dev.log('saving element in ($column, $row)');
+      hiveBox.put(getHomeDataHiveKey(column, row), dataToPersist);
     }
   }
 
   void removeElement(int columnStart, int rowStart) {
     state = removeTile(state, columnStart, rowStart);
-    dev.log('deleting app in ($columnStart, $rowStart)');
-    hiveBox.delete(getHiveKey(columnStart, rowStart));
+    dev.log('deleting element in ($columnStart, $rowStart)');
+    hiveBox.delete(getHomeDataHiveKey(columnStart, rowStart));
   }
 }
 
