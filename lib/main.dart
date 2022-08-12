@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
@@ -13,7 +14,21 @@ import 'package:schildpad/theme/theme.dart';
 
 Future setUpHive() async {
   await Hive.initFlutter();
-  await Hive.openBox<int>(pagesBoxName);
+  await openHiveBoxes();
+}
+
+Future openHiveBoxes() async {
+  final pages = await Hive.openBox<int>(pagesBoxName);
+
+  final leftPages = pages.get('leftPages') ?? 0;
+  final rightPages = pages.get('rightPages') ?? 0;
+  await Hive.openBox<String>(getHiveBoxName(0));
+  for (var i = 1; i <= leftPages; i++) {
+    await Hive.openBox<String>(getHiveBoxName(i));
+  }
+  for (var i = 1; i <= rightPages; i++) {
+    await Hive.openBox<String>(getHiveBoxName(i));
+  }
 }
 
 Future<void> main() async {
@@ -23,7 +38,6 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
     systemStatusBarContrastEnforced: true,
     systemNavigationBarContrastEnforced: true,
-    // systemNavigationBarColor: Colors.transparent, TODO extend views below system navigation bar
     systemNavigationBarDividerColor: Colors.transparent,
   ));
   runApp(ProviderScope(child: SchildpadApp()));

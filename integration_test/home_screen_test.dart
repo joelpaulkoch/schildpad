@@ -6,7 +6,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -15,10 +14,10 @@ import 'package:schildpad/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
-    await Hive.initFlutter('integration_test');
+    await Hive.initFlutter('schildpad/integration_test');
   });
   setUp(() async {
-    await Hive.openBox<int>(pagesBoxName);
+    await app.openHiveBoxes();
   });
   tearDown(() async {
     await Hive.deleteFromDisk();

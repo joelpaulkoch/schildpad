@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/flexible_grid.dart' as fg;
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
@@ -16,6 +17,10 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
+String getHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
+
+String getHiveKey(int column, int row) => '${column}_$row';
+
 final homeGridTilesProvider = StateNotifierProvider.family<
     HomeGridStateNotifier, List<fg.FlexibleGridTile>, int>((ref, pageIndex) {
   final columns = ref.watch(homeColumnCountProvider);
@@ -29,11 +34,36 @@ final homeGridTilesProvider = StateNotifierProvider.family<
 
 class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
   HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount)
-      : super([]);
+      : hiveBox = Hive.box<String>(getHiveBoxName(pageIndex)),
+        super([]) {
+    var tiles = <fg.FlexibleGridTile>[];
+    for (String key in hiveBox.keys) {
+      final colRow = key.split('_');
+      final col = int.parse(colRow[0]);
+      final row = int.parse(colRow[1]);
+      final String appPackage = hiveBox.get(key) ?? '';
+
+      final tile = fg.FlexibleGridTile(
+          column: col,
+          row: row,
+          child: InstalledAppDraggable(
+            app: AppData(packageName: appPackage),
+            appIcon: AppIcon(packageName: appPackage),
+            pageIndex: pageIndex,
+            column: col,
+            row: row,
+          ));
+
+      tiles = fg.addTile(tiles, columnCount, rowCount, tile);
+    }
+    state = tiles;
+  }
 
   final int pageIndex;
   final int columnCount;
   final int rowCount;
+
+  Box<String> hiveBox;
 
   bool canAdd(fg.FlexibleGridTile tile) {
     return fg.canAdd(state, columnCount, rowCount, tile.column, tile.row,
@@ -41,11 +71,18 @@ class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
   }
 
   void addTile(fg.FlexibleGridTile tile) {
+    final stateBefore = state;
     state = fg.addTile(state, columnCount, rowCount, tile);
+    if (state != stateBefore) {
+      dev.log('saving app in (${tile.column}, ${tile.row})');
+      hiveBox.put(getHiveKey(tile.column, tile.row), 'p');
+    }
   }
 
   void removeTile(int columnStart, int rowStart) {
     state = fg.removeTile(state, columnStart, rowStart);
+    dev.log('deleting app in (${columnStart}, ${rowStart})');
+    hiveBox.delete(getHiveKey(columnStart, rowStart));
   }
 }
 

@@ -19,16 +19,16 @@ Widget _getTestApp(int page, int col, int row) => InstalledAppDraggable(
       row: row,
     );
 
-void main() {
+main() {
   setUpAll(() async {
-    await Hive.initFlutter('schildpad/home_view_test');
+    await Hive.initFlutter('schildpad/home_test');
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
+    await Hive.openBox<String>(getHiveBoxName(0));
   });
-  tearDown(() async {
-    await Hive.deleteFromDisk();
-  });
+  tearDown(() async {});
+  tearDownAll(() async {});
 
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',

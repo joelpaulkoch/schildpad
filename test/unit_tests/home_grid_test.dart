@@ -1,8 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
 
 void main() {
+  setUpAll(() async {
+    await Hive.initFlutter('schildpad/home_grid_test');
+  });
+  setUp(() async {
+    await Hive.openBox<String>(getHiveBoxName(0));
+  });
+  tearDown(() async {
+    await Hive.deleteFromDisk();
+  });
+
   group('add tiles', () {
     test('adding a 1x1 grid tile to a 1x1 grid should work', () {
       const gridTile = FlexibleGridTile(

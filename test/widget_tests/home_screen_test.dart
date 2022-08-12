@@ -7,7 +7,18 @@ import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
+import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
+
+Widget _getTestApp(int page, int col, int row) => InstalledAppDraggable(
+      app: const AppData(
+        packageName: 'testPackage',
+      ),
+      appIcon: const Icon(Icons.adb),
+      pageIndex: page,
+      column: col,
+      row: row,
+    );
 
 void main() {
   setUpAll(() async {
@@ -15,21 +26,20 @@ void main() {
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
+    await Hive.openBox<String>(getHiveBoxName(0));
   });
-  tearDown(() async {
-    await Hive.deleteFromDisk();
-  });
+  tearDown(() async {});
   group('trash area', () {
     testWidgets(
         'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
@@ -60,12 +70,12 @@ void main() {
         'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
@@ -99,18 +109,18 @@ void main() {
         'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ))
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 1,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)))
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 1,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 1)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
@@ -147,12 +157,12 @@ void main() {
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
@@ -188,12 +198,12 @@ void main() {
         'Moving an app on the home view to the trash area should remove the app',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 1,
-          rowSpan: 1,
-        ));
+        ..addTile(FlexibleGridTile(
+            column: 0,
+            row: 0,
+            columnSpan: 1,
+            rowSpan: 1,
+            child: _getTestApp(0, 0, 0)));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),

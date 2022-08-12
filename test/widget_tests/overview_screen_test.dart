@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
@@ -11,6 +12,7 @@ void main() {
   });
   setUp(() async {
     await Hive.openBox<int>(pagesBoxName);
+    await Hive.openBox<String>(getHiveBoxName(0));
   });
   tearDown(() async {
     await Hive.deleteFromDisk();
