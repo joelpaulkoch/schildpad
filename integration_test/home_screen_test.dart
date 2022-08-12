@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -22,14 +23,14 @@ void main() {
   tearDown(() async {
     await Hive.deleteFromDisk();
   });
-  group('move apps on HomeView tests', () {
-    testWidgets('Moving an app on the home view to an empty spot should work',
+  group('move apps on HomeScreen tests', () {
+    testWidgets('Moving an app on the home screen to an empty spot should work',
         (WidgetTester tester) async {
       // setup
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
@@ -48,7 +49,7 @@ void main() {
       // end setup
 
       // Given:
-      // I am on the HomeView
+      // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -75,13 +76,13 @@ void main() {
       expect(newPosition, isNot(firstPosition));
     });
     testWidgets(
-        'After moving an app on the home view to an empty spot it should be possible to move it back',
+        'After moving an app on the home screen to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
       // setup
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
@@ -100,7 +101,7 @@ void main() {
       // end setup
 
       // Given:
-      // I am on the HomeView
+      // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -146,13 +147,13 @@ void main() {
       expect(movedBackPosition, firstPosition);
     });
     testWidgets(
-        'Moving an app on the home view to an occupied spot should not work',
+        'Moving an app on the home screen to an occupied spot should not work',
         (WidgetTester tester) async {
       // setup
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
@@ -184,7 +185,7 @@ void main() {
       // end setup
 
       // Given:
-      // I am on the HomeView
+      // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -218,7 +219,7 @@ void main() {
   });
   group('trash area', () {
     testWidgets(
-        'Moving an app on the home view should cause the trash area to show up',
+        'Moving an app on the home screen should cause the trash area to show up',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -234,8 +235,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -256,14 +257,14 @@ void main() {
       expect(trashFinder, findsOneWidget);
     });
     testWidgets(
-        'Dragging an app from the installed apps view to the home view should cause the trash area to show up',
+        'Dragging an app from the installed apps view to the home screen should cause the trash area to show up',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
 
       // Given:
       // I am on the InstalledAppsView
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
 
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
@@ -295,7 +296,7 @@ void main() {
       expect(trashFinder, findsOneWidget);
     });
     testWidgets(
-        'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
+        'After dropping a dragged app on an empty spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -311,8 +312,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -336,7 +337,7 @@ void main() {
       expect(trashFinder, findsNothing);
     });
     testWidgets(
-        'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
+        'After dropping a dragged app on an occupied spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -358,8 +359,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -402,8 +403,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -429,7 +430,7 @@ void main() {
       expect(trashFinder, findsNothing);
     });
     testWidgets(
-        'After dropping an app dragged from the installed apps view to the home view on an occupied spot the trash area should not be shown',
+        'After dropping an app dragged from the installed apps view to the home screen on an occupied spot the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -446,7 +447,7 @@ void main() {
 
       // Given:
       // I am on the InstalledAppsView
-      final homeViewFinder = find.byType(HomeView);
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
 
       await tester.fling(homeViewFinder, const Offset(0, -100), 500,
@@ -487,7 +488,7 @@ void main() {
       expect(trashFinder, findsNothing);
     });
     testWidgets(
-        'Moving an app on the home view to the trash area should remove the app',
+        'Moving an app on the home screen to the trash area should remove the app',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
       homeGridStateNotifier.addTile(const FlexibleGridTile(
@@ -503,8 +504,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -525,7 +526,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // it is removed from the home view
+      // it is removed from the home screen
       final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNothing);
     });
@@ -558,8 +559,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app widget
       final testAppWidgetFinder = find.byType(AppWidget);
@@ -576,7 +577,7 @@ void main() {
       expect(appWidgetContextMenuFinder, findsOneWidget);
     });
     testWidgets(
-        'Using the trash in the context menu should remove the app widget from the home view',
+        'Using the trash in the context menu should remove the app widget from the home screen',
         (WidgetTester tester) async {
       const testAppWidget =
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
@@ -603,8 +604,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
+      // I am on the HomeScreen
+      final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app widget
       final testAppWidgetFinder = find.byType(AppWidget);
@@ -620,7 +621,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // the app widget is removed from the home view
+      // the app widget is removed from the home screen
       expect(testAppWidgetFinder, findsNothing);
     });
   });
