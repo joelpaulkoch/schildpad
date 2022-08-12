@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/settings.dart';
 
@@ -23,13 +22,9 @@ class OverviewScreen extends ConsumerWidget {
           const Expanded(flex: 3, child: HomeView()),
           Expanded(
             child: Row(
-              children: [
-                Expanded(
-                    child: AddPageButton(
-                        onTap: ref.read(pagesProvider.notifier).addLeftPage)),
-                Expanded(
-                    child: AddPageButton(
-                        onTap: ref.read(pagesProvider.notifier).addRightPage))
+              children: const [
+                Expanded(child: AddLeftPageButton()),
+                Expanded(child: AddRightPageButton())
               ],
             ),
           ),
