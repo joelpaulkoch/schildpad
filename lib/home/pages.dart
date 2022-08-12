@@ -75,14 +75,3 @@ class PageCounter extends Equatable {
   @override
   List<Object?> get props => [leftPages, rightPages];
 }
-
-class PagedGridCell extends Equatable {
-  const PagedGridCell(this.pageIndex, this.col, this.row);
-
-  final int pageIndex;
-  final int col;
-  final int row;
-
-  @override
-  List<Object> get props => [pageIndex, col, row];
-}
