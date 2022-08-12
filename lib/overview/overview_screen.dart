@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 
 class OverviewScreen extends ConsumerWidget {

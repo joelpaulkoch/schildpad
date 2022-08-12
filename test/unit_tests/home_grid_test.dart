@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schildpad/flexible_grid/flexible_grid.dart';
-import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/home/flexible_grid.dart';
+import 'package:schildpad/home/home.dart';
 
 void main() {
   group('add tiles', () {

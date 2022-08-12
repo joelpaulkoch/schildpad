@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:schildpad/home/home_grid.dart';
+import 'package:schildpad/home/home.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 
 final _columnCountProvider = Provider<int>((ref) {

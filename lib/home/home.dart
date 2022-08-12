@@ -2,7 +2,8 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/flexible_grid/flexible_grid.dart' as fg;
+import 'package:schildpad/home/flexible_grid.dart' as fg;
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
@@ -45,6 +46,28 @@ class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
 
   void removeTile(int columnStart, int rowStart) {
     state = fg.removeTile(state, columnStart, rowStart);
+  }
+}
+
+class HomeView extends ConsumerWidget {
+  const HomeView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageCount = ref.watch(pageCountProvider);
+    final leftPagesCount = ref.watch(leftPagesProvider);
+    final initialPage = ref.watch(initialPageProvider);
+    final columnCount = ref.watch(homeColumnCountProvider);
+    final rowCount = ref.watch(homeRowCountProvider);
+    final pageController = PageController(initialPage: initialPage);
+    return PageView(
+        controller: pageController,
+        children: List.generate(
+            pageCount,
+            (index) =>
+                HomeViewGrid(index - leftPagesCount, columnCount, rowCount)));
   }
 }
 

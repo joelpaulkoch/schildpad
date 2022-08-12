@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schildpad/flexible_grid/flexible_grid.dart';
+import 'package:schildpad/home/flexible_grid.dart';
 
 void main() {
   group('generate default tiles', () {
