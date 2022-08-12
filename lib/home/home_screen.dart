@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home_grid.dart';
 import 'package:schildpad/home/home_view.dart';
 import 'package:schildpad/home/trash.dart';
@@ -18,8 +19,8 @@ class HomeScreen extends ConsumerWidget {
     final rowCount = ref.watch(homeRowCountProvider);
     final showTrash = ref.watch(showTrashProvider);
     return SafeArea(
-        child: Stack(children: [
-      Column(
+        child: DragDetector(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (showTrash) const Expanded(flex: 1, child: TrashArea()),
@@ -38,16 +39,7 @@ class HomeScreen extends ConsumerWidget {
                   child: const HomeView())),
         ],
       ),
-      DragTarget(
-          hitTestBehavior: HitTestBehavior.translucent,
-          onWillAccept: (_) {
-            ref.read(showTrashProvider.notifier).state = true;
-            return false;
-          },
-          onLeave: (_) {
-            ref.read(showTrashProvider.notifier).state = false;
-          },
-          builder: (_, __, ___) => const SizedBox.expand())
-    ]));
+      onDragDetected: () {},
+    ));
   }
 }
