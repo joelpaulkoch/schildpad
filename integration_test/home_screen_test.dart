@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
@@ -220,16 +219,11 @@ void main() {
     testWidgets(
         'Moving an app on the home screen should cause the trash area to show up',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -297,16 +291,11 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an empty spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -338,22 +327,12 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 1,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1))
+        ..addElement(0, 1, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -388,16 +367,11 @@ void main() {
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -431,16 +405,11 @@ void main() {
     testWidgets(
         'After dropping an app dragged from the installed apps view to the home screen on an occupied spot the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -489,16 +458,11 @@ void main() {
     testWidgets(
         'Moving an app on the home screen to the trash area should remove the app',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 1,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: app.SchildpadApp()));
       await tester.pumpAndSettle();
 
@@ -537,15 +501,10 @@ void main() {
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-          column: 0,
-          row: 0,
-          columnSpan: 3,
-          rowSpan: 1,
-        ));
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
         nativeAppWidgetProvider(testAppWidget.appWidgetId!)
             .overrideWithValue(const Card(
           color: Colors.deepOrange,
@@ -581,16 +540,11 @@ void main() {
       const testAppWidget =
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5);
-      homeGridStateNotifier.addTile(const FlexibleGridTile(
-        column: 0,
-        row: 0,
-        columnSpan: 3,
-        rowSpan: 1,
-      ));
+      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
 
       runApp(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
         nativeAppWidgetProvider(testAppWidget.appWidgetId!)
             .overrideWithValue(const Card(
           color: Colors.deepOrange,

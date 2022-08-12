@@ -104,8 +104,8 @@ class AppWidgetContextMenu extends ConsumerWidget {
               onPressed: () {
                 dev.log('removing app widget from ($columnStart, $rowStart)');
                 ref
-                    .read(homeGridTilesProvider(pageIndex).notifier)
-                    .removeTile(columnStart, rowStart);
+                    .read(homeGridStateProvider(pageIndex).notifier)
+                    .removeElement(columnStart, rowStart);
                 ref.read(showAppWidgetContextMenuProvider.notifier).state =
                     false;
               },

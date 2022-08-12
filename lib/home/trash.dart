@@ -23,8 +23,8 @@ class TrashArea extends ConsumerWidget {
             originColumn != null &&
             originRow != null) {
           ref
-              .read(homeGridTilesProvider(originPageIndex).notifier)
-              .removeTile(originColumn, originRow);
+              .read(homeGridStateProvider(originPageIndex).notifier)
+              .removeElement(originColumn, originRow);
         }
       },
       builder: (_, __, ___) => Material(

@@ -3,7 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/flexible_grid.dart' as fg;
+import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -21,8 +21,14 @@ String getHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
 
 String getHiveKey(int column, int row) => '${column}_$row';
 
-final homeGridTilesProvider = StateNotifierProvider.family<
-    HomeGridStateNotifier, List<fg.FlexibleGridTile>, int>((ref, pageIndex) {
+final homeGridTilesProvider =
+    Provider.family<List<FlexibleGridTile>, int>((ref, pageIndex) {
+  final tiles = ref.watch(homeGridStateProvider(pageIndex));
+  return tiles;
+});
+
+final homeGridStateProvider = StateNotifierProvider.family<
+    HomeGridStateNotifier, List<FlexibleGridTile>, int>((ref, pageIndex) {
   final columns = ref.watch(homeColumnCountProvider);
   final rows = ref.watch(homeRowCountProvider);
   return HomeGridStateNotifier(
@@ -32,18 +38,18 @@ final homeGridTilesProvider = StateNotifierProvider.family<
   );
 });
 
-class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
+class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount)
       : hiveBox = Hive.box<String>(getHiveBoxName(pageIndex)),
         super([]) {
-    var tiles = <fg.FlexibleGridTile>[];
+    var tiles = <FlexibleGridTile>[];
     for (String key in hiveBox.keys) {
       final colRow = key.split('_');
       final col = int.parse(colRow[0]);
       final row = int.parse(colRow[1]);
       final String appPackage = hiveBox.get(key) ?? '';
 
-      final tile = fg.FlexibleGridTile(
+      final tile = FlexibleGridTile(
           column: col,
           row: row,
           child: InstalledAppDraggable(
@@ -54,7 +60,7 @@ class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
             row: row,
           ));
 
-      tiles = fg.addTile(tiles, columnCount, rowCount, tile);
+      tiles = addTile(tiles, columnCount, rowCount, tile);
     }
     state = tiles;
   }
@@ -65,23 +71,48 @@ class HomeGridStateNotifier extends StateNotifier<List<fg.FlexibleGridTile>> {
 
   Box<String> hiveBox;
 
-  bool canAdd(fg.FlexibleGridTile tile) {
-    return fg.canAdd(state, columnCount, rowCount, tile.column, tile.row,
-        tile.columnSpan, tile.rowSpan);
+  bool canAddElement(int column, int row, HomeGridElementData data) {
+    return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
+        data.rowSpan);
   }
 
-  void addTile(fg.FlexibleGridTile tile) {
+  void addElement(int column, int row, HomeGridElementData data) {
+    Widget? widgetToAdd;
+
+    final app = data.appData;
+    if (app != null) {
+      widgetToAdd = InstalledAppDraggable(
+        app: app,
+        appIcon: AppIcon(packageName: app.packageName),
+        pageIndex: pageIndex,
+        column: column,
+        row: row,
+      );
+    }
+    final appWidget = data.appWidgetData;
+    if (appWidget != null) {
+      widgetToAdd = HomeGridWidget(
+          appWidget: appWidget, pageIndex: pageIndex, column: column, row: row);
+    }
+
+    final tileToAdd = FlexibleGridTile(
+        column: column,
+        row: row,
+        columnSpan: data.columnSpan,
+        rowSpan: data.rowSpan,
+        child: SizedBox.expand(child: widgetToAdd));
+
     final stateBefore = state;
-    state = fg.addTile(state, columnCount, rowCount, tile);
+    state = addTile(state, columnCount, rowCount, tileToAdd);
     if (state != stateBefore) {
-      dev.log('saving app in (${tile.column}, ${tile.row})');
-      hiveBox.put(getHiveKey(tile.column, tile.row), 'p');
+      dev.log('saving app in ($column, $row)');
+      hiveBox.put(getHiveKey(column, row), 'p');
     }
   }
 
-  void removeTile(int columnStart, int rowStart) {
-    state = fg.removeTile(state, columnStart, rowStart);
-    dev.log('deleting app in (${columnStart}, ${rowStart})');
+  void removeElement(int columnStart, int rowStart) {
+    state = removeTile(state, columnStart, rowStart);
+    dev.log('deleting app in ($columnStart, $rowStart)');
     hiveBox.delete(getHiveKey(columnStart, rowStart));
   }
 }
@@ -127,8 +158,8 @@ class HomeViewGrid extends ConsumerWidget {
     final defaultTiles = [];
     for (var col = 0; col < columnCount; col++) {
       for (var row = 0; row < rowCount; row++) {
-        if (!homeGridTiles.any((tile) => fg.isInsideTile(col, row, tile))) {
-          defaultTiles.add(fg.FlexibleGridTile(
+        if (!homeGridTiles.any((tile) => isInsideTile(col, row, tile))) {
+          defaultTiles.add(FlexibleGridTile(
               column: col,
               row: row,
               child: HomeGridEmptyCell(
@@ -137,7 +168,7 @@ class HomeViewGrid extends ConsumerWidget {
       }
     }
 
-    return fg.FlexibleGrid(
+    return FlexibleGrid(
         columnCount: columnCount,
         rowCount: rowCount,
         gridTiles: [...homeGridTiles, ...defaultTiles]);
@@ -163,13 +194,8 @@ class HomeGridEmptyCell extends ConsumerWidget {
         final data = draggedData;
         if (data != null) {
           final willAccept = ref
-              .read(homeGridTilesProvider(pageIndex).notifier)
-              .canAdd(fg.FlexibleGridTile(
-                column: column,
-                row: row,
-                columnSpan: data.columnSpan,
-                rowSpan: data.rowSpan,
-              ));
+              .read(homeGridStateProvider(pageIndex).notifier)
+              .canAddElement(column, row, data);
           dev.log('($column, $row) will accept: $willAccept');
           return willAccept;
         }
@@ -177,44 +203,16 @@ class HomeGridEmptyCell extends ConsumerWidget {
       },
       onAccept: (data) {
         dev.log('dropped in ($column, $row)');
-        Widget? widgetToAdd;
-
-        final app = data.appData;
-        if (app != null) {
-          widgetToAdd = InstalledAppDraggable(
-            app: app,
-            appIcon: AppIcon(packageName: app.packageName),
-            pageIndex: pageIndex,
-            column: column,
-            row: row,
-          );
-        }
-        final appWidget = data.appWidgetData;
-        if (appWidget != null) {
-          widgetToAdd = HomeGridWidget(
-              appWidget: appWidget,
-              pageIndex: pageIndex,
-              column: column,
-              row: row);
-        }
-
-        assert(widgetToAdd != null);
-
-        ref.read(homeGridTilesProvider(pageIndex).notifier).addTile(
-              fg.FlexibleGridTile(
-                  column: column,
-                  row: row,
-                  columnSpan: data.columnSpan,
-                  rowSpan: data.rowSpan,
-                  child: SizedBox.expand(child: widgetToAdd)),
-            );
+        ref
+            .read(homeGridStateProvider(pageIndex).notifier)
+            .addElement(column, row, data);
         final originColumn = data.originColumn;
         final originRow = data.originRow;
         if (originColumn != null && originRow != null) {
           dev.log('removing element from ($originColumn, $originRow)');
           ref
-              .read(homeGridTilesProvider(pageIndex).notifier)
-              .removeTile(originColumn, originRow);
+              .read(homeGridStateProvider(pageIndex).notifier)
+              .removeElement(originColumn, originRow);
         }
         ref.read(showTrashProvider.notifier).state = false;
       },

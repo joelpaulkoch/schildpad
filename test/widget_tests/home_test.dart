@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-Widget _getTestApp(int page, int col, int row) => InstalledAppDraggable(
-      app: const AppData(
+HomeGridElementData _getTestApp(int page, int col, int row) =>
+    HomeGridElementData(
+      appData: const AppData(
         packageName: 'testPackage',
       ),
-      appIcon: const Icon(Icons.adb),
-      pageIndex: page,
-      column: col,
-      row: row,
+      columnSpan: 1,
+      rowSpan: 1,
+      originPageIndex: page,
+      originColumn: col,
+      originRow: row,
     );
 
 main() {
@@ -34,17 +35,12 @@ main() {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(FlexibleGridTile(
-            column: 0,
-            row: 0,
-            columnSpan: 1,
-            rowSpan: 1,
-            child: _getTestApp(0, 0, 0)));
+        ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       // GIVEN:
       // I am on the HomeView and there is exactly one app
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -78,17 +74,12 @@ main() {
         'After moving an app on the home view to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 2, 1)
-        ..addTile(FlexibleGridTile(
-            column: 0,
-            row: 0,
-            columnSpan: 1,
-            rowSpan: 1,
-            child: SizedBox.expand(child: _getTestApp(0, 0, 0))));
+        ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       await tester.pumpWidget(ProviderScope(overrides: [
         homeColumnCountProvider.overrideWithValue(2),
         homeRowCountProvider.overrideWithValue(1),
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -144,21 +135,11 @@ main() {
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(FlexibleGridTile(
-            column: 0,
-            row: 0,
-            columnSpan: 1,
-            rowSpan: 1,
-            child: _getTestApp(0, 0, 0)))
-        ..addTile(FlexibleGridTile(
-            column: 0,
-            row: 1,
-            columnSpan: 1,
-            rowSpan: 1,
-            child: _getTestApp(0, 1, 0)));
+        ..addElement(0, 0, _getTestApp(0, 0, 0))
+        ..addElement(0, 1, _getTestApp(0, 0, 1));
 
       await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
       ], child: const MaterialApp(home: HomeView())));
       await tester.pumpAndSettle();
 
@@ -204,17 +185,15 @@ main() {
           AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
 
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addTile(const FlexibleGridTile(
-            column: 0,
-            row: 0,
-            columnSpan: 3,
-            rowSpan: 1,
-            child: HomeGridWidget(
-                appWidget: testAppWidget, pageIndex: 0, column: 0, row: 0)));
+        ..addElement(
+            0,
+            0,
+            HomeGridElementData(
+                appWidgetData: testAppWidget, columnSpan: 3, rowSpan: 1));
 
       await tester.pumpWidget(ProviderScope(
           overrides: [
-            homeGridTilesProvider(0).overrideWithValue(homeGridStateNotifier),
+            homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
             nativeAppWidgetProvider(testAppWidget.appWidgetId!)
                 .overrideWithValue(const Card(
               color: Colors.deepOrange,
