@@ -1,32 +1,40 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/main.dart' as app;
+import 'package:schildpad/overview/overview.dart';
+import 'package:schildpad/overview/overview_screen.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('navigate to InstalledAppWidgetsView tests', () {
-    testWidgets('Long press should open InstalledAppWidgetsView',
+    testWidgets('Button on OverviewScreen should open InstalledAppWidgetsView',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
+      // I am on the OverviewScreen
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+      expect(find.byType(OverviewScreen), findsOneWidget);
 
       // When:
-      // I do a long press
-      await tester.longPress(homeViewFinder);
-      await tester.pumpAndSettle();
+      // I press the app widgets button
+      final appWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
+      expect(appWidgetsButtonFinder, findsOneWidget);
+      await tester.tap(appWidgetsButtonFinder);
+      await tester.pumpAndSettle(Duration(seconds: 2));
 
       // Then:
-      // InstalledAppWidgetsView is opened
+      // AppWidgetsScreen is opened
       expect(find.byType(AppWidgetsScreen), findsOneWidget);
     });
   });

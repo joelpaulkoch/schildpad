@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
+import 'package:schildpad/overview/overview_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({
@@ -34,7 +34,7 @@ class HomeScreen extends ConsumerWidget {
                       context.push('/apps');
                     }
                   },
-                  onLongPress: () => context.push(AppWidgetsScreen.routeName),
+                  onLongPress: () => context.push(OverviewScreen.routeName),
                   child: const HomeView())),
         ],
       ),
