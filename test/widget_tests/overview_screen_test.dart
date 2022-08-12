@@ -28,6 +28,7 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(
         const ProviderScope(child: MaterialApp(home: OverviewScreen())));
-    expect(find.byType(AddPageButton), findsNWidgets(2));
+    expect(find.byType(AddLeftPageButton), findsOneWidget);
+    expect(find.byType(AddRightPageButton), findsOneWidget);
   });
 }
