@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/home/home.dart';
 
 final appWidgetIdProvider =
     FutureProvider.family<int, String>((ref, componentName) async {
@@ -36,10 +35,6 @@ class AppWidgetData {
         appWidgetId: appWidgetId,
       );
 }
-
-final showAppWidgetContextMenuProvider = StateProvider<bool>((ref) {
-  return false;
-});
 
 class AppWidget extends ConsumerWidget {
   const AppWidget({
@@ -71,48 +66,6 @@ class AppWidget extends ConsumerWidget {
               ],
             ),
           ));
-  }
-}
-
-class AppWidgetContextMenu extends ConsumerWidget {
-  const AppWidgetContextMenu({
-    Key? key,
-    required this.pageIndex,
-    required this.columnStart,
-    required this.rowStart,
-  }) : super(key: key);
-
-  final int pageIndex;
-  final int columnStart;
-  final int rowStart;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      color: Colors.greenAccent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          OutlinedButton(
-              onPressed: () {
-                ref.read(showAppWidgetContextMenuProvider.notifier).state =
-                    false;
-              },
-              child: const Icon(Icons.cancel_outlined)),
-          OutlinedButton(
-              onPressed: () {
-                dev.log('removing app widget from ($columnStart, $rowStart)');
-                ref
-                    .read(homeGridStateProvider(pageIndex).notifier)
-                    .removeElement(columnStart, rowStart);
-                ref.read(showAppWidgetContextMenuProvider.notifier).state =
-                    false;
-              },
-              child: const Icon(Icons.delete_outline_rounded))
-        ],
-      ),
-    );
   }
 }
 

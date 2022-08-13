@@ -254,30 +254,24 @@ class HomeGridWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showAppWidgetMenu = ref.watch(showAppWidgetContextMenuProvider);
     final widgetId = appWidget.appWidgetId ??
         ref
             .watch(appWidgetIdProvider(appWidget.componentName))
             .maybeMap(data: (id) => id.value, orElse: () => null);
 
-    return Stack(alignment: AlignmentDirectional.center, children: [
-      GestureDetector(
-        onLongPress: () {
-          ref.read(showAppWidgetContextMenuProvider.notifier).state = true;
-        },
-        child: (widgetId != null)
-            ? AppWidget(
-                appWidgetData: appWidget.copyWith(widgetId),
-              )
-            : const CircularProgressIndicator(),
-      ),
-      if (showAppWidgetMenu)
-        AppWidgetContextMenu(
-          pageIndex: pageIndex,
-          columnStart: column,
-          rowStart: row,
-        )
-    ]);
+    return (widgetId != null)
+        ? LongPressDraggable(
+            data: HomeGridElementData(
+                appWidgetData:
+                    AppWidgetData(componentName: appWidget.componentName),
+                columnSpan: 2,
+                rowSpan: 1),
+            maxSimultaneousDrags: 1,
+            feedback: const SizedBox(width: 100, height: 100),
+            child: AppWidget(
+              appWidgetData: appWidget.copyWith(widgetId),
+            ))
+        : const SizedBox.expand();
   }
 }
 

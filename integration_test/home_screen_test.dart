@@ -6,7 +6,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/main.dart' as app;
 
@@ -494,90 +493,6 @@ void main() {
       // it is removed from the home screen
       final newTestAppFinder = find.byType(InstalledAppDraggable);
       expect(newTestAppFinder, findsNothing);
-    });
-  });
-  group('app widgets', () {
-    testWidgets('Long press on an app widget should show its context menu',
-        (WidgetTester tester) async {
-      const testAppWidget =
-          AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
-
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-        nativeAppWidgetProvider(testAppWidget.appWidgetId!)
-            .overrideWithValue(const Card(
-          color: Colors.deepOrange,
-          child: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-        ))
-      ], child: app.SchildpadApp()));
-      await tester.pumpAndSettle();
-
-      // Given:
-      // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
-      // and there is exactly one app widget
-      final testAppWidgetFinder = find.byType(AppWidget);
-      expect(testAppWidgetFinder, findsOneWidget);
-
-      // When:
-      // I long press
-      await tester.longPress(testAppWidgetFinder);
-      await tester.pumpAndSettle();
-
-      // Then:
-      // its context menu is shown
-      final appWidgetContextMenuFinder = find.byType(AppWidgetContextMenu);
-      expect(appWidgetContextMenuFinder, findsOneWidget);
-    });
-    testWidgets(
-        'Using the trash in the context menu should remove the app widget from the home screen',
-        (WidgetTester tester) async {
-      const testAppWidget =
-          AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
-
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-        nativeAppWidgetProvider(testAppWidget.appWidgetId!)
-            .overrideWithValue(const Card(
-          color: Colors.deepOrange,
-          child: Icon(
-            Icons.ac_unit_sharp,
-            color: Colors.cyanAccent,
-          ),
-        ))
-      ], child: app.SchildpadApp()));
-      await tester.pumpAndSettle();
-
-      // Given:
-      // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
-      // and there is exactly one app widget
-      final testAppWidgetFinder = find.byType(AppWidget);
-      expect(testAppWidgetFinder, findsOneWidget);
-
-      // And:
-      // I open the context menu and click on the trash button
-      await tester.longPress(testAppWidgetFinder);
-      await tester.pumpAndSettle();
-      final trashButtonFinder = find.byIcon(Icons.delete_outline_rounded);
-      expect(trashButtonFinder, findsOneWidget);
-      await tester.press(trashButtonFinder);
-      await tester.pumpAndSettle();
-
-      // Then:
-      // the app widget is removed from the home screen
-      expect(testAppWidgetFinder, findsNothing);
     });
   });
 }
