@@ -17,13 +17,43 @@ class AppWidgetsList extends ConsumerWidget {
     final apps = ref
         .watch(appsWithWidgetsProvider)
         .maybeWhen(data: (appPackages) => appPackages, orElse: () => []);
-    return ListView(
-        children: ListTile.divideTiles(
-            color: Colors.white,
-            context: context,
-            tiles: apps.map((appPackage) => AppWidgetGroupListTile(
-                  appPackage: appPackage,
-                ))).toList());
+    return SingleChildScrollView(
+        child: ExpansionPanelList.radio(
+            children: apps
+                .map((appPackage) => ExpansionPanelRadio(
+                    value: appPackage,
+                    canTapOnHeader: true,
+                    headerBuilder: (BuildContext context, bool isExpanded) =>
+                        AppWidgetGroupHeader(
+                          appPackage: appPackage,
+                        ),
+                    body: AppWidgetGroupListTile(
+                      appPackage: appPackage,
+                    )))
+                .toList()));
+  }
+}
+
+class AppWidgetGroupHeader extends ConsumerWidget {
+  const AppWidgetGroupHeader({
+    Key? key,
+    required this.appPackage,
+  }) : super(key: key);
+
+  final String appPackage;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final groupTitle = ref
+        .watch(appLabelProvider(appPackage))
+        .maybeWhen(data: (appName) => appName, orElse: () => '');
+    final appIconImage = ref
+        .watch(appIconImageProvider(appPackage))
+        .maybeWhen(data: (data) => data, orElse: () => const Icon(Icons.adb));
+    return ListTile(
+      leading: appIconImage,
+      title: Text(groupTitle),
+    );
   }
 }
 
@@ -37,32 +67,19 @@ class AppWidgetGroupListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groupTitle = ref
-        .watch(appLabelProvider(appPackage))
-        .maybeWhen(data: (appName) => appName, orElse: () => '');
     final appWidgetIds = ref
         .watch(appPackageApplicationWidgetIdsProvider(appPackage))
         .maybeWhen(data: (appWidgetIds) => appWidgetIds, orElse: () => []);
 
     return Material(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(
-                groupTitle,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            Column(
-              children: appWidgetIds
-                  .map((e) => AppWidgetListTile(
-                        applicationWidgetId: e,
-                      ))
-                  .toList(),
-            )
-          ],
-        ));
+      child: Column(
+        children: appWidgetIds
+            .map((e) => AppWidgetListTile(
+                  applicationWidgetId: e,
+                ))
+            .toList(),
+      ),
+    );
   }
 }
 
@@ -97,9 +114,7 @@ class AppWidgetListTile extends ConsumerWidget {
 
     final appWidgetPreview = ref
         .watch(appWidgetPreviewProvider(applicationWidgetId))
-        .maybeWhen(
-            data: (preview) => preview,
-            orElse: () => const CircularProgressIndicator());
+        .maybeWhen(data: (preview) => preview, orElse: () => Container());
 
     final appWidgetLabel = ref
         .watch(appWidgetLabelProvider(applicationWidgetId))

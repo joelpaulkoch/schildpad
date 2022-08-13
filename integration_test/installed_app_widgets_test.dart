@@ -30,7 +30,7 @@ void main() {
       final appWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
       expect(appWidgetsButtonFinder, findsOneWidget);
       await tester.tap(appWidgetsButtonFinder);
-      await tester.pumpAndSettle(Duration(seconds: 2));
+      await tester.pumpAndSettle(const Duration(seconds: 2));
 
       // Then:
       // AppWidgetsScreen is opened
@@ -65,7 +65,12 @@ void main() {
 
       // When:
       // I long press and drag an app widget
-      final installedAppWidgetFinder = find.byType(AppWidgetListTile).first;
+      final appWidgetGroupFinder = find.byType(AppWidgetGroupHeader).first;
+      expect(appWidgetGroupFinder, findsOneWidget);
+      await tester.tap(appWidgetGroupFinder);
+      await tester.pumpAndSettle();
+      final installedAppWidgetFinder =
+          find.byType(AppWidgetListTile).hitTestable().first;
       expect(installedAppWidgetFinder, findsOneWidget);
 
       final longPressDragGesture =

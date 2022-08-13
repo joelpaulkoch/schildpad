@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
+import 'package:schildpad/settings/settings.dart';
 
 class AppWidgetsScreen extends StatelessWidget {
   const AppWidgetsScreen({Key? key}) : super(key: key);
@@ -8,11 +9,13 @@ class AppWidgetsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Scaffold(
-        backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
-        body: AppWidgetsList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Widgets'),
+        actions: const [SettingsIconButton()],
       ),
+      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
+      body: const AppWidgetsList(),
     );
   }
 }

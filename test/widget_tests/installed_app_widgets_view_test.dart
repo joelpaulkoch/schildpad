@@ -16,13 +16,14 @@ void main() {
 
     // WHEN: we visualize it using AppWidgetsList
     await tester.pumpWidget(ProviderScope(overrides: [
-      appsWithWidgetsProvider.overrideWithValue(AsyncData([testAppPackage])),
+      appsWithWidgetsProvider
+          .overrideWithValue(const AsyncData([testAppPackage])),
       appLabelProvider(testAppPackage)
-          .overrideWithValue(AsyncData(testAppLabel)),
+          .overrideWithValue(const AsyncData(testAppLabel)),
       appPackageApplicationWidgetIdsProvider(testAppPackage)
-          .overrideWithValue(AsyncData([testAppWidgetId])),
+          .overrideWithValue(const AsyncData([testAppWidgetId])),
       appWidgetPreviewProvider(testAppPackage)
-          .overrideWithValue(AsyncData(testAppWidgetPreview))
+          .overrideWithValue(const AsyncData(testAppWidgetPreview))
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: the widgets icon and label are shown
@@ -47,36 +48,33 @@ void main() {
     // WHEN: we visualize them using AppWidgetsList
     await tester.pumpWidget(ProviderScope(overrides: [
       appsWithWidgetsProvider.overrideWithValue(
-          AsyncData([firstTestAppPackage, secondTestAppPackage])),
+          const AsyncData([firstTestAppPackage, secondTestAppPackage])),
       appLabelProvider(firstTestAppPackage)
-          .overrideWithValue(AsyncData(firstTestAppLabel)),
+          .overrideWithValue(const AsyncData(firstTestAppLabel)),
       appPackageApplicationWidgetIdsProvider(firstTestAppPackage)
-          .overrideWithValue(AsyncData([firstTestAppWidgetId])),
+          .overrideWithValue(const AsyncData([firstTestAppWidgetId])),
       appWidgetPreviewProvider(firstTestAppPackage)
-          .overrideWithValue(AsyncData(firstTestAppWidgetPreview)),
+          .overrideWithValue(const AsyncData(firstTestAppWidgetPreview)),
       appLabelProvider(secondTestAppPackage)
-          .overrideWithValue(AsyncData(secondTestAppLabel)),
+          .overrideWithValue(const AsyncData(secondTestAppLabel)),
       appPackageApplicationWidgetIdsProvider(secondTestAppPackage)
-          .overrideWithValue(AsyncData([secondTestAppWidgetId])),
+          .overrideWithValue(const AsyncData([secondTestAppWidgetId])),
       appWidgetPreviewProvider(secondTestAppPackage)
-          .overrideWithValue(AsyncData(secondTestAppWidgetPreview))
+          .overrideWithValue(const AsyncData(secondTestAppWidgetPreview))
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: they are shown grouped by app
     final firstAppWidgetFinder = find.text(firstTestAppLabel);
     expect(firstAppWidgetFinder, findsOneWidget);
-    final firstAppGroupFinder = find.ancestor(
-        of: firstAppWidgetFinder,
-        matching:
-            find.widgetWithText(AppWidgetGroupListTile, firstTestAppLabel));
+    final firstAppGroupFinder =
+        find.widgetWithText(AppWidgetGroupHeader, firstTestAppLabel);
     expect(firstAppGroupFinder, findsOneWidget);
 
     final secondAppWidgetFinder = find.text(secondTestAppLabel);
     expect(secondAppWidgetFinder, findsOneWidget);
-    final secondAppGroupFinder = find.ancestor(
-        of: secondAppWidgetFinder,
-        matching:
-            find.widgetWithText(AppWidgetGroupListTile, secondTestAppLabel));
+    final secondAppGroupFinder =
+        find.widgetWithText(AppWidgetGroupHeader, secondTestAppLabel);
+
     expect(secondAppGroupFinder, findsOneWidget);
   });
   /*testWidgets('Long press on an app widget should show its context menu',
