@@ -7,7 +7,6 @@ import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
@@ -52,11 +51,6 @@ class SchildpadApp extends StatelessWidget {
         path: HomeScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
             const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/apps',
-        builder: (BuildContext context, GoRouterState state) =>
-            const InstalledAppsView(),
       ),
       GoRoute(
         path: AppWidgetsScreen.routeName,

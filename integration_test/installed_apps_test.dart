@@ -27,7 +27,7 @@ void main() {
 
       // Then:
       // InstalledAppsView is not opened
-      expect(find.byType(InstalledAppsView), findsNothing);
+      expect(find.byType(InstalledAppsView).hitTestable(), findsNothing);
     });
     testWidgets('Swiping up should open InstalledAppsView',
         (WidgetTester tester) async {
@@ -89,7 +89,7 @@ void main() {
       await longPressDragGesture.up();
       await tester.pumpAndSettle();
       expect(homeViewFinder, findsOneWidget);
-      expect(find.byType(AppIcon), findsOneWidget);
+      expect(find.byType(AppIcon).hitTestable(), findsOneWidget);
     });
   });
 }

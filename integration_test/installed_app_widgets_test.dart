@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -45,19 +44,23 @@ void main() {
       await app.main();
       await tester.pumpAndSettle();
 
-      // Given:
-      // I am on the InstalledAppWidgetsView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
-
-      await tester.longPress(homeViewFinder);
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+      expect(find.byType(OverviewScreen), findsOneWidget);
+      final showAppWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
+      expect(showAppWidgetsButtonFinder, findsOneWidget);
+      await tester.tap(showAppWidgetsButtonFinder);
       await tester.pumpAndSettle();
 
-      final installedAppWidgetsViewFinder = find.byType(AppWidgetsScreen);
-      expect(installedAppWidgetsViewFinder, findsOneWidget);
+      // Given:
+      // I am on the AppWidgetsScreen
+      final appWidgetsScreenFinder = find.byType(AppWidgetsScreen);
+      expect(appWidgetsScreenFinder, findsOneWidget);
 
       // wait to load widgets
-      await Future.delayed(const Duration(seconds: 60), () {});
+      await Future.delayed(const Duration(seconds: 2), () {});
       await tester.pumpAndSettle();
 
       // When:
@@ -81,7 +84,7 @@ void main() {
       await Future.delayed(const Duration(seconds: 3), () {});
       await tester.pumpAndSettle();
 
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       expect(find.byType(AppWidget), findsOneWidget);
     });
   });

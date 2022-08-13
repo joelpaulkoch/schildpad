@@ -118,7 +118,7 @@ class AppWidgetListTile extends ConsumerWidget {
           child: appWidgetPreview),
       childWhenDragging: const SizedBox.shrink(),
       onDragStarted: () {
-        context.goNamed(HomeScreen.routeName);
+        context.go(HomeScreen.routeName);
       },
       child: Card(
         color: Colors.transparent,

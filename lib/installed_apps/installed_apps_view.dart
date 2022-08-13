@@ -1,6 +1,6 @@
+import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/settings/settings.dart';
@@ -17,24 +17,14 @@ class InstalledAppsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
-      body: CustomScrollView(slivers: <Widget>[
-        SliverAppBar(
-          backgroundColor: Colors.transparent,
-          pinned: false,
-          snap: false,
-          floating: false,
-          actions: [
-            SettingsIconButton(),
-          ],
+    return Column(children: const [
+      Material(
+        child: ListTile(
+          trailing: SettingsIconButton(),
         ),
-        SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-                _gridPadding, 0, _gridPadding, _gridPadding),
-            sliver: InstalledAppsGrid())
-      ]),
-    );
+      ),
+      Expanded(child: InstalledAppsGrid())
+    ]);
   }
 }
 
@@ -47,7 +37,9 @@ class InstalledAppsGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appPackages = ref.watch(appPackagesProvider);
     final columnCount = ref.watch(_columnCountProvider);
-    return SliverGrid.count(
+    return GridView.count(
+        padding: const EdgeInsets.fromLTRB(
+            _gridPadding, 0, _gridPadding, _gridPadding),
         crossAxisCount: columnCount,
         children: appPackages.maybeWhen(
             data: (appsList) => appsList
@@ -57,7 +49,7 @@ class InstalledAppsGrid extends ConsumerWidget {
                         packageName: packageName,
                         showAppName: true,
                       ),
-                      onDragStarted: context.pop,
+                      onDragStarted: Backdrop.of(context).revealBackLayer,
                     ))
                 .toList(),
             orElse: () => []));

@@ -50,7 +50,7 @@ void main() {
       // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
 
@@ -68,7 +68,7 @@ void main() {
 
       // Then:
       // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppDraggable);
+      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(newTestAppFinder, findsOneWidget);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newPosition, isNot(firstPosition));
@@ -102,9 +102,9 @@ void main() {
       // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
-      expect(testAppFinder, findsWidgets);
-      final firstPosition = tester.getCenter(testAppFinder.first);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      expect(testAppFinder, findsOneWidget);
+      final firstPosition = tester.getCenter(testAppFinder);
 
       // When:
       // I long press
@@ -120,7 +120,7 @@ void main() {
 
       // Then:
       // it is moved to this place
-      final newTestAppFinder = find.byType(InstalledAppDraggable);
+      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(newTestAppFinder, findsOneWidget);
       final newPosition = tester.getCenter(newTestAppFinder);
       expect(newPosition, isNot(firstPosition));
@@ -139,7 +139,8 @@ void main() {
 
       // Then:
       // it is moved back
-      final movedBackTestAppFinder = find.byType(InstalledAppDraggable);
+      final movedBackTestAppFinder =
+          find.byType(InstalledAppDraggable).hitTestable();
       expect(movedBackTestAppFinder, findsOneWidget);
       final movedBackPosition = tester.getCenter(movedBackTestAppFinder);
       expect(movedBackPosition, firstPosition);
@@ -158,7 +159,8 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 400));
       final installedAppsViewFinder = find.byType(InstalledAppsView);
       expect(installedAppsViewFinder, findsOneWidget);
-      final installedAppFinder = find.byType(InstalledAppDraggable);
+      final installedAppFinder =
+          find.byType(InstalledAppDraggable).hitTestable();
       expect(installedAppFinder, findsWidgets);
       final setupLongPressDragGesture =
           await tester.startGesture(tester.getCenter(installedAppFinder.first));
@@ -186,7 +188,7 @@ void main() {
       // I am on the HomeScreen
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -206,7 +208,7 @@ void main() {
 
       // Then:
       // it is not moved to this place and everything is still the same
-      final newTestAppFinder = find.byType(InstalledAppDraggable);
+      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(newTestAppFinder, findsNWidgets(2));
       final newFirstTestAppPosition = tester.getCenter(newTestAppFinder.first);
       final newSecondTestAppPosition = tester.getCenter(newTestAppFinder.at(1));
@@ -341,7 +343,7 @@ void main() {
       final homeViewFinder = find.byType(HomeScreen);
       expect(homeViewFinder, findsOneWidget);
       // and there are two apps
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);

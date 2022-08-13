@@ -39,6 +39,7 @@ dependencies:
   android_intent_plus: ^3.1.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  backdrop: ^0.8.0
 
 dev_dependencies:
   integration_test:
