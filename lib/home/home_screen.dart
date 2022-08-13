@@ -37,8 +37,9 @@ class HomeScreen extends ConsumerWidget {
               child: NotificationListener<ScrollNotification>(
                   onNotification: (scrollNotification) {
                     if (scrollNotification is OverscrollNotification) {
-                      // scroll up
-                      if (scrollNotification.overscroll < -30) {
+                      // overscroll at the top
+                      if (scrollNotification.overscroll < 0 &&
+                          scrollNotification.velocity == 0) {
                         Backdrop.of(context).revealBackLayer();
                       }
                     }
