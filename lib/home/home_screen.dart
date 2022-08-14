@@ -65,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
                             Backdrop.of(context).concealBackLayer();
                           }
                         },
-                        child: const HomeView());
+                        child: const Hero(tag: 'home', child: HomeView()));
                   })),
             ],
           ),

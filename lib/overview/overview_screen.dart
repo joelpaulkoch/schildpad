@@ -11,8 +11,11 @@ class OverviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeColumns = ref.watch(homeColumnCountProvider);
     final homeRows = ref.watch(homeRowCountProvider);
+    final totalRows = homeRows;
+    final homeViewWidth = MediaQuery.of(context).size.width;
+    final displayHeight = MediaQuery.of(context).size.height;
+    final homeViewHeight = displayHeight * homeRows / totalRows;
     return Scaffold(
       appBar: AppBar(
         actions: const [SettingsIconButton()],
@@ -23,8 +26,9 @@ class OverviewScreen extends ConsumerWidget {
               flex: 5,
               child: Align(
                 child: AspectRatio(
-                    aspectRatio: homeColumns / homeRows,
-                    child: const Card(child: HomeView())),
+                    aspectRatio: homeViewWidth / homeViewHeight,
+                    child: const Card(
+                        child: Hero(tag: 'home', child: HomeView()))),
               )),
           Expanded(
             child: Row(
