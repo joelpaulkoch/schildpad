@@ -69,7 +69,9 @@ class HomeScreen extends ConsumerWidget {
                   })),
             ],
           ),
-          onDragDetected: () {},
+          onDragDetected: () {
+            ref.read(showTrashProvider.notifier).state = true;
+          },
           onDragEnd: () {},
         ));
   }

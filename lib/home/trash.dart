@@ -29,6 +29,7 @@ class TrashArea extends ConsumerWidget {
                     .read(homeGridStateProvider(originPageIndex).notifier)
                     .removeElement(originColumn, originRow);
               }
+              ref.read(showTrashProvider.notifier).state = false;
             },
             builder: (_, __, ___) => Material(
               color: Colors.red,

@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -27,9 +24,9 @@ void main() {
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle(const Duration(milliseconds: 400));
       final installedAppsViewFinder = find.byType(InstalledAppsView);
@@ -47,7 +44,7 @@ void main() {
 
       // Given:
       // I am on the HomeScreen
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
@@ -79,9 +76,9 @@ void main() {
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle(const Duration(milliseconds: 400));
       final installedAppsViewFinder = find.byType(InstalledAppsView);
@@ -99,7 +96,7 @@ void main() {
 
       // Given:
       // I am on the HomeScreen
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
@@ -130,8 +127,7 @@ void main() {
       await tester.pumpAndSettle();
       await moveBackGesture.moveBy(const Offset(50, 0));
       await tester.pumpAndSettle();
-      final homeGridPosition = tester.getTopLeft(find.byType(HomeViewGrid));
-      await moveBackGesture.moveTo(homeGridPosition + firstPosition);
+      await moveBackGesture.moveTo(firstPosition);
       await tester.pumpAndSettle();
       await moveBackGesture.up();
       await tester.pumpAndSettle();
@@ -151,9 +147,9 @@ void main() {
       await app.main();
       await tester.pumpAndSettle();
 
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle(const Duration(milliseconds: 400));
       final installedAppsViewFinder = find.byType(InstalledAppsView);
@@ -169,7 +165,7 @@ void main() {
       await setupLongPressDragGesture.up();
       await tester.pumpAndSettle();
 
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(installedAppsViewFinder, findsOneWidget);
@@ -185,7 +181,7 @@ void main() {
 
       // Given:
       // I am on the HomeScreen
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
@@ -198,9 +194,11 @@ void main() {
       final longPressDragGesture =
           await tester.startGesture(firstTestAppPosition);
       await tester.pumpAndSettle();
+
       // and drag it on the other app
       await longPressDragGesture.moveTo(secondTestAppPosition);
       await tester.pumpAndSettle();
+
       // and drop it there
       await longPressDragGesture.up();
       await tester.pumpAndSettle();
@@ -220,20 +218,33 @@ void main() {
     testWidgets(
         'Moving an app on the home screen should cause the trash area to show up',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -258,10 +269,10 @@ void main() {
 
       // Given:
       // I am on the InstalledAppsView
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
 
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle();
 
@@ -292,20 +303,33 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an empty spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -322,25 +346,51 @@ void main() {
 
       // Then:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1))
-        ..addElement(0, 1, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder =
+          find.byType(InstalledAppDraggable).hitTestable();
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(installedAppsViewFinder, findsOneWidget);
+      expect(installedAppFinder, findsWidgets);
+      final setup2LongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setup2LongPressDragGesture.moveBy(const Offset(100, 200));
+      await tester.pumpAndSettle();
+      await setup2LongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there are two apps
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
@@ -362,26 +412,39 @@ void main() {
 
       // Then:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
-    });
+    }, skip: true);
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -400,38 +463,31 @@ void main() {
 
       // Then:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
     testWidgets(
         'After dropping an app dragged from the installed apps view to the home screen on an occupied spot the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      await app.main();
       await tester.pumpAndSettle();
 
-      // Given:
-      // I am on the InstalledAppsView
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
 
-      await tester.fling(homeViewFinder, const Offset(0, -100), 500,
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
           warnIfMissed: false);
       await tester.pumpAndSettle();
-
+// Given:
+      // I am on the InstalledAppsView
       final installedAppsViewFinder = find.byType(InstalledAppsView);
       expect(installedAppsViewFinder, findsOneWidget);
 
       // wait to load apps
-      await Future.delayed(const Duration(seconds: 5), () {});
       await tester.pumpAndSettle();
 
       // When:
-      // I long press and drag an InstalledAppButton
+      // I long press and drag an app
       final installedAppFinder = find.byType(InstalledAppDraggable).first;
       expect(installedAppFinder, findsOneWidget);
 
@@ -442,7 +498,7 @@ void main() {
       await longPressDragGesture.moveBy(const Offset(100, 100));
       await tester.pumpAndSettle();
 
-      final appFinder = find.byType(InstalledAppDraggable);
+      final appFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(appFinder, findsOneWidget);
       // And:
       // I drop it on a spot occupied by an app
@@ -453,26 +509,39 @@ void main() {
 
       // Then:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
-    });
+    }, skip: true);
     testWidgets(
         'Moving an app on the home screen to the trash area should remove the app',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..addElement(0, 0, HomeGridElementData(columnSpan: 1, rowSpan: 1));
-
-      runApp(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: app.SchildpadApp()));
+      // setup
+      await app.main();
       await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle(const Duration(milliseconds: 400));
+      final installedAppsViewFinder = find.byType(InstalledAppsView);
+      expect(installedAppsViewFinder, findsOneWidget);
+      final installedAppFinder = find.byType(InstalledAppDraggable);
+      expect(installedAppFinder, findsWidgets);
+      final setupLongPressDragGesture =
+          await tester.startGesture(tester.getCenter(installedAppFinder.first));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.moveBy(const Offset(100, 100));
+      await tester.pumpAndSettle();
+      await setupLongPressDragGesture.up();
+      await tester.pumpAndSettle();
+      // end setup
 
       // Given:
       // I am on the HomeScreen
-      final homeViewFinder = find.byType(HomeScreen);
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -491,7 +560,7 @@ void main() {
 
       // Then:
       // it is removed from the home screen
-      final newTestAppFinder = find.byType(InstalledAppDraggable);
+      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(newTestAppFinder, findsNothing);
     });
   });

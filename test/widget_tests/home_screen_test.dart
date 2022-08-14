@@ -35,6 +35,7 @@ void main() {
         'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       await tester.pumpWidget(ProviderScope(overrides: [
@@ -66,6 +67,7 @@ void main() {
         'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       await tester.pumpWidget(ProviderScope(overrides: [
@@ -93,13 +95,14 @@ void main() {
 
       // THEN:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0))
         ..addElement(0, 1, _getTestApp(0, 0, 1));
 
@@ -131,13 +134,14 @@ void main() {
 
       // THEN:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       await tester.pumpWidget(ProviderScope(overrides: [
@@ -148,7 +152,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -167,13 +171,14 @@ void main() {
 
       // THEN:
       // the trash area is not shown
-      final trashFinder = find.byType(TrashArea);
+      final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
     testWidgets(
         'Moving an app on the home view to the trash area should remove the app',
         (WidgetTester tester) async {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
+        ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
 
       await tester.pumpWidget(ProviderScope(overrides: [
@@ -184,7 +189,7 @@ void main() {
       // GIVEN:
       // I am on the HomeScreen
       // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable);
+      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // WHEN:
@@ -203,7 +208,7 @@ void main() {
 
       // THEN:
       // it is removed from the home view
-      final newTestAppFinder = find.byType(InstalledAppDraggable);
+      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(newTestAppFinder, findsNothing);
     });
   });

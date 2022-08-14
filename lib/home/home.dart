@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
+import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -132,6 +133,11 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
     dev.log('deleting element in ($columnStart, $rowStart)');
     hiveBox.delete(getHomeDataHiveKey(columnStart, rowStart));
   }
+
+  void removeAll() {
+    hiveBox.deleteAll(hiveBox.keys);
+    state = [];
+  }
 }
 
 class HomeView extends ConsumerWidget {
@@ -231,6 +237,7 @@ class HomeGridEmptyCell extends ConsumerWidget {
               .read(homeGridStateProvider(pageIndex).notifier)
               .removeElement(originColumn, originRow);
         }
+        ref.read(showTrashProvider.notifier).state = false;
       },
       builder: (_, __, ___) => const SizedBox.expand(),
     );
