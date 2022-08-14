@@ -18,7 +18,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rowCount = ref.watch(homeRowCountProvider);
-    final showTrash = ref.watch(showTrashProvider);
     return BackdropScaffold(
         backgroundColor: Colors.transparent,
         backLayerBackgroundColor: Colors.transparent,
@@ -51,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (showTrash) const Expanded(flex: 1, child: TrashArea()),
+              const TrashArea(),
               Expanded(
                   flex: rowCount,
                   child: Builder(builder: (context) {
@@ -71,6 +70,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           onDragDetected: () {},
+          onDragEnd: () {},
         ));
   }
 }
