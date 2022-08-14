@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -24,10 +23,7 @@ main() {
   setUpAll(() async {
     await Hive.initFlutter('schildpad/home_test');
   });
-  setUp(() async {
-    await Hive.openBox<int>(pagesBoxName);
-    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(0));
-  });
+  setUp(() async {});
   tearDown(() async {});
   tearDownAll(() async {});
 

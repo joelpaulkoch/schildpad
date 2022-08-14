@@ -8,12 +8,8 @@ import 'package:schildpad/main.dart' as app;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(() async {
-    await Hive.initFlutter('schildpad/integration_test');
-  });
-  setUp(() async {
-    await app.openHiveBoxes();
-  });
+  setUpAll(() async {});
+  setUp(() async {});
   tearDown(() async {
     await Hive.deleteFromDisk();
   });

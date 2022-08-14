@@ -7,9 +7,7 @@ void main() {
     setUpAll(() async {
       await Hive.initFlutter('schildpad/pages_test');
     });
-    setUp(() async {
-      await Hive.openBox<int>(pagesBoxName);
-    });
+    setUp(() async {});
     tearDown(() async {
       await Hive.deleteFromDisk();
     });

@@ -17,9 +17,9 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
-String getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
+String _getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
 
-String getHomeDataHiveKey(int column, int row) => '${column}_$row';
+String _getHomeDataHiveKey(int column, int row) => '${column}_$row';
 
 final homeGridTilesProvider =
     Provider.family<List<FlexibleGridTile>, int>((ref, pageIndex) {
@@ -27,63 +27,70 @@ final homeGridTilesProvider =
   return tiles;
 });
 
+final _homeGridHiveBoxProvider =
+    FutureProvider.family<Box<List<String>>, int>((ref, pageIndex) async {
+  final box = Hive.openBox<List<String>>(_getHomeDataHiveBoxName(pageIndex));
+  return box;
+});
+
 final homeGridStateProvider = StateNotifierProvider.family<
     HomeGridStateNotifier, List<FlexibleGridTile>, int>((ref, pageIndex) {
   final columns = ref.watch(homeColumnCountProvider);
   final rows = ref.watch(homeRowCountProvider);
-  return HomeGridStateNotifier(
-    pageIndex,
-    columns,
-    rows,
-  );
+  final hiveBox = ref.watch(_homeGridHiveBoxProvider(pageIndex)).valueOrNull;
+  return HomeGridStateNotifier(pageIndex, columns, rows, hiveBox: hiveBox);
 });
 
 class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
-  HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount)
-      : hiveBox = Hive.box<List<String>>(getHomeDataHiveBoxName(pageIndex)),
-        super([]) {
-    var tiles = <FlexibleGridTile>[];
-    for (String key in hiveBox.keys) {
-      final colRow = key.split('_');
-      final col = int.parse(colRow[0]);
-      final row = int.parse(colRow[1]);
-      final List elementData = hiveBox.get(key) ?? [];
+  HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount,
+      {this.hiveBox})
+      : super([]) {
+    final box = hiveBox;
+    if (box != null) {
+      var tiles = <FlexibleGridTile>[];
 
-      Widget? tileChild;
-      if (elementData.length == 1) {
-        final appPackage = elementData.cast<String>().first;
-        tileChild = InstalledAppDraggable(
-          app: AppData(packageName: appPackage),
-          appIcon: AppIcon(packageName: appPackage),
-          pageIndex: pageIndex,
-          column: col,
-          row: row,
-        );
-      } else if (elementData.length == 2) {
-        final appWidgetData = elementData.cast<String>();
-        final componentName = appWidgetData.first;
-        final appWidgetId = int.parse(appWidgetData.elementAt(1));
-        tileChild = HomeGridWidget(
-            appWidget: AppWidgetData(
-                componentName: componentName, appWidgetId: appWidgetId),
+      for (String key in box.keys) {
+        final colRow = key.split('_');
+        final col = int.parse(colRow[0]);
+        final row = int.parse(colRow[1]);
+        final List elementData = box.get(key) ?? [];
+
+        Widget? tileChild;
+        if (elementData.length == 1) {
+          final appPackage = elementData.cast<String>().first;
+          tileChild = InstalledAppDraggable(
+            app: AppData(packageName: appPackage),
+            appIcon: AppIcon(packageName: appPackage),
             pageIndex: pageIndex,
             column: col,
-            row: row);
+            row: row,
+          );
+        } else if (elementData.length == 2) {
+          final appWidgetData = elementData.cast<String>();
+          final componentName = appWidgetData.first;
+          final appWidgetId = int.parse(appWidgetData.elementAt(1));
+          tileChild = HomeGridWidget(
+              appWidget: AppWidgetData(
+                  componentName: componentName, appWidgetId: appWidgetId),
+              pageIndex: pageIndex,
+              column: col,
+              row: row);
+        }
+
+        final tile = FlexibleGridTile(
+            column: col, row: row, child: Center(child: tileChild));
+
+        tiles = addTile(tiles, columnCount, rowCount, tile);
       }
-
-      final tile = FlexibleGridTile(
-          column: col, row: row, child: Center(child: tileChild));
-
-      tiles = addTile(tiles, columnCount, rowCount, tile);
+      state = tiles;
     }
-    state = tiles;
   }
 
   final int pageIndex;
   final int columnCount;
   final int rowCount;
 
-  Box<List<String>> hiveBox;
+  final Box<List<String>>? hiveBox;
 
   bool canAddElement(int column, int row, HomeGridElementData data) {
     return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
@@ -124,18 +131,18 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
     state = addTile(state, columnCount, rowCount, tileToAdd);
     if (state != stateBefore) {
       dev.log('saving element in ($column, $row)');
-      hiveBox.put(getHomeDataHiveKey(column, row), dataToPersist);
+      hiveBox?.put(_getHomeDataHiveKey(column, row), dataToPersist);
     }
   }
 
   void removeElement(int columnStart, int rowStart) {
     state = [...removeTile(state, columnStart, rowStart)];
     dev.log('deleting element in ($columnStart, $rowStart)');
-    hiveBox.delete(getHomeDataHiveKey(columnStart, rowStart));
+    hiveBox?.delete(_getHomeDataHiveKey(columnStart, rowStart));
   }
 
   void removeAll() {
-    hiveBox.deleteAll(hiveBox.keys);
+    hiveBox?.deleteAll(hiveBox?.keys ?? []);
     state = [];
   }
 }

@@ -3,35 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
-Future setUpHive() async {
-  await Hive.initFlutter();
-  await openHiveBoxes();
-}
-
-Future openHiveBoxes() async {
-  final pages = await Hive.openBox<int>(pagesBoxName);
-
-  final leftPages = pages.get('leftPages') ?? 0;
-  final rightPages = pages.get('rightPages') ?? 0;
-  await Hive.openBox<List<String>>(getHomeDataHiveBoxName(0));
-  for (var i = 1; i <= leftPages; i++) {
-    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(i));
-  }
-  for (var i = 1; i <= rightPages; i++) {
-    await Hive.openBox<List<String>>(getHomeDataHiveBoxName(i));
-  }
-}
-
 Future<void> main() async {
-  await setUpHive();
+  await Hive.initFlutter();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
