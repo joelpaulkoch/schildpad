@@ -14,7 +14,6 @@ class AppWidgetsScreen extends StatelessWidget {
         title: const Text('Widgets'),
         actions: const [SettingsIconButton()],
       ),
-      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
       body: const AppWidgetsList(),
     );
   }

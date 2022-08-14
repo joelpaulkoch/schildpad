@@ -107,7 +107,6 @@ class AppIcon extends ConsumerWidget {
                   orElse: () {
                     return null;
                   }),
-              splashColor: Colors.transparent,
             ),
             if (showAppName)
               Text(

@@ -35,10 +35,9 @@ class TrashArea extends ConsumerWidget {
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2)),
+                border: Border.all(width: 2)),
             child: const Icon(
               Icons.delete_outline_rounded,
-              color: Colors.white,
             ),
           ),
         ),

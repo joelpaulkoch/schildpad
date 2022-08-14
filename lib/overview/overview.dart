@@ -15,7 +15,6 @@ class ShowAppWidgetsButton extends StatelessWidget {
         onPressed: () => context.push(AppWidgetsScreen.routeName),
         icon: const Icon(
           Icons.now_widgets_outlined,
-          color: Colors.white,
         ));
   }
 }
@@ -31,8 +30,7 @@ class DeletePageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: onTap,
-        icon: const Icon(Icons.delete_outline_rounded, color: Colors.white));
+        onPressed: onTap, icon: const Icon(Icons.delete_outline_rounded));
   }
 }
 
@@ -45,7 +43,7 @@ class AddLeftPageButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
         onPressed: ref.read(pagesProvider.notifier).addLeftPage,
-        icon: const Icon(Icons.add, color: Colors.white));
+        icon: const Icon(Icons.add));
   }
 }
 
@@ -58,6 +56,6 @@ class AddRightPageButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
         onPressed: ref.read(pagesProvider.notifier).addRightPage,
-        icon: const Icon(Icons.add, color: Colors.white));
+        icon: const Icon(Icons.add));
   }
 }
