@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
@@ -71,7 +70,8 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
             row: row);
       }
 
-      final tile = FlexibleGridTile(column: col, row: row, child: tileChild);
+      final tile = FlexibleGridTile(
+          column: col, row: row, child: Center(child: tileChild));
 
       tiles = addTile(tiles, columnCount, rowCount, tile);
     }
@@ -117,7 +117,7 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         row: row,
         columnSpan: data.columnSpan,
         rowSpan: data.rowSpan,
-        child: SizedBox.expand(child: widgetToAdd));
+        child: Center(child: widgetToAdd));
 
     final stateBefore = state;
     state = addTile(state, columnCount, rowCount, tileToAdd);
@@ -128,7 +128,7 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   }
 
   void removeElement(int columnStart, int rowStart) {
-    state = removeTile(state, columnStart, rowStart);
+    state = [...removeTile(state, columnStart, rowStart)];
     dev.log('deleting element in ($columnStart, $rowStart)');
     hiveBox.delete(getHomeDataHiveKey(columnStart, rowStart));
   }
@@ -231,7 +231,6 @@ class HomeGridEmptyCell extends ConsumerWidget {
               .read(homeGridStateProvider(pageIndex).notifier)
               .removeElement(originColumn, originRow);
         }
-        ref.read(showTrashProvider.notifier).state = false;
       },
       builder: (_, __, ___) => const SizedBox.expand(),
     );
