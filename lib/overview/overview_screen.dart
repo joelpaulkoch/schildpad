@@ -11,15 +11,21 @@ class OverviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeColumns = ref.watch(homeColumnCountProvider);
+    final homeRows = ref.watch(homeRowCountProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
         actions: const [SettingsIconButton()],
       ),
-      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
       body: Column(
         children: [
-          const Expanded(flex: 3, child: HomeView()),
+          Expanded(
+              flex: 5,
+              child: Align(
+                child: AspectRatio(
+                    aspectRatio: homeColumns / homeRows,
+                    child: const Card(child: HomeView())),
+              )),
           Expanded(
             child: Row(
               children: const [
