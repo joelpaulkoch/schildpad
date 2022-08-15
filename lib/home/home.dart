@@ -187,7 +187,7 @@ class HomeViewGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding HomeViewGrid');
+    dev.log('rebuilding HomeViewGrid $pageIndex');
     final homeGridTiles = ref.watch(homeGridTilesProvider(pageIndex));
     final defaultTiles = [];
     for (var col = 0; col < columnCount; col++) {

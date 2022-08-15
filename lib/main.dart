@@ -12,12 +12,7 @@ import 'package:schildpad/theme/theme.dart';
 Future<void> main() async {
   await Hive.initFlutter();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemStatusBarContrastEnforced: true,
-    systemNavigationBarContrastEnforced: true,
-    systemNavigationBarDividerColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(schildpadSystemUiOverlayStyle);
   runApp(ProviderScope(child: SchildpadApp()));
 }
 

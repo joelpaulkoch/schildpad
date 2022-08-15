@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/settings.dart';
+import 'package:schildpad/theme/theme.dart';
 
 class OverviewScreen extends ConsumerWidget {
   const OverviewScreen({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class OverviewScreen extends ConsumerWidget {
     final homeViewHeight = displayHeight * homeRows / totalRows;
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: schildpadSystemUiOverlayStyle,
         actions: const [SettingsIconButton()],
       ),
       body: Column(

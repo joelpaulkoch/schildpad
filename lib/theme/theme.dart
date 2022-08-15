@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SchildpadTheme {
   static ThemeData get lightTheme {
@@ -15,3 +16,10 @@ class SchildpadTheme {
         useMaterial3: true);
   }
 }
+
+const schildpadSystemUiOverlayStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  systemStatusBarContrastEnforced: true,
+  systemNavigationBarContrastEnforced: true,
+  systemNavigationBarDividerColor: Colors.transparent,
+);
