@@ -111,7 +111,7 @@ class AppIcon extends ConsumerWidget {
             if (showAppName)
               Text(
                 appLabel.maybeWhen(data: (label) => label, orElse: () => ''),
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.labelMedium,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
