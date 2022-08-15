@@ -83,12 +83,12 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
   final Box<List<String>>? hiveBox;
 
-  bool canAddElement(int column, int row, HomeGridElementData data) {
+  bool canAddElement(int column, int row, ElementData data) {
     return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
         data.rowSpan);
   }
 
-  void addElement(int column, int row, HomeGridElementData data) {
+  void addElement(int column, int row, ElementData data) {
     Widget? widgetToAdd;
     List<String> dataToPersist = [];
 
@@ -181,7 +181,7 @@ class DockGridEmptyCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DragTarget<HomeGridElementData>(
+    return DragTarget<ElementData>(
       onWillAccept: (draggedData) {
         final data = draggedData;
         if (data != null) {

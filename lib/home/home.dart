@@ -101,12 +101,12 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
   final Box<List<String>>? hiveBox;
 
-  bool canAddElement(int column, int row, HomeGridElementData data) {
+  bool canAddElement(int column, int row, ElementData data) {
     return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
         data.rowSpan);
   }
 
-  void addElement(int column, int row, HomeGridElementData data) {
+  void addElement(int column, int row, ElementData data) {
     Widget? widgetToAdd;
     List<String> dataToPersist = [];
 
@@ -246,7 +246,7 @@ class HomeGridEmptyCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DragTarget<HomeGridElementData>(
+    return DragTarget<ElementData>(
       onWillAccept: (draggedData) {
         final data = draggedData;
         if (data != null) {
@@ -301,7 +301,7 @@ class HomeGridWidget extends ConsumerWidget {
 
     return (widgetId != null)
         ? LongPressDraggable(
-            data: HomeGridElementData(
+            data: ElementData(
                 appWidgetData:
                     AppWidgetData(componentName: appWidget.componentName),
                 columnSpan: 2,
@@ -318,8 +318,8 @@ class HomeGridWidget extends ConsumerWidget {
   }
 }
 
-class HomeGridElementData {
-  HomeGridElementData(
+class ElementData {
+  ElementData(
       {this.appData,
       this.appWidgetData,
       required this.columnSpan,
@@ -337,4 +337,27 @@ class HomeGridElementData {
   final int? originRow;
 
   bool get isEmpty => appData == null && appWidgetData == null;
+}
+
+class ElementOrigin {
+  ElementOrigin.fromDock({required this.column, required this.row})
+      : fromDock = true,
+        pageIndex = null;
+
+  ElementOrigin.fromHome(
+      {required this.pageIndex, required this.column, required this.row})
+      : fromDock = false;
+
+  ElementOrigin.fromAppList()
+      : fromDock = false,
+        pageIndex = null,
+        column = null,
+        row = null;
+
+  final bool fromDock;
+  final int? pageIndex;
+  final int? column;
+  final int? row;
+
+  bool get fromAppList => !fromDock && (pageIndex == null);
 }

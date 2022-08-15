@@ -17,7 +17,7 @@ class TrashArea extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final showTrash = ref.watch(showTrashProvider);
     return showTrash
-        ? DragTarget<HomeGridElementData>(
+        ? DragTarget<ElementData>(
             onWillAccept: (_) => true,
             onAccept: (data) {
               final originPageIndex = data.originPageIndex;

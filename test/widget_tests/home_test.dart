@@ -7,8 +7,7 @@ import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-HomeGridElementData _getTestApp(int page, int col, int row) =>
-    HomeGridElementData(
+ElementData _getTestApp(int page, int col, int row) => ElementData(
       appData: const AppData(
         packageName: 'testPackage',
       ),
@@ -188,7 +187,7 @@ main() {
         ..addElement(
             0,
             0,
-            HomeGridElementData(
+            ElementData(
                 appWidgetData: testAppWidget, columnSpan: 3, rowSpan: 1));
 
       await tester.pumpWidget(ProviderScope(

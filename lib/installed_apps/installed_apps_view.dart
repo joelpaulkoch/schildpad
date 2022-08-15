@@ -88,7 +88,7 @@ class InstalledAppDraggable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appIconImage = ref.watch(appIconImageProvider(app.packageName));
     return LongPressDraggable(
-      data: HomeGridElementData(
+      data: ElementData(
           appData: app,
           columnSpan: 1,
           rowSpan: 1,

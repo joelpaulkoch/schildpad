@@ -8,8 +8,7 @@ import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-HomeGridElementData _getTestApp(int page, int col, int row) =>
-    HomeGridElementData(
+ElementData _getTestApp(int page, int col, int row) => ElementData(
       appData: const AppData(
         packageName: 'testPackage',
       ),

@@ -121,7 +121,7 @@ class AppWidgetListTile extends ConsumerWidget {
         .maybeWhen(data: (label) => label, orElse: () => '');
 
     return LongPressDraggable(
-      data: HomeGridElementData(
+      data: ElementData(
           appWidgetData: AppWidgetData(componentName: applicationWidgetId),
           columnSpan: 2,
           rowSpan: 1),
