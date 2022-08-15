@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
@@ -171,20 +172,20 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final totalRows = rowCount;
+    final dockRowCount = ref.watch(dockRowCountProvider);
+    final totalRows = rowCount + dockRowCount;
     final pageController = ref.watch(pageControllerProvider);
     final showTrash = ref.watch(showTrashProvider);
     return AspectRatio(
         aspectRatio: homeViewAspectRatio(context, rowCount, totalRows),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            border: Border.all(
-                color: showTrash
-                    ? Theme.of(context).toggleableActiveColor
-                    : Colors.transparent,
-                width: 3),
-          ),
+          decoration: showTrash
+              ? BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  border: Border.all(
+                      color: Theme.of(context).toggleableActiveColor, width: 3),
+                )
+              : null,
           child: PageView(
               controller: pageController,
               children: List.generate(
@@ -281,15 +282,15 @@ class HomeGridWidget extends ConsumerWidget {
   const HomeGridWidget({
     Key? key,
     required this.appWidget,
-    required this.pageIndex,
-    required this.column,
-    required this.row,
+    this.pageIndex,
+    this.column,
+    this.row,
   }) : super(key: key);
 
   final AppWidgetData appWidget;
-  final int pageIndex;
-  final int column;
-  final int row;
+  final int? pageIndex;
+  final int? column;
+  final int? row;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -304,7 +305,10 @@ class HomeGridWidget extends ConsumerWidget {
                 appWidgetData:
                     AppWidgetData(componentName: appWidget.componentName),
                 columnSpan: 2,
-                rowSpan: 1),
+                rowSpan: 1,
+                originPageIndex: pageIndex,
+                originColumn: column,
+                originRow: row),
             maxSimultaneousDrags: 1,
             feedback: const SizedBox(width: 100, height: 100),
             child: AppWidget(

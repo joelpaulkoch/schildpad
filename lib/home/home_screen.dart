@@ -2,6 +2,7 @@ import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/trash.dart';
@@ -17,7 +18,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rowCount = ref.watch(homeRowCountProvider);
+    final homeRowCount = ref.watch(homeRowCountProvider);
+    final dockRowCount = ref.watch(dockRowCountProvider);
     return BackdropScaffold(
         backgroundColor: Colors.transparent,
         backLayerBackgroundColor: Colors.transparent,
@@ -52,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               const TrashArea(),
               Expanded(
-                  flex: rowCount,
+                  flex: homeRowCount,
                   child: Align(
                     child: Builder(builder: (context) {
                       return GestureDetector(
@@ -70,6 +72,15 @@ class HomeScreen extends ConsumerWidget {
                           child: const Hero(tag: 'home', child: HomeView()));
                     }),
                   )),
+              Divider(
+                height: 5,
+                thickness: 2,
+                color: Theme.of(context).indicatorColor,
+              ),
+              Expanded(
+                flex: dockRowCount,
+                child: const Dock(),
+              )
             ],
           ),
           onDragDetected: () {
