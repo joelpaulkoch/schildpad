@@ -60,12 +60,12 @@ void main() {
       expect(appWidgetsScreenFinder, findsOneWidget);
 
       // wait to load widgets
-      await tester.pumpAndSettle(const Duration(seconds: 15));
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       // When:
       // I long press and drag an app widget
       final appWidgetGroupFinder = find.byType(AppWidgetGroupHeader);
-      expect(appWidgetGroupFinder, findsOneWidget);
+      expect(appWidgetGroupFinder, findsWidgets);
       await tester.tap(appWidgetGroupFinder.first);
       await tester.pumpAndSettle();
       final installedAppWidgetFinder =
@@ -76,14 +76,12 @@ void main() {
           .startGesture(tester.getCenter(installedAppWidgetFinder.first));
       await tester.pumpAndSettle();
 
-      await longPressDragGesture.moveBy(const Offset(-100, 300));
+      await longPressDragGesture.moveBy(const Offset(0, 150));
       await tester.pumpAndSettle();
 
       // Then:
-      // I can drop it on the HomeView and it is added
+      // I can drop it on the HomeScreen and it is added
       await longPressDragGesture.up();
-      await tester.pumpAndSettle();
-      await Future.delayed(const Duration(seconds: 3), () {});
       await tester.pumpAndSettle();
 
       expect(homeScreenFinder, findsOneWidget);

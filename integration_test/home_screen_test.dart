@@ -121,8 +121,6 @@ void main() {
       // When I drag it back to its place inside the grid
       final moveBackGesture = await tester.startGesture(newPosition);
       await tester.pumpAndSettle();
-      await moveBackGesture.moveBy(const Offset(50, 0));
-      await tester.pumpAndSettle();
       await moveBackGesture.moveTo(firstPosition);
       await tester.pumpAndSettle();
       await moveBackGesture.up();
@@ -183,7 +181,6 @@ void main() {
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
-      final secondTestAppPosition = tester.getCenter(testAppFinder.at(1));
 
       // When:
       // I long press the first app
@@ -192,6 +189,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // and drag it on the other app
+      final secondTestAppPosition = tester.getCenter(testAppFinder.at(1));
       await longPressDragGesture.moveTo(secondTestAppPosition);
       await tester.pumpAndSettle();
 
