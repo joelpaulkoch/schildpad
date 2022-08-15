@@ -16,6 +16,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMethodCodec
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
 
@@ -35,9 +36,11 @@ class MainActivity : FlutterActivity() {
         flutterEngine.platformViewsController.registry.registerViewFactory(
             "app.schildpad.schildpad/appwidgetview", nativeAppWidgetViewFactory
         )
+        val taskQueue =
+            flutterEngine.dartExecutor.binaryMessenger.makeBackgroundTaskQueue()
 
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger, APPS_CHANNEL
+            flutterEngine.dartExecutor.binaryMessenger, APPS_CHANNEL, StandardMethodCodec.INSTANCE, taskQueue
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             when (call.method) {
@@ -69,7 +72,7 @@ class MainActivity : FlutterActivity() {
             }
         }
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger, APPWIDGETS_CHANNEL
+            flutterEngine.dartExecutor.binaryMessenger, APPWIDGETS_CHANNEL, StandardMethodCodec.INSTANCE, taskQueue
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             when (call.method) {
