@@ -3,28 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/home_view.dart';
-import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/home/home_screen.dart';
+import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/overview/overview_screen.dart';
+import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
-Future setUpHive() async {
+Future<void> main() async {
   await Hive.initFlutter();
-  await Hive.openBox<int>(pagesBoxName);
-}
 
-void main() async {
-  await setUpHive();
-
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemStatusBarContrastEnforced: true,
-    systemNavigationBarContrastEnforced: true,
-    // systemNavigationBarColor: Colors.transparent, TODO extend views below system navigation bar
-    systemNavigationBarDividerColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(schildpadSystemUiOverlayStyle);
   runApp(ProviderScope(child: SchildpadApp()));
 }
 
@@ -34,24 +22,24 @@ class SchildpadApp extends StatelessWidget {
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: '/',
+        path: HomeScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeView(),
+            const HomeScreen(),
       ),
       GoRoute(
-        path: '/apps',
+        path: AppWidgetsScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
-            const InstalledAppsView(),
-      ),
-      GoRoute(
-        path: '/widgets',
-        builder: (BuildContext context, GoRouterState state) =>
-            const InstalledAppWidgetsView(),
+            const AppWidgetsScreen(),
       ),
       GoRoute(
         path: OverviewScreen.routeName,
         builder: (BuildContext context, GoRouterState state) =>
             const OverviewScreen(),
+      ),
+      GoRoute(
+        path: SettingsScreen.routeName,
+        builder: (BuildContext context, GoRouterState state) =>
+            const SettingsScreen(),
       ),
     ],
   );

@@ -1,66 +1,79 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:schildpad/home/home_view.dart';
+import 'package:schildpad/home/home_screen.dart';
+import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
 import 'package:schildpad/main.dart' as app;
+import 'package:schildpad/overview/overview.dart';
+import 'package:schildpad/overview/overview_screen.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('navigate to InstalledAppWidgetsView tests', () {
-    testWidgets('Long press should open InstalledAppWidgetsView',
+    testWidgets('Button on OverviewScreen should open InstalledAppWidgetsView',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the HomeView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
+      // I am on the OverviewScreen
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+      expect(find.byType(OverviewScreen), findsOneWidget);
 
       // When:
-      // I do a long press
-      await tester.longPress(homeViewFinder);
-      await tester.pumpAndSettle();
+      // I press the app widgets button
+      final appWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
+      expect(appWidgetsButtonFinder, findsOneWidget);
+      await tester.tap(appWidgetsButtonFinder);
+      await tester.pumpAndSettle(const Duration(seconds: 2));
 
       // Then:
-      // InstalledAppWidgetsView is opened
-      expect(find.byType(InstalledAppWidgetsView), findsOneWidget);
+      // AppWidgetsScreen is opened
+      expect(find.byType(AppWidgetsScreen), findsOneWidget);
     });
   });
   group('add app widgets to home view', () {
     testWidgets(
         'Long pressing an app widget from installed app widgets view should enable drag and drop to home view',
         (WidgetTester tester) async {
-      app.main();
+      await app.main();
+      await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+      expect(find.byType(OverviewScreen), findsOneWidget);
+      final showAppWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
+      expect(showAppWidgetsButtonFinder, findsOneWidget);
+      await tester.tap(showAppWidgetsButtonFinder);
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the InstalledAppWidgetsView
-      final homeViewFinder = find.byType(HomeView);
-      expect(homeViewFinder, findsOneWidget);
-
-      await tester.longPress(homeViewFinder);
-      await tester.pumpAndSettle();
-
-      final installedAppWidgetsViewFinder =
-          find.byType(InstalledAppWidgetsView);
-      expect(installedAppWidgetsViewFinder, findsOneWidget);
+      // I am on the AppWidgetsScreen
+      final appWidgetsScreenFinder = find.byType(AppWidgetsScreen);
+      expect(appWidgetsScreenFinder, findsOneWidget);
 
       // wait to load widgets
-      await Future.delayed(const Duration(seconds: 60), () {});
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 15));
 
       // When:
       // I long press and drag an app widget
-      final installedAppWidgetFinder = find.byType(AppWidgetListTile).first;
-      expect(installedAppWidgetFinder, findsOneWidget);
-
-      final longPressDragGesture =
-          await tester.startGesture(tester.getCenter(installedAppWidgetFinder));
+      final appWidgetGroupFinder = find.byType(AppWidgetGroupHeader);
+      expect(appWidgetGroupFinder, findsOneWidget);
+      await tester.tap(appWidgetGroupFinder.first);
       await tester.pumpAndSettle();
-      await Future.delayed(const Duration(seconds: 1), () {});
+      final installedAppWidgetFinder =
+          find.byType(AppWidgetListTile).hitTestable();
+      expect(installedAppWidgetFinder, findsWidgets);
+
+      final longPressDragGesture = await tester
+          .startGesture(tester.getCenter(installedAppWidgetFinder.first));
       await tester.pumpAndSettle();
 
       await longPressDragGesture.moveBy(const Offset(-100, 300));
@@ -73,7 +86,7 @@ void main() {
       await Future.delayed(const Duration(seconds: 3), () {});
       await tester.pumpAndSettle();
 
-      expect(homeViewFinder, findsOneWidget);
+      expect(homeScreenFinder, findsOneWidget);
       expect(find.byType(AppWidget), findsOneWidget);
     });
   });

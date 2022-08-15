@@ -20,46 +20,49 @@ final pageCountProvider = Provider<int>((ref) {
   return left + 1 + right;
 });
 
-final pagesProvider =
-    StateNotifierProvider<PagesStateNotifier, PageCounter>((ref) {
-  return PagesStateNotifier();
+const _pagesBoxName = 'pages';
+
+final _pagesBoxProvider = FutureProvider<Box<int>>((ref) async {
+  return await Hive.openBox<int>(_pagesBoxName);
 });
 
-const pagesBoxName = 'pages';
+final pagesProvider =
+    StateNotifierProvider<PagesStateNotifier, PageCounter>((ref) {
+  final hiveBox = ref.watch(_pagesBoxProvider).valueOrNull;
+  return PagesStateNotifier(hiveBox: hiveBox);
+});
 
 class PagesStateNotifier extends StateNotifier<PageCounter> {
-  PagesStateNotifier()
-      : hiveBox = Hive.box<int>(pagesBoxName),
-        super(const PageCounter(0, 0)) {
-    final leftPages = hiveBox.get('leftPages') ?? 0;
-    final rightPages = hiveBox.get('rightPages') ?? 0;
+  PagesStateNotifier({this.hiveBox}) : super(const PageCounter(0, 0)) {
+    final leftPages = hiveBox?.get('leftPages') ?? 0;
+    final rightPages = hiveBox?.get('rightPages') ?? 0;
 
     state = PageCounter(leftPages, rightPages);
   }
 
-  Box<int> hiveBox;
+  final Box<int>? hiveBox;
 
   void addLeftPage() {
     state = PageCounter(state.leftPages + 1, state.rightPages);
-    hiveBox.put('leftPages', state.leftPages);
+    hiveBox?.put('leftPages', state.leftPages);
   }
 
   void addRightPage() {
     state = PageCounter(state.leftPages, state.rightPages + 1);
-    hiveBox.put('rightPages', state.rightPages);
+    hiveBox?.put('rightPages', state.rightPages);
   }
 
   void removeLeftPage() {
     if (state.leftPages > 0) {
       state = PageCounter(state.leftPages - 1, state.rightPages);
-      hiveBox.put('leftPages', state.leftPages);
+      hiveBox?.put('leftPages', state.leftPages);
     }
   }
 
   void removeRightPage() {
     if (state.rightPages > 0) {
       state = PageCounter(state.leftPages, state.rightPages - 1);
-      hiveBox.put('rightPages', state.rightPages);
+      hiveBox?.put('rightPages', state.rightPages);
     }
   }
 }
@@ -74,15 +77,4 @@ class PageCounter extends Equatable {
 
   @override
   List<Object?> get props => [leftPages, rightPages];
-}
-
-class PagedGridCell extends Equatable {
-  const PagedGridCell(this.pageIndex, this.col, this.row);
-
-  final int pageIndex;
-  final int col;
-  final int row;
-
-  @override
-  List<Object> get props => [pageIndex, col, row];
 }

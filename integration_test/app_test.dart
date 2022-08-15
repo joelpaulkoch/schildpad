@@ -7,7 +7,7 @@ void main() {
 
   group('end-to-end test', () {
     testWidgets('start app, it works', (WidgetTester tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
     });
   });

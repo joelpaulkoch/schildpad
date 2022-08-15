@@ -1,8 +1,9 @@
+import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:schildpad/home/home_grid.dart';
-import 'package:schildpad/installed_apps/installed_apps.dart';
+import 'package:schildpad/home/home.dart';
+import 'package:schildpad/installed_apps/apps.dart';
+import 'package:schildpad/settings/settings.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
   return 3;
@@ -16,31 +17,14 @@ class InstalledAppsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.5),
-      body: CustomScrollView(slivers: <Widget>[
-        SliverAppBar(
-          backgroundColor: Colors.transparent,
-          pinned: false,
-          snap: false,
-          floating: false,
-          actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.settings_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-              splashRadius: 20,
-            ),
-          ],
+    return Column(children: const [
+      Material(
+        child: ListTile(
+          trailing: SettingsIconButton(),
         ),
-        const SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-                _gridPadding, 0, _gridPadding, _gridPadding),
-            sliver: InstalledAppsGrid())
-      ]),
-    );
+      ),
+      Expanded(child: InstalledAppsGrid())
+    ]);
   }
 }
 
@@ -51,27 +35,32 @@ class InstalledAppsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final installedApps = ref.watch(installedAppsProvider);
+    final appPackages = ref.watch(appPackagesProvider);
     final columnCount = ref.watch(_columnCountProvider);
-    return SliverGrid.count(
+    return GridView.count(
+        padding: const EdgeInsets.fromLTRB(
+            _gridPadding, 0, _gridPadding, _gridPadding),
         crossAxisCount: columnCount,
-        children: installedApps.maybeWhen(
+        children: appPackages.maybeWhen(
             data: (appsList) => appsList
-                .map((app) => InstalledAppIcon(
-                    app: app,
-                    showAppName: true,
-                    onDragStarted: () {
-                      context.pop();
-                    }))
+                .map((packageName) => InstalledAppDraggable(
+                      app: AppData(packageName: packageName),
+                      appIcon: AppIcon(
+                        packageName: packageName,
+                        showAppName: true,
+                      ),
+                      onDragStarted: Backdrop.of(context).revealBackLayer,
+                    ))
                 .toList(),
             orElse: () => []));
   }
 }
 
-class InstalledAppIcon extends ConsumerWidget {
-  const InstalledAppIcon(
+class InstalledAppDraggable extends ConsumerWidget {
+  const InstalledAppDraggable(
       {Key? key,
       required this.app,
+      required this.appIcon,
       this.showAppName = false,
       this.onDragStarted,
       this.onDragCompleted,
@@ -93,46 +82,31 @@ class InstalledAppIcon extends ConsumerWidget {
   final int? column;
   final int? row;
 
+  final Widget appIcon;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appIconImage = ref.watch(appIconImageProvider(app.packageName));
     return LongPressDraggable(
       data: HomeGridElementData(
           appData: app,
+          columnSpan: 1,
+          rowSpan: 1,
           originPageIndex: pageIndex,
           originColumn: column,
           originRow: row),
       maxSimultaneousDrags: 1,
-      feedback:
-          SizedBox(width: _appIconSize, height: _appIconSize, child: app.icon),
+      feedback: SizedBox(
+          width: _appIconSize,
+          height: _appIconSize,
+          child: appIconImage.maybeWhen(
+              data: (icon) => icon, orElse: () => const Icon(Icons.adb))),
       childWhenDragging: const SizedBox.shrink(),
       onDragStarted: onDragStarted,
       onDragCompleted: onDragCompleted,
       onDraggableCanceled: onDraggableCanceled,
       onDragEnd: onDragEnd,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            IconButton(
-              iconSize: _appIconSize,
-              padding: EdgeInsets.zero,
-              icon: app.icon,
-              onPressed: app.launch,
-              splashColor: Colors.transparent,
-            ),
-            if (showAppName)
-              Text(
-                app.name,
-                style: Theme.of(context).textTheme.caption,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-          ],
-        ),
-      ),
+      child: Material(type: MaterialType.transparency, child: appIcon),
     );
   }
 }

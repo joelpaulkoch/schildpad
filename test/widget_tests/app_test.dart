@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/main.dart';
 
 void main() {
   setUp(() async {
-    await setUpHive();
+    await Hive.initFlutter('schildpad/app_test');
   });
   tearDown(() async {
     await Hive.deleteFromDisk();

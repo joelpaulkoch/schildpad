@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SchildpadTheme {
   static ThemeData get lightTheme {
     return ThemeData(
         brightness: Brightness.light,
-        appBarTheme: const AppBarTheme(
-          color: Colors.white70,
-          elevation: 0,
-        ),
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.cyan,
         useMaterial3: true);
   }
 
   static ThemeData get darkTheme {
     return ThemeData(
         brightness: Brightness.dark,
-        appBarTheme: const AppBarTheme(
-          color: Colors.black87,
-          elevation: 0,
-        ),
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.cyan,
         useMaterial3: true);
   }
 }
+
+const schildpadSystemUiOverlayStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  systemStatusBarContrastEnforced: true,
+  systemNavigationBarContrastEnforced: true,
+  systemNavigationBarDividerColor: Colors.transparent,
+);

@@ -1,93 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/installed_app_widgets/app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
+import 'package:schildpad/installed_apps/apps.dart';
 
 void main() {
   testWidgets('AppWidgetsList should show widgets',
       (WidgetTester tester) async {
     // GIVEN: A list containing a app widget
-    const firstAppWidget = AppWidgetData(
-        icon: Icon(Icons.account_balance),
-        label: 'firstWidget',
-        appName: 'firstApp',
-        preview: Icon(
-          Icons.account_balance,
-          color: Colors.deepOrange,
-        ),
-        packageName: 'com.widget.first',
-        componentName: 'firstComp',
-        targetHeight: 1,
-        targetWidth: 1,
-        minWidth: 1,
-        minHeight: 1);
-    final appWidgetsList = [firstAppWidget];
+    const testAppPackage = 'com.test.app';
+    const testAppLabel = 'testApp';
+    const testAppWidgetId = 'com.test.app.widget';
+    const testAppWidgetPreview = Icon(Icons.account_balance);
 
     // WHEN: we visualize it using AppWidgetsList
     await tester.pumpWidget(ProviderScope(overrides: [
-      installedAppWidgetsProvider.overrideWithValue(AsyncData(appWidgetsList))
+      appsWithWidgetsProvider
+          .overrideWithValue(const AsyncData([testAppPackage])),
+      appLabelProvider(testAppPackage)
+          .overrideWithValue(const AsyncData(testAppLabel)),
+      appPackageApplicationWidgetIdsProvider(testAppPackage)
+          .overrideWithValue(const AsyncData([testAppWidgetId])),
+      appWidgetPreviewProvider(testAppPackage)
+          .overrideWithValue(const AsyncData(testAppWidgetPreview))
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: the widgets icon and label are shown
-    final firstAppWidgetIconFinder = find.text(firstAppWidget.label);
+    final firstAppWidgetIconFinder = find.text(testAppLabel);
     expect(firstAppWidgetIconFinder, findsOneWidget);
-    final firstAppWidgetLabelFinder = find.text(firstAppWidget.label);
+    final firstAppWidgetLabelFinder = find.text(testAppLabel);
     expect(firstAppWidgetLabelFinder, findsOneWidget);
   });
   testWidgets('AppWidgetsList should show app widgets grouped by app',
       (WidgetTester tester) async {
     // GIVEN: A list of app widgets from different apps
-    const firstAppWidget = AppWidgetData(
-        icon: Icon(Icons.account_balance),
-        label: 'firstWidget',
-        appName: 'firstApp',
-        preview: Icon(
-          Icons.account_balance,
-          color: Colors.deepOrange,
-        ),
-        packageName: 'com.widget.first',
-        componentName: 'firstComp',
-        targetHeight: 1,
-        targetWidth: 1,
-        minWidth: 1,
-        minHeight: 1);
-    const secondAppWidget = AppWidgetData(
-        icon: Icon(Icons.add_business),
-        label: 'secondWidget',
-        appName: 'secondApp',
-        preview: Icon(
-          Icons.account_balance,
-          color: Colors.deepOrange,
-        ),
-        packageName: 'com.widget.second',
-        componentName: 'secondComp',
-        targetHeight: 1,
-        targetWidth: 1,
-        minWidth: 1,
-        minHeight: 1);
-    final appWidgetsList = [firstAppWidget, secondAppWidget];
+    const firstTestAppPackage = 'com.first.app';
+    const firstTestAppLabel = 'firstTestApp';
+    const firstTestAppWidgetId = 'com.first.app.widget';
+    const firstTestAppWidgetPreview = Icon(Icons.account_balance);
+
+    const secondTestAppPackage = 'com.second.app';
+    const secondTestAppLabel = 'secondTestApp';
+    const secondTestAppWidgetId = 'com.second.app.widget';
+    const secondTestAppWidgetPreview = Icon(Icons.access_alarms_rounded);
 
     // WHEN: we visualize them using AppWidgetsList
     await tester.pumpWidget(ProviderScope(overrides: [
-      installedAppWidgetsProvider.overrideWithValue(AsyncData(appWidgetsList))
+      appsWithWidgetsProvider.overrideWithValue(
+          const AsyncData([firstTestAppPackage, secondTestAppPackage])),
+      appLabelProvider(firstTestAppPackage)
+          .overrideWithValue(const AsyncData(firstTestAppLabel)),
+      appPackageApplicationWidgetIdsProvider(firstTestAppPackage)
+          .overrideWithValue(const AsyncData([firstTestAppWidgetId])),
+      appWidgetPreviewProvider(firstTestAppPackage)
+          .overrideWithValue(const AsyncData(firstTestAppWidgetPreview)),
+      appLabelProvider(secondTestAppPackage)
+          .overrideWithValue(const AsyncData(secondTestAppLabel)),
+      appPackageApplicationWidgetIdsProvider(secondTestAppPackage)
+          .overrideWithValue(const AsyncData([secondTestAppWidgetId])),
+      appWidgetPreviewProvider(secondTestAppPackage)
+          .overrideWithValue(const AsyncData(secondTestAppWidgetPreview))
     ], child: const MaterialApp(home: AppWidgetsList())));
 
     //THEN: they are shown grouped by app
-    final firstAppWidgetFinder = find.text(firstAppWidget.label);
+    final firstAppWidgetFinder = find.text(firstTestAppLabel);
     expect(firstAppWidgetFinder, findsOneWidget);
-    final firstAppGroupFinder = find.ancestor(
-        of: firstAppWidgetFinder,
-        matching: find.widgetWithText(
-            AppWidgetGroupListTile, firstAppWidget.appName));
+    final firstAppGroupFinder =
+        find.widgetWithText(AppWidgetGroupHeader, firstTestAppLabel);
     expect(firstAppGroupFinder, findsOneWidget);
 
-    final secondAppWidgetFinder = find.text(secondAppWidget.label);
+    final secondAppWidgetFinder = find.text(secondTestAppLabel);
     expect(secondAppWidgetFinder, findsOneWidget);
-    final secondAppGroupFinder = find.ancestor(
-        of: secondAppWidgetFinder,
-        matching: find.widgetWithText(
-            AppWidgetGroupListTile, secondAppWidget.appName));
+    final secondAppGroupFinder =
+        find.widgetWithText(AppWidgetGroupHeader, secondTestAppLabel);
+
     expect(secondAppGroupFinder, findsOneWidget);
   });
   /*testWidgets('Long press on an app widget should show its context menu',
