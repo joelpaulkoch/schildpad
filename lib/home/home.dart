@@ -147,6 +147,11 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   }
 }
 
+final pageControllerProvider = Provider<PageController>((ref) {
+  final initialPage = ref.watch(initialPageProvider);
+  return PageController(initialPage: initialPage);
+});
+
 class HomeView extends ConsumerWidget {
   const HomeView({
     Key? key,
@@ -156,10 +161,9 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageCount = ref.watch(pageCountProvider);
     final leftPagesCount = ref.watch(leftPagesProvider);
-    final initialPage = ref.watch(initialPageProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final pageController = PageController(initialPage: initialPage);
+    final pageController = ref.watch(pageControllerProvider);
     return PageView(
         controller: pageController,
         children: List.generate(
