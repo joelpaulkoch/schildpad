@@ -173,14 +173,25 @@ class HomeView extends ConsumerWidget {
     final rowCount = ref.watch(homeRowCountProvider);
     final totalRows = rowCount;
     final pageController = ref.watch(pageControllerProvider);
+    final showTrash = ref.watch(showTrashProvider);
     return AspectRatio(
         aspectRatio: homeViewAspectRatio(context, rowCount, totalRows),
-        child: PageView(
-            controller: pageController,
-            children: List.generate(
-                pageCount,
-                (index) => HomeViewGrid(
-                    index - leftPagesCount, columnCount, rowCount))));
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            border: Border.all(
+                color: showTrash
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
+                width: 3),
+          ),
+          child: PageView(
+              controller: pageController,
+              children: List.generate(
+                  pageCount,
+                  (index) => HomeViewGrid(
+                      index - leftPagesCount, columnCount, rowCount))),
+        ));
   }
 }
 
