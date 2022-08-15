@@ -181,7 +181,7 @@ class HomeView extends ConsumerWidget {
             borderRadius: const BorderRadius.all(Radius.circular(20)),
             border: Border.all(
                 color: showTrash
-                    ? Theme.of(context).primaryColor
+                    ? Theme.of(context).toggleableActiveColor
                     : Colors.transparent,
                 width: 3),
           ),
