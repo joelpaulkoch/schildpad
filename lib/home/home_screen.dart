@@ -49,40 +49,38 @@ class HomeScreen extends ConsumerWidget {
                   child: const InstalledAppsView()));
         }),
         backLayer: DragDetector(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const TrashArea(),
-              Expanded(
-                  flex: homeRowCount,
-                  child: Align(
-                    child: Builder(builder: (context) {
-                      return GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onLongPress: () =>
-                              context.push(OverviewScreen.routeName),
-                          onVerticalDragEnd: (details) {
-                            final primaryVelocity =
-                                details.primaryVelocity ?? 0;
-                            // on swipe up
-                            if (primaryVelocity < 0) {
-                              Backdrop.of(context).concealBackLayer();
-                            }
-                          },
-                          child: const Hero(tag: 'home', child: HomeView()));
-                    }),
-                  )),
-              Divider(
-                height: 5,
-                thickness: 2,
-                color: Theme.of(context).indicatorColor,
-              ),
-              Expanded(
-                flex: dockRowCount,
-                child: const Dock(),
-              )
-            ],
-          ),
+          child: Builder(builder: (context) {
+            return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onLongPress: () => context.push(OverviewScreen.routeName),
+                onVerticalDragEnd: (details) {
+                  final primaryVelocity = details.primaryVelocity ?? 0;
+                  // on swipe up
+                  if (primaryVelocity < 0) {
+                    Backdrop.of(context).concealBackLayer();
+                  }
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const TrashArea(),
+                    Expanded(
+                      flex: homeRowCount,
+                      child: const Align(
+                          child: Hero(tag: 'home', child: HomeView())),
+                    ),
+                    Divider(
+                      height: 5,
+                      thickness: 2,
+                      color: Theme.of(context).indicatorColor,
+                    ),
+                    Expanded(
+                      flex: dockRowCount,
+                      child: const Dock(),
+                    )
+                  ],
+                ));
+          }),
           onDragDetected: () {
             ref.read(showTrashProvider.notifier).state = true;
           },
