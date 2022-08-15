@@ -68,12 +68,13 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         if (elementData.length == 1) {
           final appPackage = elementData.cast<String>().first;
           tileChild = InstalledAppDraggable(
-            app: AppData(packageName: appPackage),
-            appIcon: AppIcon(packageName: appPackage),
-            pageIndex: pageIndex,
-            column: col,
-            row: row,
-          );
+              app: AppData(packageName: appPackage),
+              appIcon: AppIcon(packageName: appPackage),
+              origin: GlobalElementCoordinates.onHome(
+                pageIndex: pageIndex,
+                column: col,
+                row: row,
+              ));
         } else if (elementData.length == 2) {
           final appWidgetData = elementData.cast<String>();
           final componentName = appWidgetData.first;
@@ -81,9 +82,8 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
           tileChild = HomeGridWidget(
               appWidget: AppWidgetData(
                   componentName: componentName, appWidgetId: appWidgetId),
-              pageIndex: pageIndex,
-              column: col,
-              row: row);
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: pageIndex, column: col, row: row));
         }
 
         final tile = FlexibleGridTile(
@@ -115,16 +115,19 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
     if (app != null) {
       widgetToAdd = InstalledAppDraggable(
-        app: app,
-        appIcon: AppIcon(packageName: app.packageName),
-        pageIndex: pageIndex,
-        column: column,
-        row: row,
-      );
+          app: app,
+          appIcon: AppIcon(packageName: app.packageName),
+          origin: GlobalElementCoordinates.onHome(
+            pageIndex: pageIndex,
+            column: column,
+            row: row,
+          ));
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
       widgetToAdd = HomeGridWidget(
-          appWidget: appWidget, pageIndex: pageIndex, column: column, row: row);
+          appWidget: appWidget,
+          origin: GlobalElementCoordinates.onHome(
+              pageIndex: pageIndex, column: column, row: row));
       dataToPersist.add(appWidget.componentName);
       dataToPersist.add('${appWidget.appWidgetId}');
     }
@@ -263,12 +266,26 @@ class HomeGridEmptyCell extends ConsumerWidget {
         ref
             .read(homeGridStateProvider(pageIndex).notifier)
             .addElement(column, row, data);
-        final originColumn = data.originColumn;
-        final originRow = data.originRow;
-        if (originColumn != null && originRow != null) {
-          dev.log('removing element from ($originColumn, $originRow)');
+        final elementOrigin = data.origin;
+        final originPageIndex = elementOrigin.pageIndex;
+        final originColumn = elementOrigin.column;
+        final originRow = elementOrigin.row;
+
+        if (elementOrigin.isOnDock &&
+            originColumn != null &&
+            originRow != null) {
+          dev.log('removing element from dock ($originColumn, $originRow)');
           ref
-              .read(homeGridStateProvider(pageIndex).notifier)
+              .read(dockGridStateProvider.notifier)
+              .removeElement(originColumn, originRow);
+        } else if (elementOrigin.isOnHome &&
+            originPageIndex != null &&
+            originColumn != null &&
+            originRow != null) {
+          dev.log(
+              'removing element from page $originPageIndex ($originColumn, $originRow)');
+          ref
+              .read(homeGridStateProvider(originPageIndex).notifier)
               .removeElement(originColumn, originRow);
         }
         ref.read(showTrashProvider.notifier).state = false;
@@ -282,15 +299,11 @@ class HomeGridWidget extends ConsumerWidget {
   const HomeGridWidget({
     Key? key,
     required this.appWidget,
-    this.pageIndex,
-    this.column,
-    this.row,
+    required this.origin,
   }) : super(key: key);
 
   final AppWidgetData appWidget;
-  final int? pageIndex;
-  final int? column;
-  final int? row;
+  final GlobalElementCoordinates origin;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -302,13 +315,12 @@ class HomeGridWidget extends ConsumerWidget {
     return (widgetId != null)
         ? LongPressDraggable(
             data: ElementData(
-                appWidgetData:
-                    AppWidgetData(componentName: appWidget.componentName),
-                columnSpan: 2,
-                rowSpan: 1,
-                originPageIndex: pageIndex,
-                originColumn: column,
-                originRow: row),
+              appWidgetData:
+                  AppWidgetData(componentName: appWidget.componentName),
+              columnSpan: 2,
+              rowSpan: 1,
+              origin: origin,
+            ),
             maxSimultaneousDrags: 1,
             feedback: const SizedBox(width: 100, height: 100),
             child: AppWidget(
@@ -324,40 +336,42 @@ class ElementData {
       this.appWidgetData,
       required this.columnSpan,
       required this.rowSpan,
-      this.originPageIndex,
-      this.originColumn,
-      this.originRow});
+      required this.origin});
 
   final AppData? appData;
   final AppWidgetData? appWidgetData;
   final int columnSpan;
   final int rowSpan;
-  final int? originPageIndex;
-  final int? originColumn;
-  final int? originRow;
+  final GlobalElementCoordinates origin;
 
   bool get isEmpty => appData == null && appWidgetData == null;
 }
 
-class ElementOrigin {
-  ElementOrigin.fromDock({required this.column, required this.row})
-      : fromDock = true,
+class GlobalElementCoordinates {
+  GlobalElementCoordinates.onDock(
+      {required int this.column, required int this.row})
+      : isOnDock = true,
         pageIndex = null;
 
-  ElementOrigin.fromHome(
-      {required this.pageIndex, required this.column, required this.row})
-      : fromDock = false;
+  GlobalElementCoordinates.onHome(
+      {required int this.pageIndex,
+      required int this.column,
+      required int this.row})
+      : isOnDock = false;
 
-  ElementOrigin.fromAppList()
-      : fromDock = false,
+  GlobalElementCoordinates.onList()
+      : isOnDock = false,
         pageIndex = null,
         column = null,
         row = null;
 
-  final bool fromDock;
+  final bool isOnDock;
   final int? pageIndex;
   final int? column;
   final int? row;
 
-  bool get fromAppList => !fromDock && (pageIndex == null);
+  bool get isOnHome =>
+      !isOnDock && (pageIndex != null) && (column != null) && (row != null);
+
+  bool get isOnList => !isOnDock && !isOnHome;
 }

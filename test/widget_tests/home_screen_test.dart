@@ -9,15 +9,16 @@ import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
 ElementData _getTestApp(int page, int col, int row) => ElementData(
-      appData: const AppData(
-        packageName: 'testPackage',
-      ),
-      columnSpan: 1,
-      rowSpan: 1,
-      originPageIndex: page,
-      originColumn: col,
-      originRow: row,
-    );
+    appData: const AppData(
+      packageName: 'testPackage',
+    ),
+    columnSpan: 1,
+    rowSpan: 1,
+    origin: GlobalElementCoordinates.onHome(
+      pageIndex: page,
+      column: col,
+      row: row,
+    ));
 
 void main() {
   setUpAll(() async {

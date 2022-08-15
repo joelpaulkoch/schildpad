@@ -124,7 +124,8 @@ class AppWidgetListTile extends ConsumerWidget {
       data: ElementData(
           appWidgetData: AppWidgetData(componentName: applicationWidgetId),
           columnSpan: 2,
-          rowSpan: 1),
+          rowSpan: 1,
+          origin: GlobalElementCoordinates.onList()),
       maxSimultaneousDrags: 1,
       feedback: ConstrainedBox(
           constraints: BoxConstraints.tight(Size(

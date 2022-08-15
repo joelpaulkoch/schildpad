@@ -49,6 +49,7 @@ class InstalledAppsGrid extends ConsumerWidget {
                         packageName: packageName,
                         showAppName: true,
                       ),
+                      origin: GlobalElementCoordinates.onList(),
                       onDragStarted: Backdrop.of(context).revealBackLayer,
                     ))
                 .toList(),
@@ -57,19 +58,17 @@ class InstalledAppsGrid extends ConsumerWidget {
 }
 
 class InstalledAppDraggable extends ConsumerWidget {
-  const InstalledAppDraggable(
-      {Key? key,
-      required this.app,
-      required this.appIcon,
-      this.showAppName = false,
-      this.onDragStarted,
-      this.onDragCompleted,
-      this.onDraggableCanceled,
-      this.onDragEnd,
-      this.pageIndex,
-      this.column,
-      this.row})
-      : super(key: key);
+  const InstalledAppDraggable({
+    Key? key,
+    required this.app,
+    required this.appIcon,
+    this.showAppName = false,
+    this.onDragStarted,
+    this.onDragCompleted,
+    this.onDraggableCanceled,
+    this.onDragEnd,
+    required this.origin,
+  }) : super(key: key);
 
   final AppData app;
   final bool showAppName;
@@ -78,9 +77,7 @@ class InstalledAppDraggable extends ConsumerWidget {
   final Function(Velocity, Offset)? onDraggableCanceled;
   final Function(DraggableDetails)? onDragEnd;
 
-  final int? pageIndex;
-  final int? column;
-  final int? row;
+  final GlobalElementCoordinates origin;
 
   final Widget appIcon;
 
@@ -89,12 +86,11 @@ class InstalledAppDraggable extends ConsumerWidget {
     final appIconImage = ref.watch(appIconImageProvider(app.packageName));
     return LongPressDraggable(
       data: ElementData(
-          appData: app,
-          columnSpan: 1,
-          rowSpan: 1,
-          originPageIndex: pageIndex,
-          originColumn: column,
-          originRow: row),
+        appData: app,
+        columnSpan: 1,
+        rowSpan: 1,
+        origin: origin,
+      ),
       maxSimultaneousDrags: 1,
       feedback: SizedBox(
           width: _appIconSize,

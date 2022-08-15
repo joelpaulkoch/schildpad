@@ -48,7 +48,7 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
       for (String key in box.keys) {
         final colRow = key.split('_');
-        final col = int.parse(colRow[0]);
+        final column = int.parse(colRow[0]);
         final row = int.parse(colRow[1]);
         final List elementData = box.get(key) ?? [];
 
@@ -58,6 +58,7 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
           tileChild = InstalledAppDraggable(
             app: AppData(packageName: appPackage),
             appIcon: AppIcon(packageName: appPackage),
+            origin: GlobalElementCoordinates.onDock(column: column, row: row),
           );
         } else if (elementData.length == 2) {
           final appWidgetData = elementData.cast<String>();
@@ -66,11 +67,12 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
           tileChild = HomeGridWidget(
             appWidget: AppWidgetData(
                 componentName: componentName, appWidgetId: appWidgetId),
+            origin: GlobalElementCoordinates.onDock(column: column, row: row),
           );
         }
 
         final tile = FlexibleGridTile(
-            column: col, row: row, child: Center(child: tileChild));
+            column: column, row: row, child: Center(child: tileChild));
 
         tiles = addTile(tiles, columnCount, rowCount, tile);
       }
@@ -99,11 +101,13 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
       widgetToAdd = InstalledAppDraggable(
         app: app,
         appIcon: AppIcon(packageName: app.packageName),
+        origin: GlobalElementCoordinates.onDock(column: column, row: row),
       );
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
       widgetToAdd = HomeGridWidget(
         appWidget: appWidget,
+        origin: GlobalElementCoordinates.onDock(column: column, row: row),
       );
       dataToPersist.add(appWidget.componentName);
       dataToPersist.add('${appWidget.appWidgetId}');

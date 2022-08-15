@@ -8,15 +8,16 @@ import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
 ElementData _getTestApp(int page, int col, int row) => ElementData(
-      appData: const AppData(
-        packageName: 'testPackage',
-      ),
-      columnSpan: 1,
-      rowSpan: 1,
-      originPageIndex: page,
-      originColumn: col,
-      originRow: row,
-    );
+    appData: const AppData(
+      packageName: 'testPackage',
+    ),
+    columnSpan: 1,
+    rowSpan: 1,
+    origin: GlobalElementCoordinates.onHome(
+      pageIndex: page,
+      column: col,
+      row: row,
+    ));
 
 main() {
   setUpAll(() async {
@@ -188,7 +189,11 @@ main() {
             0,
             0,
             ElementData(
-                appWidgetData: testAppWidget, columnSpan: 3, rowSpan: 1));
+                appWidgetData: testAppWidget,
+                columnSpan: 3,
+                rowSpan: 1,
+                origin: GlobalElementCoordinates.onHome(
+                    pageIndex: 0, column: 0, row: 0)));
 
       await tester.pumpWidget(ProviderScope(
           overrides: [

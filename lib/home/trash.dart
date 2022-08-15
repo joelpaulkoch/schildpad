@@ -1,5 +1,8 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
@@ -20,12 +23,25 @@ class TrashArea extends ConsumerWidget {
         ? DragTarget<ElementData>(
             onWillAccept: (_) => true,
             onAccept: (data) {
-              final originPageIndex = data.originPageIndex;
-              final originColumn = data.originColumn;
-              final originRow = data.originRow;
-              if (originPageIndex != null &&
+              final elementOrigin = data.origin;
+              final originPageIndex = elementOrigin.pageIndex;
+              final originColumn = elementOrigin.column;
+              final originRow = elementOrigin.row;
+
+              if (elementOrigin.isOnDock &&
                   originColumn != null &&
                   originRow != null) {
+                dev.log(
+                    'Trash: removing element from dock ($originColumn, $originRow)');
+                ref
+                    .read(dockGridStateProvider.notifier)
+                    .removeElement(originColumn, originRow);
+              } else if (elementOrigin.isOnHome &&
+                  originPageIndex != null &&
+                  originColumn != null &&
+                  originRow != null) {
+                dev.log(
+                    'Trash: removing element from page $originPageIndex ($originColumn, $originRow)');
                 ref
                     .read(homeGridStateProvider(originPageIndex).notifier)
                     .removeElement(originColumn, originRow);

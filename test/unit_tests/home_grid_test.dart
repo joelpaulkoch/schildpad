@@ -16,10 +16,23 @@ void main() {
       final homeGridNotifier = HomeGridStateNotifier(0, 1, 1);
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isTrue);
 
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       final storedTile = homeGridNotifier.debugState.first;
       expect(storedTile.column, 0);
       expect(storedTile.row, 0);
@@ -31,11 +44,24 @@ void main() {
 
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 2, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 2,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isFalse);
 
       final stateBeforeAdd = homeGridNotifier.debugState;
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 2, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 2,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       expect(homeGridNotifier.debugState, stateBeforeAdd);
     });
     test('adding two 1x1 HomeGridTiles to a 2x1 grid should work', () {
@@ -44,18 +70,44 @@ void main() {
       expect(homeGridNotifier.debugState, isEmpty);
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isTrue);
 
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       expect(homeGridNotifier.debugState.length, 1);
 
       expect(
           homeGridNotifier.canAddElement(
-              1, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              1,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 1, row: 0))),
           isTrue);
 
-      homeGridNotifier.addElement(1, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          1,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 1, row: 0)));
       expect(homeGridNotifier.debugState.length, 2);
     });
     test(
@@ -65,19 +117,45 @@ void main() {
 
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isTrue);
 
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       expect(homeGridNotifier.debugState.length, 1);
 
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isFalse);
 
       final stateBeforeAdd = homeGridNotifier.debugState;
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       expect(homeGridNotifier.debugState, stateBeforeAdd);
     });
     test(
@@ -87,19 +165,45 @@ void main() {
 
       expect(
           homeGridNotifier.canAddElement(
-              0, 0, ElementData(columnSpan: 2, rowSpan: 1)),
+              0,
+              0,
+              ElementData(
+                  columnSpan: 2,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 0, row: 0))),
           isTrue);
 
-      homeGridNotifier.addElement(0, 0, ElementData(columnSpan: 2, rowSpan: 1));
+      homeGridNotifier.addElement(
+          0,
+          0,
+          ElementData(
+              columnSpan: 2,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 0, row: 0)));
       expect(homeGridNotifier.debugState.length, 1);
 
       expect(
           homeGridNotifier.canAddElement(
-              1, 0, ElementData(columnSpan: 1, rowSpan: 1)),
+              1,
+              0,
+              ElementData(
+                  columnSpan: 1,
+                  rowSpan: 1,
+                  origin: GlobalElementCoordinates.onHome(
+                      pageIndex: 0, column: 1, row: 0))),
           isFalse);
 
       final stateBeforeAdd = homeGridNotifier.debugState;
-      homeGridNotifier.addElement(1, 0, ElementData(columnSpan: 1, rowSpan: 1));
+      homeGridNotifier.addElement(
+          1,
+          0,
+          ElementData(
+              columnSpan: 1,
+              rowSpan: 1,
+              origin: GlobalElementCoordinates.onHome(
+                  pageIndex: 0, column: 1, row: 0)));
       expect(homeGridNotifier.debugState, stateBeforeAdd);
     });
   });
