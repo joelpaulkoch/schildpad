@@ -53,20 +53,23 @@ class HomeScreen extends ConsumerWidget {
               const TrashArea(),
               Expanded(
                   flex: rowCount,
-                  child: Builder(builder: (context) {
-                    return GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onLongPress: () =>
-                            context.push(OverviewScreen.routeName),
-                        onVerticalDragEnd: (details) {
-                          final primaryVelocity = details.primaryVelocity ?? 0;
-                          // on swipe up
-                          if (primaryVelocity < 0) {
-                            Backdrop.of(context).concealBackLayer();
-                          }
-                        },
-                        child: const Hero(tag: 'home', child: HomeView()));
-                  })),
+                  child: Align(
+                    child: Builder(builder: (context) {
+                      return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onLongPress: () =>
+                              context.push(OverviewScreen.routeName),
+                          onVerticalDragEnd: (details) {
+                            final primaryVelocity =
+                                details.primaryVelocity ?? 0;
+                            // on swipe up
+                            if (primaryVelocity < 0) {
+                              Backdrop.of(context).concealBackLayer();
+                            }
+                          },
+                          child: const Hero(tag: 'home', child: HomeView()));
+                    }),
+                  )),
             ],
           ),
           onDragDetected: () {

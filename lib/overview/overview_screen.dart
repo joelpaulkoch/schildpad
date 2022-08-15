@@ -12,11 +12,6 @@ class OverviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeRows = ref.watch(homeRowCountProvider);
-    final totalRows = homeRows;
-    final homeViewWidth = MediaQuery.of(context).size.width;
-    final displayHeight = MediaQuery.of(context).size.height;
-    final homeViewHeight = displayHeight * homeRows / totalRows;
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: schildpadSystemUiOverlayStyle,
@@ -24,14 +19,9 @@ class OverviewScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Expanded(
+          const Expanded(
               flex: 5,
-              child: Align(
-                child: AspectRatio(
-                    aspectRatio: homeViewWidth / homeViewHeight,
-                    child: const Card(
-                        child: Hero(tag: 'home', child: HomeView()))),
-              )),
+              child: Card(child: Hero(tag: 'home', child: HomeView()))),
           Expanded(
             child: Row(
               children: const [

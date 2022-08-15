@@ -17,6 +17,14 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
+double homeViewAspectRatio(
+    BuildContext context, int homeRowCount, int totalRows) {
+  final homeViewWidth = MediaQuery.of(context).size.width;
+  final displayHeight = MediaQuery.of(context).size.height;
+  final homeViewHeight = displayHeight * homeRowCount / totalRows;
+  return homeViewWidth / homeViewHeight;
+}
+
 String _getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
 
 String _getHomeDataHiveKey(int column, int row) => '${column}_$row';
@@ -163,13 +171,16 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
+    final totalRows = rowCount;
     final pageController = ref.watch(pageControllerProvider);
-    return PageView(
-        controller: pageController,
-        children: List.generate(
-            pageCount,
-            (index) =>
-                HomeViewGrid(index - leftPagesCount, columnCount, rowCount)));
+    return AspectRatio(
+        aspectRatio: homeViewAspectRatio(context, rowCount, totalRows),
+        child: PageView(
+            controller: pageController,
+            children: List.generate(
+                pageCount,
+                (index) => HomeViewGrid(
+                    index - leftPagesCount, columnCount, rowCount))));
   }
 }
 
