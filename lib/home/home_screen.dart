@@ -21,6 +21,10 @@ class HomeScreen extends ConsumerWidget {
     final homeRowCount = ref.watch(homeRowCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
     return SafeArea(
+      top: true,
+      bottom: true,
+      left: false,
+      right: false,
       child: BackdropScaffold(
           backgroundColor: Colors.transparent,
           backLayerBackgroundColor: Colors.transparent,
