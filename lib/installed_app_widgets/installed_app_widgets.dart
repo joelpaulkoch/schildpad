@@ -7,12 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final appWidgetIdProvider =
-    FutureProvider.family<int, String>((ref, componentName) async {
-  return await _createWidget(componentName);
-});
-
-Future<int> _createWidget(String componentName) async {
+Future<int> createWidget(String componentName) async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
   final int appWidgetId =
       await platform.invokeMethod('getWidgetId', [componentName]);
@@ -48,24 +43,8 @@ class AppWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var appWidgetId = appWidgetData.appWidgetId;
     assert(appWidgetId != null);
-    return (appWidgetId != null)
-        ? ref.watch(nativeAppWidgetProvider(appWidgetId))
-        : SizedBox.expand(
-            child: Card(
-            color: Colors.amber,
-            child: Column(
-              children: const [
-                Icon(
-                  Icons.bubble_chart,
-                  color: Colors.white,
-                ),
-                Icon(
-                  Icons.adb_outlined,
-                  color: Colors.white,
-                )
-              ],
-            ),
-          ));
+    final nativeWidget = ref.watch(nativeAppWidgetProvider(appWidgetId!));
+    return nativeWidget;
   }
 }
 

@@ -60,7 +60,7 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
 
       for (String key in box.keys) {
         final colRow = key.split('_');
-        final col = int.parse(colRow[0]);
+        final column = int.parse(colRow[0]);
         final row = int.parse(colRow[1]);
         final List elementData = box.get(key) ?? [];
 
@@ -72,22 +72,35 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
               appIcon: AppIcon(packageName: appPackage),
               origin: GlobalElementCoordinates.onHome(
                 pageIndex: pageIndex,
-                column: col,
+                column: column,
                 row: row,
               ));
-        } else if (elementData.length == 2) {
+        } else if (elementData.length == 4) {
           final appWidgetData = elementData.cast<String>();
           final componentName = appWidgetData.first;
-          final appWidgetId = int.parse(appWidgetData.elementAt(1));
+          final appWidgetId = int.tryParse(appWidgetData.elementAt(1));
+          if (appWidgetId == null) {
+            box.delete(key);
+            tileChild = HomeGridEmptyCell(
+                pageIndex: pageIndex, column: column, row: row);
+          }
+          final columnSpan = int.parse(appWidgetData.elementAt(2));
+          final rowSpan = int.parse(appWidgetData.elementAt(3));
           tileChild = HomeGridWidget(
-              appWidget: AppWidgetData(
+              appWidgetData: AppWidgetData(
                   componentName: componentName, appWidgetId: appWidgetId),
+              columnSpan: columnSpan,
+              rowSpan: rowSpan,
               origin: GlobalElementCoordinates.onHome(
-                  pageIndex: pageIndex, column: col, row: row));
+                  pageIndex: pageIndex, column: column, row: row));
+        } else {
+          box.delete(key);
+          tileChild =
+              HomeGridEmptyCell(pageIndex: pageIndex, column: column, row: row);
         }
 
         final tile = FlexibleGridTile(
-            column: col, row: row, child: Center(child: tileChild));
+            column: column, row: row, child: Center(child: tileChild));
 
         tiles = addTile(tiles, columnCount, rowCount, tile);
       }
@@ -125,11 +138,15 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
       widgetToAdd = HomeGridWidget(
-          appWidget: appWidget,
+          appWidgetData: appWidget,
+          columnSpan: data.columnSpan,
+          rowSpan: data.rowSpan,
           origin: GlobalElementCoordinates.onHome(
               pageIndex: pageIndex, column: column, row: row));
       dataToPersist.add(appWidget.componentName);
       dataToPersist.add('${appWidget.appWidgetId}');
+      dataToPersist.add('${data.columnSpan}');
+      dataToPersist.add('${data.rowSpan}');
     }
 
     final tileToAdd = FlexibleGridTile(
@@ -178,24 +195,14 @@ class HomeView extends ConsumerWidget {
     final dockRowCount = ref.watch(dockRowCountProvider);
     final totalRows = rowCount + dockRowCount;
     final pageController = ref.watch(pageControllerProvider);
-    final showTrash = ref.watch(showTrashProvider);
     return AspectRatio(
         aspectRatio: homeViewAspectRatio(context, rowCount, totalRows),
-        child: Container(
-          decoration: showTrash
-              ? BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(
-                      color: Theme.of(context).toggleableActiveColor, width: 3),
-                )
-              : null,
-          child: PageView(
-              controller: pageController,
-              children: List.generate(
-                  pageCount,
-                  (index) => HomeViewGrid(
-                      index - leftPagesCount, columnCount, rowCount))),
-        ));
+        child: PageView(
+            controller: pageController,
+            children: List.generate(
+                pageCount,
+                (index) => HomeViewGrid(
+                    index - leftPagesCount, columnCount, rowCount))));
   }
 }
 
@@ -261,11 +268,18 @@ class HomeGridEmptyCell extends ConsumerWidget {
         }
         return false;
       },
-      onAccept: (data) {
+      onAccept: (data) async {
         dev.log('dropped in ($column, $row)');
+        ElementData elementData = data;
+        if (elementData.isAppWidgetData) {
+          final widgetId =
+              await createWidget(data.appWidgetData!.componentName);
+          elementData = data.copyWithAppWidgetData(
+              data.appWidgetData!.componentName, widgetId);
+        }
         ref
             .read(homeGridStateProvider(pageIndex).notifier)
-            .addElement(column, row, data);
+            .addElement(column, row, elementData);
         final elementOrigin = data.origin;
         final originPageIndex = elementOrigin.pageIndex;
         final originColumn = elementOrigin.column;
@@ -295,38 +309,67 @@ class HomeGridEmptyCell extends ConsumerWidget {
   }
 }
 
-class HomeGridWidget extends ConsumerWidget {
+class HomeGridWidget extends StatelessWidget {
   const HomeGridWidget({
     Key? key,
-    required this.appWidget,
+    required this.appWidgetData,
+    required this.columnSpan,
+    required this.rowSpan,
     required this.origin,
   }) : super(key: key);
 
-  final AppWidgetData appWidget;
+  final AppWidgetData appWidgetData;
   final GlobalElementCoordinates origin;
+  final int columnSpan;
+  final int rowSpan;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final widgetId = appWidget.appWidgetId ??
-        ref
-            .watch(appWidgetIdProvider(appWidget.componentName))
-            .maybeMap(data: (id) => id.value, orElse: () => null);
+  Widget build(BuildContext context) {
+    final widgetId = appWidgetData.appWidgetId;
+    assert(widgetId != null);
 
-    return (widgetId != null)
-        ? LongPressDraggable(
-            data: ElementData(
-              appWidgetData:
-                  AppWidgetData(componentName: appWidget.componentName),
-              columnSpan: 2,
-              rowSpan: 1,
-              origin: origin,
-            ),
-            maxSimultaneousDrags: 1,
-            feedback: const SizedBox(width: 100, height: 100),
-            child: AppWidget(
-              appWidgetData: appWidget.copyWith(widgetId),
-            ))
-        : const SizedBox.expand();
+    if (widgetId != null) {
+      return LongPressDraggable(
+          data: ElementData(
+            appWidgetData: appWidgetData,
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
+            origin: origin,
+          ),
+          maxSimultaneousDrags: 1,
+          feedback: const SizedBox(width: 100, height: 100),
+          child: AppWidget(
+            appWidgetData: appWidgetData,
+          ));
+    } else {
+      return const AppWidgetError();
+    }
+  }
+}
+
+class AppWidgetError extends StatelessWidget {
+  const AppWidgetError({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+        child: Card(
+      color: Colors.amber,
+      child: Column(
+        children: const [
+          Icon(
+            Icons.bubble_chart,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.adb_outlined,
+            color: Colors.white,
+          )
+        ],
+      ),
+    ));
   }
 }
 
@@ -338,13 +381,39 @@ class ElementData {
       required this.rowSpan,
       required this.origin});
 
+  ElementData.fromAppData(
+      {required AppData this.appData,
+      required this.columnSpan,
+      required this.rowSpan,
+      required this.origin})
+      : appWidgetData = null;
+
+  ElementData.fromAppWidgetData(
+      {required AppWidgetData this.appWidgetData,
+      required this.columnSpan,
+      required this.rowSpan,
+      required this.origin})
+      : appData = null;
+
   final AppData? appData;
   final AppWidgetData? appWidgetData;
   final int columnSpan;
   final int rowSpan;
   final GlobalElementCoordinates origin;
 
-  bool get isEmpty => appData == null && appWidgetData == null;
+  ElementData copyWithAppWidgetData(String componentName, int appWidgetId) =>
+      ElementData.fromAppWidgetData(
+          appWidgetData: AppWidgetData(
+              componentName: componentName, appWidgetId: appWidgetId),
+          columnSpan: columnSpan,
+          rowSpan: rowSpan,
+          origin: origin);
+
+  bool get isAppData => appData != null;
+
+  bool get isAppWidgetData => !isAppData && appWidgetData != null;
+
+  bool get isEmpty => !isAppData && !isAppWidgetData;
 }
 
 class GlobalElementCoordinates {

@@ -123,8 +123,8 @@ class AppWidgetListTile extends ConsumerWidget {
     return LongPressDraggable(
       data: ElementData(
           appWidgetData: AppWidgetData(componentName: applicationWidgetId),
-          columnSpan: 2,
-          rowSpan: 1,
+          columnSpan: widgetColumnSpan,
+          rowSpan: widgetRowSpan,
           origin: GlobalElementCoordinates.onList()),
       maxSimultaneousDrags: 1,
       feedback: ConstrainedBox(
@@ -148,14 +148,12 @@ class AppWidgetListTile extends ConsumerWidget {
                     child: appWidgetPreview),
                 Text(
                   '$widgetColumnSpan x $widgetRowSpan',
-                  style: const TextStyle(color: Colors.white),
                 )
               ],
             ),
             Text(
               appWidgetLabel,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
