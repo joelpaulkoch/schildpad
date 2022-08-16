@@ -19,7 +19,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          ResetListTile(),
+          const ResetListTile(),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('About'),
@@ -45,6 +45,31 @@ class ResetListTile extends ConsumerWidget {
         leading: const Icon(Icons.delete_forever_rounded),
         title: const Text('Reset'),
         onTap: () {
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: const Text('Reset?'),
+                    content: const Text('Reset everything?'),
+                    actions: [
+                      TextButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: const Text('Cancel')),
+                      const ResetButton()
+                    ],
+                  ));
+        });
+  }
+}
+
+class ResetButton extends ConsumerWidget {
+  const ResetButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return TextButton(
+        onPressed: () {
           ref.read(dockGridStateProvider.notifier).removeAll();
 
           final leftPages = ref.read(leftPagesProvider);
@@ -58,6 +83,8 @@ class ResetListTile extends ConsumerWidget {
             ref.read(pagesProvider.notifier).removeRightPage();
           }
           ref.read(homeGridStateProvider(0).notifier).removeAll();
-        });
+          Navigator.of(context).pop();
+        },
+        child: const Text('Reset'));
   }
 }
