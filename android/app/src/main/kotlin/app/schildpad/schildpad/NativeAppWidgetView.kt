@@ -11,23 +11,20 @@ internal class NativeAppWidgetView(
     context: Context,
     id: Int,
     creationParams: Map<String?, Any?>?,
-    private val appWidgetHost: AppWidgetHost
+    appWidgetHost: AppWidgetHost
 ) :
     PlatformView {
     private val appWidgetHostView: AppWidgetHostView
-    private val appWidgetId: Int
 
     override fun getView(): View {
-        appWidgetHost.startListening()
         return appWidgetHostView
     }
 
     override fun dispose() {
-        appWidgetHost.deleteAppWidgetId(appWidgetId)
     }
 
     init {
-        appWidgetId = creationParams?.get("appWidgetId") as? Int ?: 0
+        val appWidgetId = creationParams?.get("appWidgetId") as? Int ?: 0
 
         val appWidgetManager =
             context.applicationContext.getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager

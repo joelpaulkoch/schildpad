@@ -50,9 +50,10 @@ class AppWidget extends ConsumerWidget {
 
 final nativeAppWidgetProvider =
     Provider.family<Widget, int>((ref, appWidgetId) {
-  return NativeAppWidget._internal(
+  final widget = NativeAppWidget._internal(
     appWidgetId: appWidgetId,
   );
+  return widget;
 });
 
 class NativeAppWidget extends StatelessWidget {
