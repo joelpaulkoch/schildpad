@@ -250,7 +250,24 @@ class DockGridEmptyCell extends ConsumerWidget {
         }
         ref.read(showTrashProvider.notifier).state = false;
       },
-      builder: (_, __, ___) => const SizedBox.expand(),
+      builder: (_, accepted, rejected) {
+        if (rejected.isNotEmpty) {
+          return OverflowBox(
+            child: Container(
+              foregroundDecoration: BoxDecoration(
+                  border: Border.all(color: Colors.red, width: 3)),
+            ),
+          );
+        } else if (accepted.isNotEmpty) {
+          return OverflowBox(
+            child: Container(
+              foregroundDecoration: BoxDecoration(
+                  border: Border.all(color: Colors.greenAccent, width: 3)),
+            ),
+          );
+        }
+        return const SizedBox.expand();
+      },
     );
   }
 }
