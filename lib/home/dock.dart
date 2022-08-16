@@ -53,6 +53,8 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         final List elementData = box.get(key) ?? [];
 
         Widget? tileChild;
+        var columnSpan = 1;
+        var rowSpan = 1;
         if (elementData.length == 1) {
           final appPackage = elementData.cast<String>().first;
           tileChild = InstalledAppDraggable(
@@ -68,8 +70,8 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
             box.delete(key);
             tileChild = DockGridEmptyCell(column: column, row: row);
           }
-          final columnSpan = int.parse(appWidgetData.elementAt(2));
-          final rowSpan = int.parse(appWidgetData.elementAt(3));
+          columnSpan = int.parse(appWidgetData.elementAt(2));
+          rowSpan = int.parse(appWidgetData.elementAt(3));
           tileChild = HomeGridWidget(
             appWidgetData: AppWidgetData(
                 componentName: componentName, appWidgetId: appWidgetId),
@@ -83,7 +85,11 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         }
 
         final tile = FlexibleGridTile(
-            column: column, row: row, child: Center(child: tileChild));
+            column: column,
+            row: row,
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
+            child: Center(child: tileChild));
 
         tiles = addTile(tiles, columnCount, rowCount, tile);
       }
@@ -101,7 +107,7 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         data.rowSpan);
   }
 
-  void addElement(int column, int row, ElementData data) {
+  void addElement(int column, int row, ElementData data) async {
     Widget? widgetToAdd;
     List<String> dataToPersist = [];
 
@@ -116,16 +122,21 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
       );
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
+      ElementData elementData = data;
+      if (elementData.isAppWidgetData) {
+        final widgetId = await createWidget(data.appWidgetData!.componentName);
+        elementData = data.copyWithAppWidgetData(
+            data.appWidgetData!.componentName, widgetId);
+      }
       widgetToAdd = HomeGridWidget(
-        appWidgetData: appWidget,
-        columnSpan: data.columnSpan,
-        rowSpan: data.rowSpan,
-        origin: GlobalElementCoordinates.onDock(column: column, row: row),
-      );
+          appWidgetData: elementData.appWidgetData!,
+          columnSpan: elementData.columnSpan,
+          rowSpan: elementData.rowSpan,
+          origin: GlobalElementCoordinates.onDock(column: column, row: row));
       dataToPersist.add(appWidget.componentName);
-      dataToPersist.add('${appWidget.appWidgetId}');
-      dataToPersist.add('${data.columnSpan}');
-      dataToPersist.add('${data.rowSpan}');
+      dataToPersist.add('${elementData.appWidgetData!.appWidgetId}');
+      dataToPersist.add('${elementData.columnSpan}');
+      dataToPersist.add('${elementData.rowSpan}');
     }
 
     final tileToAdd = FlexibleGridTile(

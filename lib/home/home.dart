@@ -65,6 +65,8 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         final List elementData = box.get(key) ?? [];
 
         Widget? tileChild;
+        var columnSpan = 1;
+        var rowSpan = 1;
         if (elementData.length == 1) {
           final appPackage = elementData.cast<String>().first;
           tileChild = InstalledAppDraggable(
@@ -84,8 +86,8 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
             tileChild = HomeGridEmptyCell(
                 pageIndex: pageIndex, column: column, row: row);
           }
-          final columnSpan = int.parse(appWidgetData.elementAt(2));
-          final rowSpan = int.parse(appWidgetData.elementAt(3));
+          columnSpan = int.parse(appWidgetData.elementAt(2));
+          rowSpan = int.parse(appWidgetData.elementAt(3));
           tileChild = HomeGridWidget(
               appWidgetData: AppWidgetData(
                   componentName: componentName, appWidgetId: appWidgetId),
@@ -100,7 +102,11 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         }
 
         final tile = FlexibleGridTile(
-            column: column, row: row, child: Center(child: tileChild));
+            column: column,
+            row: row,
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
+            child: Center(child: tileChild));
 
         tiles = addTile(tiles, columnCount, rowCount, tile);
       }
@@ -119,7 +125,7 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
         data.rowSpan);
   }
 
-  void addElement(int column, int row, ElementData data) {
+  void addElement(int column, int row, ElementData data) async {
     Widget? widgetToAdd;
     List<String> dataToPersist = [];
 
@@ -137,16 +143,22 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
           ));
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
+      ElementData elementData = data;
+      if (elementData.isAppWidgetData) {
+        final widgetId = await createWidget(data.appWidgetData!.componentName);
+        elementData = data.copyWithAppWidgetData(
+            data.appWidgetData!.componentName, widgetId);
+      }
       widgetToAdd = HomeGridWidget(
-          appWidgetData: appWidget,
-          columnSpan: data.columnSpan,
-          rowSpan: data.rowSpan,
+          appWidgetData: elementData.appWidgetData!,
+          columnSpan: elementData.columnSpan,
+          rowSpan: elementData.rowSpan,
           origin: GlobalElementCoordinates.onHome(
               pageIndex: pageIndex, column: column, row: row));
       dataToPersist.add(appWidget.componentName);
-      dataToPersist.add('${appWidget.appWidgetId}');
-      dataToPersist.add('${data.columnSpan}');
-      dataToPersist.add('${data.rowSpan}');
+      dataToPersist.add('${elementData.appWidgetData!.appWidgetId}');
+      dataToPersist.add('${elementData.columnSpan}');
+      dataToPersist.add('${elementData.rowSpan}');
     }
 
     final tileToAdd = FlexibleGridTile(
@@ -268,18 +280,12 @@ class HomeGridEmptyCell extends ConsumerWidget {
         }
         return false;
       },
-      onAccept: (data) async {
+      onAccept: (data) {
         dev.log('dropped in ($column, $row)');
-        ElementData elementData = data;
-        if (elementData.isAppWidgetData) {
-          final widgetId =
-              await createWidget(data.appWidgetData!.componentName);
-          elementData = data.copyWithAppWidgetData(
-              data.appWidgetData!.componentName, widgetId);
-        }
+
         ref
             .read(homeGridStateProvider(pageIndex).notifier)
-            .addElement(column, row, elementData);
+            .addElement(column, row, data);
         final elementOrigin = data.origin;
         final originPageIndex = elementOrigin.pageIndex;
         final originColumn = elementOrigin.column;
@@ -337,7 +343,8 @@ class HomeGridWidget extends StatelessWidget {
             origin: origin,
           ),
           maxSimultaneousDrags: 1,
-          feedback: const SizedBox(width: 100, height: 100),
+          feedback:
+              Container(color: Colors.cyanAccent, width: 200, height: 100),
           child: AppWidget(
             appWidgetData: appWidgetData,
           ));
