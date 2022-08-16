@@ -161,7 +161,7 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   }
 
   void removeAll() {
-    hiveBox?.deleteAll(hiveBox?.keys ?? []);
+    hiveBox?.clear();
     state = [];
   }
 }
