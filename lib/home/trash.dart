@@ -48,9 +48,9 @@ class TrashArea extends ConsumerWidget {
               }
               ref.read(showTrashProvider.notifier).state = false;
             },
-            builder: (_, __, ___) => SafeArea(
+            builder: (_, acceptedDrags, ___) => SafeArea(
               child: Card(
-                color: Colors.transparent,
+                color: acceptedDrags.isEmpty ? Colors.transparent : Colors.red,
                 shape: const StadiumBorder(
                   side: BorderSide(
                     color: Colors.red,
@@ -65,7 +65,10 @@ class TrashArea extends ConsumerWidget {
                     decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        border: Border.all(width: 2)),
+                        border: Border.all(
+                            width: 2,
+                            color: Theme.of(context).iconTheme.color ??
+                                Colors.white)),
                     child: const Padding(
                       padding: EdgeInsets.all(4.0),
                       child: Icon(
