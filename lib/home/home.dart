@@ -26,6 +26,16 @@ double homeViewAspectRatio(
   return homeViewWidth / homeViewHeight;
 }
 
+double homeGridColumnWidth(BuildContext context, int columnCount) {
+  final homeViewWidth = MediaQuery.of(context).size.width;
+  return homeViewWidth / columnCount;
+}
+
+double homeGridRowHeight(BuildContext context, int rowCount) {
+  final homeViewWidth = MediaQuery.of(context).size.width;
+  return homeViewWidth / rowCount;
+}
+
 String _getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
 
 String _getHomeDataHiveKey(int column, int row) => '${column}_$row';
@@ -268,50 +278,61 @@ class HomeGridEmptyCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DragTarget<ElementData>(
-      onWillAccept: (draggedData) {
-        final data = draggedData;
-        if (data != null) {
-          final willAccept = ref
-              .read(homeGridStateProvider(pageIndex).notifier)
-              .canAddElement(column, row, data);
-          dev.log('($column, $row) will accept: $willAccept');
-          return willAccept;
-        }
-        return false;
-      },
-      onAccept: (data) {
-        dev.log('dropped in ($column, $row)');
-
-        ref
+    return DragTarget<ElementData>(onWillAccept: (draggedData) {
+      final data = draggedData;
+      if (data != null) {
+        final willAccept = ref
             .read(homeGridStateProvider(pageIndex).notifier)
-            .addElement(column, row, data);
-        final elementOrigin = data.origin;
-        final originPageIndex = elementOrigin.pageIndex;
-        final originColumn = elementOrigin.column;
-        final originRow = elementOrigin.row;
+            .canAddElement(column, row, data);
+        dev.log('($column, $row) will accept: $willAccept');
+        return willAccept;
+      }
+      return false;
+    }, onAccept: (data) {
+      dev.log('dropped in ($column, $row)');
 
-        if (elementOrigin.isOnDock &&
-            originColumn != null &&
-            originRow != null) {
-          dev.log('removing element from dock ($originColumn, $originRow)');
-          ref
-              .read(dockGridStateProvider.notifier)
-              .removeElement(originColumn, originRow);
-        } else if (elementOrigin.isOnHome &&
-            originPageIndex != null &&
-            originColumn != null &&
-            originRow != null) {
-          dev.log(
-              'removing element from page $originPageIndex ($originColumn, $originRow)');
-          ref
-              .read(homeGridStateProvider(originPageIndex).notifier)
-              .removeElement(originColumn, originRow);
-        }
-        ref.read(showTrashProvider.notifier).state = false;
-      },
-      builder: (_, __, ___) => const SizedBox.expand(),
-    );
+      ref
+          .read(homeGridStateProvider(pageIndex).notifier)
+          .addElement(column, row, data);
+      final elementOrigin = data.origin;
+      final originPageIndex = elementOrigin.pageIndex;
+      final originColumn = elementOrigin.column;
+      final originRow = elementOrigin.row;
+
+      if (elementOrigin.isOnDock && originColumn != null && originRow != null) {
+        dev.log('removing element from dock ($originColumn, $originRow)');
+        ref
+            .read(dockGridStateProvider.notifier)
+            .removeElement(originColumn, originRow);
+      } else if (elementOrigin.isOnHome &&
+          originPageIndex != null &&
+          originColumn != null &&
+          originRow != null) {
+        dev.log(
+            'removing element from page $originPageIndex ($originColumn, $originRow)');
+        ref
+            .read(homeGridStateProvider(originPageIndex).notifier)
+            .removeElement(originColumn, originRow);
+      }
+      ref.read(showTrashProvider.notifier).state = false;
+    }, builder: (_, accepted, rejected) {
+      if (rejected.isNotEmpty) {
+        return OverflowBox(
+          child: Container(
+            foregroundDecoration:
+                BoxDecoration(border: Border.all(color: Colors.red, width: 3)),
+          ),
+        );
+      } else if (accepted.isNotEmpty) {
+        return OverflowBox(
+          child: Container(
+            foregroundDecoration: BoxDecoration(
+                border: Border.all(color: Colors.greenAccent, width: 3)),
+          ),
+        );
+      }
+      return const SizedBox.expand();
+    });
   }
 }
 

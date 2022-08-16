@@ -87,7 +87,7 @@ class NativeAppWidget extends StatelessWidget {
       },
       onCreatePlatformView: (params) {
         // TODO check if initSurfaceAndroidView can be used
-        return PlatformViewsService.initExpensiveAndroidView(
+        return PlatformViewsService.initSurfaceAndroidView(
           id: params.id,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,
