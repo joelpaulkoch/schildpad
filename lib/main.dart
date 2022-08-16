@@ -11,7 +11,9 @@ import 'package:schildpad/theme/theme.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   SystemChrome.setSystemUIOverlayStyle(schildpadSystemUiOverlayStyle);
   runApp(ProviderScope(child: SchildpadApp()));
 }
