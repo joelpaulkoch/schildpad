@@ -69,11 +69,6 @@ class HomeScreen extends ConsumerWidget {
                       child: const Align(
                           child: Hero(tag: 'home', child: HomeView())),
                     ),
-                    Divider(
-                      height: 5,
-                      thickness: 2,
-                      color: Theme.of(context).indicatorColor,
-                    ),
                     Expanded(
                       flex: dockRowCount,
                       child: const Dock(),

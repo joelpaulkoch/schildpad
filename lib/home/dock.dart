@@ -60,15 +60,26 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
             appIcon: AppIcon(packageName: appPackage),
             origin: GlobalElementCoordinates.onDock(column: column, row: row),
           );
-        } else if (elementData.length == 2) {
+        } else if (elementData.length == 4) {
           final appWidgetData = elementData.cast<String>();
           final componentName = appWidgetData.first;
-          final appWidgetId = int.parse(appWidgetData.elementAt(1));
+          final appWidgetId = int.tryParse(appWidgetData.elementAt(1));
+          if (appWidgetId == null) {
+            box.delete(key);
+            tileChild = DockGridEmptyCell(column: column, row: row);
+          }
+          final columnSpan = int.parse(appWidgetData.elementAt(2));
+          final rowSpan = int.parse(appWidgetData.elementAt(3));
           tileChild = HomeGridWidget(
-            appWidget: AppWidgetData(
+            appWidgetData: AppWidgetData(
                 componentName: componentName, appWidgetId: appWidgetId),
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
             origin: GlobalElementCoordinates.onDock(column: column, row: row),
           );
+        } else {
+          box.delete(key);
+          tileChild = DockGridEmptyCell(column: column, row: row);
         }
 
         final tile = FlexibleGridTile(
@@ -106,11 +117,15 @@ class DockGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
       dataToPersist.add(app.packageName);
     } else if (appWidget != null) {
       widgetToAdd = HomeGridWidget(
-        appWidget: appWidget,
+        appWidgetData: appWidget,
+        columnSpan: data.columnSpan,
+        rowSpan: data.rowSpan,
         origin: GlobalElementCoordinates.onDock(column: column, row: row),
       );
       dataToPersist.add(appWidget.componentName);
       dataToPersist.add('${appWidget.appWidgetId}');
+      dataToPersist.add('${data.columnSpan}');
+      dataToPersist.add('${data.rowSpan}');
     }
 
     final tileToAdd = FlexibleGridTile(
@@ -200,7 +215,28 @@ class DockGridEmptyCell extends ConsumerWidget {
       onAccept: (data) {
         dev.log('dropped in ($column, $row)');
         ref.read(dockGridStateProvider.notifier).addElement(column, row, data);
+        final elementOrigin = data.origin;
+        final originPageIndex = elementOrigin.pageIndex;
+        final originColumn = elementOrigin.column;
+        final originRow = elementOrigin.row;
 
+        if (elementOrigin.isOnDock &&
+            originColumn != null &&
+            originRow != null) {
+          dev.log('removing element from dock ($originColumn, $originRow)');
+          ref
+              .read(dockGridStateProvider.notifier)
+              .removeElement(originColumn, originRow);
+        } else if (elementOrigin.isOnHome &&
+            originPageIndex != null &&
+            originColumn != null &&
+            originRow != null) {
+          dev.log(
+              'removing element from page $originPageIndex ($originColumn, $originRow)');
+          ref
+              .read(homeGridStateProvider(originPageIndex).notifier)
+              .removeElement(originColumn, originRow);
+        }
         ref.read(showTrashProvider.notifier).state = false;
       },
       builder: (_, __, ___) => const SizedBox.expand(),
@@ -217,6 +253,7 @@ class Dock extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dockColumnCount = ref.watch(dockColumnCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
-    return DockGrid(dockColumnCount, dockRowCount);
+    return Container(
+        color: Colors.white60, child: DockGrid(dockColumnCount, dockRowCount));
   }
 }
