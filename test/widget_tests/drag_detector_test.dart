@@ -318,7 +318,6 @@ void main() {
         'two drag targets positioned inside the drag detector should both be able to accept the same dragged item',
         (tester) async {
       // GIVEN: two drag targets covered by a drag detector
-      final dragDetectorCompleter = Completer<void>();
       final firstDragTargetCompleter = Completer<void>();
       final secondDragTargetCompleter = Completer<void>();
       final firstDragTarget = DragTarget(
