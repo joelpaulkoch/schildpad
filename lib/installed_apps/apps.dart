@@ -95,17 +95,19 @@ class AppIcon extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              iconSize: appIconSize,
-              padding: EdgeInsets.zero,
-              icon: appIconImage.maybeWhen(
-                  data: (appIcon) => appIcon,
-                  orElse: () => const Icon(Icons.android_outlined)),
-              onPressed: appLaunch.maybeWhen(
-                  data: (launchFunction) => launchFunction,
-                  orElse: () {
-                    return null;
-                  }),
+            Expanded(
+              child: IconButton(
+                iconSize: appIconSize,
+                padding: EdgeInsets.zero,
+                icon: appIconImage.maybeWhen(
+                    data: (appIcon) => appIcon,
+                    orElse: () => const Icon(Icons.android_outlined)),
+                onPressed: appLaunch.maybeWhen(
+                    data: (launchFunction) => launchFunction,
+                    orElse: () {
+                      return null;
+                    }),
+              ),
             ),
             if (showAppName)
               Text(
