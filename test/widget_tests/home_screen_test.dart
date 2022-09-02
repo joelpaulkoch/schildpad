@@ -170,42 +170,5 @@ void main() {
       final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
-    testWidgets(
-        'Moving an app on the home view to the trash area should remove the app',
-        (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
-
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeScreen())));
-      await tester.pumpAndSettle();
-
-      // GIVEN:
-      // I am on the HomeScreen
-      // and there is exactly one app
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
-      expect(testAppFinder, findsOneWidget);
-
-      // WHEN:
-      // I long press
-      final longPressDragGesture =
-          await tester.startGesture(tester.getCenter(testAppFinder));
-      await tester.pumpAndSettle();
-      // and drag it to to the trash area
-      final trashAreaFinder = find.byType(TrashArea);
-      expect(trashAreaFinder, findsOneWidget);
-      await longPressDragGesture.moveTo(tester.getCenter(trashAreaFinder));
-      await tester.pumpAndSettle();
-      // and drop it there
-      await longPressDragGesture.up();
-      await tester.pumpAndSettle();
-
-      // THEN:
-      // it is removed from the home view
-      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
-      expect(newTestAppFinder, findsNothing);
-    });
   });
 }
