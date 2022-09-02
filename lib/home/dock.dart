@@ -282,6 +282,6 @@ class Dock extends ConsumerWidget {
     final dockColumnCount = ref.watch(dockColumnCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
     return Container(
-        color: Colors.white60, child: DockGrid(dockColumnCount, dockRowCount));
+        color: Colors.black38, child: DockGrid(dockColumnCount, dockRowCount));
   }
 }
