@@ -18,7 +18,7 @@ final homeRowCountProvider = Provider<int>((ref) {
   return 5;
 });
 
-double homeViewAspectRatio(
+double approxHomeViewAspectRatio(
     BuildContext context, int homeRowCount, int totalRows) {
   final homeViewWidth = MediaQuery.of(context).size.width;
   final displayHeight = MediaQuery.of(context).size.height;
@@ -214,17 +214,13 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final dockRowCount = ref.watch(dockRowCountProvider);
-    final totalRows = rowCount + dockRowCount;
     final pageController = ref.watch(pageControllerProvider);
-    return AspectRatio(
-        aspectRatio: homeViewAspectRatio(context, rowCount, totalRows),
-        child: PageView(
-            controller: pageController,
-            children: List.generate(
-                pageCount,
-                (index) => HomeViewGrid(
-                    index - leftPagesCount, columnCount, rowCount))));
+    return PageView(
+        controller: pageController,
+        children: List.generate(
+            pageCount,
+            (index) =>
+                HomeViewGrid(index - leftPagesCount, columnCount, rowCount)));
   }
 }
 

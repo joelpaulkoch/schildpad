@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/overview/overview.dart';
@@ -14,6 +15,9 @@ class OverviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeRowCount = ref.watch(homeRowCountProvider);
+    final dockRowCount = ref.watch(dockRowCountProvider);
+    final totalRows = homeRowCount + dockRowCount;
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: schildpadSystemUiOverlayStyle,
@@ -25,8 +29,11 @@ class OverviewScreen extends ConsumerWidget {
               flex: 5,
               child: GestureDetector(
                   onTap: () => context.go(HomeScreen.routeName),
-                  child:
-                      const Card(child: Hero(tag: 'home', child: HomeView())))),
+                  child: AspectRatio(
+                      aspectRatio: approxHomeViewAspectRatio(
+                          context, homeRowCount, totalRows),
+                      child: const Card(
+                          child: Hero(tag: 'home', child: HomeView()))))),
           Expanded(
             child: Row(
               children: const [
