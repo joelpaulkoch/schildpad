@@ -130,7 +130,8 @@ class MainActivity : FlutterActivity() {
                         "Could not find provider of $componentName"
                     )
                 }
-                ("getWidgetId") -> {
+
+                ("createWidget") -> {
                     val args = call.arguments as List<String>
                     val componentName = args.first()
                     val widgetId = createAndBindWidget(componentName)
@@ -140,6 +141,7 @@ class MainActivity : FlutterActivity() {
                         "Could neither find existing widget corresponding to $componentName nor create a new one"
                     )
                 }
+
                 else -> {
                     result.notImplemented()
                 }
@@ -253,19 +255,6 @@ class MainActivity : FlutterActivity() {
             "maxWidth" to maxWidth,
             "maxHeight" to maxHeight
         )
-    }
-
-    private fun getWidgetId(componentName: String): Int? {
-        val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
-        val provider =
-            appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
-
-        val existingIds = appWidgetManager.getAppWidgetIds(provider?.provider)
-
-        if (existingIds.isEmpty()) {
-            return createAndBindWidget(componentName)
-        }
-        return existingIds.first()
     }
 
     private fun createAndBindWidget(componentName: String): Int? {

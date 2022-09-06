@@ -10,8 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 Future<int> createWidget(String componentName) async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
   final int appWidgetId =
-      await platform.invokeMethod('getWidgetId', [componentName]);
-  dev.log('got widget id for $componentName: $appWidgetId');
+      await platform.invokeMethod('createWidget', [componentName]);
+  dev.log('created widget for $componentName and got id : $appWidgetId');
   return appWidgetId;
 }
 
