@@ -99,9 +99,13 @@ class AppIcon extends ConsumerWidget {
               child: IconButton(
                 iconSize: appIconSize,
                 padding: EdgeInsets.zero,
-                icon: appIconImage.maybeWhen(
-                    data: (appIcon) => appIcon,
-                    orElse: () => const Icon(Icons.android_outlined)),
+                icon: SizedBox(
+                  width: appIconSize,
+                  height: appIconSize,
+                  child: appIconImage.maybeWhen(
+                      data: (appIcon) => appIcon,
+                      orElse: () => const Icon(Icons.android_outlined)),
+                ),
                 onPressed: appLaunch.maybeWhen(
                     data: (launchFunction) => launchFunction,
                     orElse: () {
