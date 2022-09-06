@@ -142,6 +142,13 @@ class MainActivity : FlutterActivity() {
                     )
                 }
 
+                ("deleteWidget") -> {
+                    val args = call.arguments as List<Int>
+                    val widgetId = args.first()
+                    deleteWidget(widgetId)
+                    result.success(null)
+                }
+
                 else -> {
                     result.notImplemented()
                 }
@@ -280,6 +287,10 @@ class MainActivity : FlutterActivity() {
         }
         //TODO test binding
         return appWidgetId
+    }
+
+    private fun deleteWidget(widgetId: Int) {
+        appWidgetHost.deleteAppWidgetId(widgetId)
     }
 
     private fun Bitmap.convertToByteArray(): ByteArray {

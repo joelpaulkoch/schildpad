@@ -15,6 +15,12 @@ Future<int> createWidget(String componentName) async {
   return appWidgetId;
 }
 
+Future<void> deleteWidget(int widgetId) async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  await platform.invokeMethod('deleteWidget', [widgetId]);
+  dev.log('deleted widget $widgetId');
+}
+
 class AppWidgetData {
   const AppWidgetData({
     required this.componentName,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
   return false;
@@ -22,7 +23,7 @@ class TrashArea extends ConsumerWidget {
     return showTrash
         ? DragTarget<ElementData>(
             onWillAccept: (_) => true,
-            onAccept: (data) {
+            onAccept: (data) async {
               final elementOrigin = data.origin;
               final originPageIndex = elementOrigin.pageIndex;
               final originColumn = elementOrigin.column;
@@ -46,6 +47,14 @@ class TrashArea extends ConsumerWidget {
                     .read(homeGridStateProvider(originPageIndex).notifier)
                     .removeElement(originColumn, originRow);
               }
+
+              if (data.isAppWidgetData) {
+                final widgetId = data.appWidgetData?.appWidgetId;
+                if (widgetId != null) {
+                  await deleteWidget(widgetId);
+                }
+              }
+
               ref.read(showTrashProvider.notifier).state = false;
             },
             builder: (_, acceptedDrags, ___) => SafeArea(
