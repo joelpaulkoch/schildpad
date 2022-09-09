@@ -2,5 +2,33 @@
     "settingsTitle": "Settings",
     "@settingsTitle": {
       "description": "Title of the settings screen"
+    },
+    "widgetsTitle": "Widgets",
+    "@widgetsTitle":{
+      "description": "Title of the widgets screen"
+    },
+    "aboutListTile": "About",
+    "@aboutListTile": {
+      "description": "Text on about list tile"
+    },              
+    "resetListTile": "Reset",
+    "@resetListTile": {
+      "description": "Text on reset list tile"
+    },
+    "resetConfirmationDialogTitle": "Reset?",
+    "@resetConfirmationDialogTitle": {
+      "description": "Title of the confirmation dialog to reset the app"
+    },
+     "resetConfirmationDialogText": "Are you sure?",
+    "@resetConfirmationDialogText": {
+      "description": "Text shown in the confirmation dialog to reset the app"
+    },
+        "resetConfirmationDialogConfirmButton": "Reset",
+    "@resetConfirmationDialogConfirmButton": {
+      "description": "Text of confirm button in the confirmation dialog to reset the app"
+    },
+    "resetConfirmationDialogCancelButton": "Cancel",
+    "@resetConfirmationDialogCancelButton": {
+      "description": "Text of cancel button in the confirmation dialog to reset the app"
     }
 }

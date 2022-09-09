@@ -1,3 +1,10 @@
 {
-    "settingsTitle": "Einstellungen"
+    "settingsTitle": "Einstellungen",
+    "widgetsTitle": "Widgets",
+    "aboutListTile": "Über Schildpad",
+    "resetListTile": "Zurücksetzen",
+    "resetConfirmationDialogTitle": "Zurücksetzen?",
+    "resetConfirmationDialogText": "Ganz sicher?",
+    "resetConfirmationDialogConfirmButton": "Zurücksetzen",
+    "resetConfirmationDialogCancelButton": "Abbrechen"
 }

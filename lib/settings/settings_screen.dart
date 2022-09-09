@@ -23,10 +23,10 @@ class SettingsScreen extends StatelessWidget {
           const ResetListTile(),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
-            title: const Text('About'),
+            title: Text(AppLocalizations.of(context)!.aboutListTile),
             onTap: () => showAboutDialog(
               context: context,
-              applicationName: 'Schildpad',
+              applicationName: 'Schildpad Launcher',
             ),
           ),
         ],
@@ -44,17 +44,20 @@ class ResetListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
         leading: const Icon(Icons.delete_forever_rounded),
-        title: const Text('Reset'),
+        title: Text(AppLocalizations.of(context)!.resetListTile),
         onTap: () {
           showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: const Text('Reset?'),
-                    content: const Text('Reset everything?'),
+                    title: Text(AppLocalizations.of(context)!
+                        .resetConfirmationDialogTitle),
+                    content: Text(AppLocalizations.of(context)!
+                        .resetConfirmationDialogText),
                     actions: [
                       TextButton(
                           onPressed: Navigator.of(context).pop,
-                          child: const Text('Cancel')),
+                          child: Text(AppLocalizations.of(context)!
+                              .resetConfirmationDialogText)),
                       const ResetButton()
                     ],
                   ));
@@ -86,6 +89,7 @@ class ResetButton extends ConsumerWidget {
           ref.read(homeGridStateProvider(0).notifier).removeAll();
           Navigator.of(context).pop();
         },
-        child: const Text('Reset'));
+        child: Text(AppLocalizations.of(context)!
+            .resetConfirmationDialogConfirmButton));
   }
 }
