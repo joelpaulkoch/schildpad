@@ -1,0 +1,6 @@
+{
+    "settingsTitle": "Settings",
+    "@settingsTitle": {
+      "description": "Title of the settings screen"
+    }
+}
