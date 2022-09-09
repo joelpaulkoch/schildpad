@@ -6,8 +6,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/main.dart';
 
 void main() {
-  setUp(() async {
+  setUpAll(() {
     DartPluginRegistrant.ensureInitialized();
+  });
+  setUp(() async {
     await Hive.initFlutter('schildpad/app_test');
   });
   tearDown(() async {
