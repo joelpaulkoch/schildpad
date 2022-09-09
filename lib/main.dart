@@ -49,7 +49,8 @@ class SchildpadApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
-        routeInformationParser: _router.routeInformationParser,
+        routeInformationProvider: _router.routeInformationProvider,
+        routeInformationParser: _router.routeInformationParser,        
         routerDelegate: _router.routerDelegate,
         title: 'Schildpad',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
