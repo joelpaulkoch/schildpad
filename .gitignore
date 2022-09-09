@@ -66,3 +66,6 @@ app.*.map.json
 
 # appetize
 .appetize.json
+
+# gitpod
+core.*
