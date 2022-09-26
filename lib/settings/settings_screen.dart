@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
@@ -27,6 +28,7 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => showAboutDialog(
               context: context,
               applicationName: 'Schildpad Launcher',
+              applicationIcon: _schildpadLogo
             ),
           ),
         ],
@@ -34,6 +36,11 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
+
+final Widget _schildpadLogo = SvgPicture.asset(
+  'assets/schildpad_logo.svg',
+  semanticsLabel: 'Schildpad Logo'
+);
 
 class ResetListTile extends ConsumerWidget {
   const ResetListTile({
