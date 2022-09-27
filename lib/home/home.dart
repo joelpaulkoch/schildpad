@@ -203,6 +203,23 @@ final pageControllerProvider = Provider<PageController>((ref) {
   return PageController(initialPage: initialPage);
 });
 
+class HomePageViewScrollPhysics extends ScrollPhysics {
+  const HomePageViewScrollPhysics({ScrollPhysics? parent})
+      : super(parent: parent);
+
+  @override
+  HomePageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return HomePageViewScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 80,
+        stiffness: 100,
+        damping: 0.7,
+      );
+}
+
 class HomeView extends ConsumerWidget {
   const HomeView({
     Key? key,
@@ -217,6 +234,7 @@ class HomeView extends ConsumerWidget {
     final pageController = ref.watch(pageControllerProvider);
     return PageView(
         controller: pageController,
+        physics: const HomePageViewScrollPhysics(),
         children: List.generate(
             pageCount,
             (index) =>
