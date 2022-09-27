@@ -9,8 +9,8 @@
     </queries>
     <application
             android:name="${applicationName}"
-            android:icon="@mipmap/ic_launcher"
-            android:label="schildpad">
+            android:icon="@drawable/ic_schildpad_logo"
+            android:label="Schildpad Launcher">
         <activity
                 android:name=".MainActivity"
                 android:screenOrientation="portrait"
