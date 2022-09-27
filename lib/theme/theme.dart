@@ -5,14 +5,14 @@ class SchildpadTheme {
   static ThemeData get lightTheme {
     return ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.cyan,
+        primarySwatch: Colors.green,
         useMaterial3: true);
   }
 
   static ThemeData get darkTheme {
     return ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.cyan,
+        primarySwatch: Colors.green,
         useMaterial3: true);
   }
 }
