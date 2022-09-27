@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/theme/theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -26,10 +26,12 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.info_outline_rounded),
             title: Text(AppLocalizations.of(context)!.aboutListTile),
             onTap: () => showAboutDialog(
-              context: context,
-              applicationName: 'Schildpad Launcher',
-              applicationIcon: _schildpadLogo
-            ),
+                context: context,
+                applicationName: 'Schildpad Launcher',
+                applicationIcon: SizedBox(
+                    width: IconTheme.of(context).size,
+                    height: IconTheme.of(context).size,
+                    child: _schildpadLogo)),
           ),
         ],
       ),
@@ -37,10 +39,8 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-final Widget _schildpadLogo = SvgPicture.asset(
-  'assets/schildpad_logo.svg',
-  semanticsLabel: 'Schildpad Logo'
-);
+final Widget _schildpadLogo = SvgPicture.asset('assets/schildpad_logo.svg',
+    semanticsLabel: 'Schildpad Logo');
 
 class ResetListTile extends ConsumerWidget {
   const ResetListTile({
