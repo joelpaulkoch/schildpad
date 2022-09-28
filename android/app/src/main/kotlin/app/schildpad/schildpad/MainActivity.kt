@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.toBitmap
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMethodCodec
 import io.flutter.plugins.GeneratedPluginRegistrant
@@ -23,6 +24,9 @@ import java.io.ByteArrayOutputStream
 
 class MainActivity : FlutterActivity() {
     private val APPS_CHANNEL = "schildpad.schildpad.app/apps"
+    private val APPS_UPDATE_EVENT_CHANNEL = "schildpad.schildpad.app/apps_update"
+    private val appsUpdateBroadcastReceiver = AppsUpdateBroadcastReceiver()
+
     private val APPWIDGETS_CHANNEL = "schildpad.schildpad.app/appwidgets"
     private val appWidgetHost: AppWidgetHost by lazy { AppWidgetHost(context, 0) }
     private val nativeAppWidgetViewFactory: NativeAppWidgetViewFactory by lazy {
@@ -40,7 +44,10 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger.makeBackgroundTaskQueue()
 
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger, APPS_CHANNEL, StandardMethodCodec.INSTANCE, taskQueue
+            flutterEngine.dartExecutor.binaryMessenger,
+            APPS_CHANNEL,
+            StandardMethodCodec.INSTANCE,
+            taskQueue
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             when (call.method) {
@@ -71,8 +78,32 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        EventChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            APPS_UPDATE_EVENT_CHANNEL,
+            StandardMethodCodec.INSTANCE
+        ).setStreamHandler(
+            object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                    appsUpdateBroadcastReceiver.listener = {
+                        events?.success(it)
+                    }
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    appsUpdateBroadcastReceiver.listener = {
+                    }
+                }
+
+            }
+
+        )
+
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger, APPWIDGETS_CHANNEL, StandardMethodCodec.INSTANCE, taskQueue
+            flutterEngine.dartExecutor.binaryMessenger,
+            APPWIDGETS_CHANNEL,
+            StandardMethodCodec.INSTANCE,
+            taskQueue
         ).setMethodCallHandler { call, result ->
             // This method is invoked on the main thread.
             when (call.method) {
@@ -307,11 +338,16 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onStart() {
+        context.registerReceiver(
+            appsUpdateBroadcastReceiver,
+            appsUpdateBroadcastReceiver.intentFilter
+        )
         appWidgetHost.startListening()
         super.onStart()
     }
 
     override fun onStop() {
+        context.unregisterReceiver(appsUpdateBroadcastReceiver)
         appWidgetHost.stopListening()
         super.onStop()
     }

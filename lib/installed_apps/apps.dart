@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
@@ -5,6 +6,20 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final appsUpdateProvider = Provider<int>((ref) {
+  final updateCount = ref.watch(_appsUpdateStreamProvider);
+  return updateCount.maybeWhen(data: (data) => data, orElse: () => 0);
+});
+
+final _appsUpdateStreamProvider = StreamProvider<int>((ref) async* {
+  const stream = EventChannel('schildpad.schildpad.app/apps_update');
+
+  dev.log('update');
+  await for (final counter in stream.receiveBroadcastStream()) {
+    yield counter as int;
+  }
+});
 
 class AppData {
   const AppData({
@@ -54,6 +69,7 @@ void _launchApp(String package, String launchComponent) {
 }
 
 final appPackagesProvider = FutureProvider<List<String>>((ref) async {
+  ref.watch(appsUpdateProvider);
   return await getApplicationIds();
 });
 
