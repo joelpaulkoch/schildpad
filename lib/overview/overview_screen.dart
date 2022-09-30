@@ -27,21 +27,27 @@ class OverviewScreen extends ConsumerWidget {
         children: [
           Expanded(
               flex: 5,
-              child: GestureDetector(
-                  onTap: () => context.go(HomeScreen.routeName),
-                  child: AspectRatio(
-                      aspectRatio: approxHomeViewAspectRatio(
-                          context, homeRowCount, totalRows),
-                      child: const Card(
-                          child: Hero(tag: 'home', child: HomeView()))))),
-          Expanded(
-            child: Row(
-              children: const [
-                Expanded(child: AddLeftPageButton()),
-                Expanded(child: AddRightPageButton())
-              ],
-            ),
-          ),
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: AddLeftPageButton(),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                        onTap: () => context.go(HomeScreen.routeName),
+                        child: AspectRatio(
+                            aspectRatio: approxHomeViewAspectRatio(
+                                context, homeRowCount, totalRows),
+                            child: const Card(
+                                child: Hero(tag: 'home', child: HomeView())))),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: AddRightPageButton(),
+                  ),
+                ],
+              )),
           Expanded(
             child: Row(
               children: [
