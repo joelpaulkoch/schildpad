@@ -7,42 +7,6 @@ tasks:
       echo "Installing xdg-user-dirs to be able to locate directories"
       sudo apt install -y xdg-user-dirs
 
-  - name: Android Appetize info
-    # Gitpod is not able to run emulators within a worspace at this stage as
-    # Google Kubernetes Engine does not support Nested Virtualization.
-    #
-    # If running Gitpod on your own infrastructure or via the Dockerfile locally
-    # on infrastructure that exposes vmx or svm then this command will launch
-    # the emulator.
-    #
-    # $ emulator -avd avd28 -no-audio -no-window
-    #
-    # Until this restriction is mitigated you can run native mobile apps in your
-    # browser via https://appetize.io/
-    command: |
-      printf "\033[3J\033c\033[3J"
-      printf 'info[gitpod]: %s\n' \
-        "If you want to build apk/appbundle for Android then you might consider doing the below" \
-        "Appetize can will help you debug your app inside the browser"
-      if test -z "$APPETIZE_API_TOKEN"; then
-          printf '%s\n\n' \
-            "Appetize API token not set. Run:" \
-            "    gp env APPETIZE_API_TOKEN=your_token" \
-            "and create a new workspace in order to get an app preview." \
-            "Request your token here: https://appetize.io/docs#request-api-token if you want to test android builds"
-      else
-          curl -sS --http1.1 "https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_PUBLICKEY" \
-              -F "file=@/workspace/schildpad/build/app/outputs/flutter-apk/app.apk" \
-              -F platform=android \
-              -F "buttonText=Start App" \
-              -F "postSessionButtonText=Start App" \
-              > .appetize.json
-
-          APPETIZE_PUBLICKEY=$(jq -r .publicKey .appetize.json)
-          gp env "APPETIZE_PUBLICKEY=$APPETIZE_PUBLICKEY"
-          export APPETIZE_PUBLICKEY
-          gp preview "https://appetize.io/embed/$APPETIZE_PUBLICKEY?device=pixel4&autoplay=true"
-      fi
   - name: Build for different targets
     init: |
       if test ! -e "pubspec.yaml"; then {
