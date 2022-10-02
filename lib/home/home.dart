@@ -198,11 +198,6 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
   }
 }
 
-final pageControllerProvider = Provider<PageController>((ref) {
-  final initialPage = ref.watch(initialPageProvider);
-  return PageController(initialPage: initialPage);
-});
-
 class HomePageViewScrollPhysics extends ScrollPhysics {
   const HomePageViewScrollPhysics({ScrollPhysics? parent})
       : super(parent: parent);
@@ -220,6 +215,17 @@ class HomePageViewScrollPhysics extends ScrollPhysics {
       );
 }
 
+final currentHomePageProvider = StateProvider<int>((ref) {
+  final initialPage = ref.read(initialPageProvider);
+  return initialPage;
+});
+
+int pageViewToSchildpadIndex(int pageViewIndex, int leftPages) =>
+    pageViewIndex - leftPages;
+
+int schildpadToPageViewIndex(int schildpadIndex, int leftPages) =>
+    schildpadIndex + leftPages;
+
 class HomeView extends ConsumerWidget {
   const HomeView({
     Key? key,
@@ -231,14 +237,23 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final pageController = ref.watch(pageControllerProvider);
+    final currentPage = ref.read(currentHomePageProvider);
+    final pageController = PageController(
+        initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
+
     return PageView(
         controller: pageController,
+        onPageChanged: (page) {
+          final schildpadPage = pageViewToSchildpadIndex(page, leftPagesCount);
+          ref.read(currentHomePageProvider.notifier).state = schildpadPage;
+        },
         physics: const HomePageViewScrollPhysics(),
         children: List.generate(
             pageCount,
-            (index) =>
-                HomeViewGrid(index - leftPagesCount, columnCount, rowCount)));
+            (index) => HomeViewGrid(
+                pageViewToSchildpadIndex(index, leftPagesCount),
+                columnCount,
+                rowCount)));
   }
 }
 
