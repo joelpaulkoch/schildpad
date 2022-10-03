@@ -59,3 +59,25 @@ class AddRightPageButton extends ConsumerWidget {
         icon: const Icon(Icons.add));
   }
 }
+
+class MoveToLeftButton extends ConsumerWidget {
+  const MoveToLeftButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left));
+  }
+}
+
+class MoveToRightButton extends ConsumerWidget {
+  const MoveToRightButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right));
+  }
+}

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
+import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/settings.dart';
 import 'package:schildpad/theme/theme.dart';
@@ -18,6 +19,11 @@ class OverviewScreen extends ConsumerWidget {
     final homeRowCount = ref.watch(homeRowCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
     final totalRows = homeRowCount + dockRowCount;
+    final currentPage = ref.watch(currentHomePageProvider);
+    final leftPages = ref.watch(leftPagesProvider);
+    final rightPages = ref.watch(rightPagesProvider);
+    final onLeftMostPage = currentPage == -leftPages;
+    final onRightMostPage = currentPage == rightPages;
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: schildpadSystemUiOverlayStyle,
@@ -29,9 +35,11 @@ class OverviewScreen extends ConsumerWidget {
               flex: 5,
               child: Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: AddLeftPageButton(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: onLeftMostPage
+                        ? const AddLeftPageButton()
+                        : const MoveToLeftButton(),
                   ),
                   Expanded(
                     child: GestureDetector(
@@ -42,9 +50,11 @@ class OverviewScreen extends ConsumerWidget {
                             child: const Card(
                                 child: Hero(tag: 'home', child: HomeView())))),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: AddRightPageButton(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: onRightMostPage
+                        ? const AddRightPageButton()
+                        : const MoveToRightButton(),
                   ),
                 ],
               )),
