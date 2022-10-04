@@ -20,6 +20,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeRowCount = ref.watch(homeRowCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
+    final homePageController = ref.watch(homePageControllerProvider);
     return SafeArea(
       top: true,
       bottom: true,
@@ -71,8 +72,12 @@ class HomeScreen extends ConsumerWidget {
                       const TrashArea(),
                       Expanded(
                         flex: homeRowCount,
-                        child: const Align(
-                            child: Hero(tag: 'home', child: HomeView())),
+                        child: Align(
+                            child: Hero(
+                                tag: 'home',
+                                child: HomeView(
+                                  pageController: homePageController,
+                                ))),
                       ),
                       Expanded(
                         flex: dockRowCount,

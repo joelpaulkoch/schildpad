@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
+import 'package:schildpad/overview/overview_screen.dart';
 
 class ShowAppWidgetsButton extends StatelessWidget {
   const ShowAppWidgetsButton({
@@ -67,7 +69,15 @@ class MoveToLeftButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left));
+    final overviewPageController = ref.watch(overviewPageControllerProvider);
+    final leftPagesCount = ref.watch(leftPagesProvider);
+    final currentPage = ref.watch(currentHomePageProvider);
+    final page = schildpadToPageViewIndex(currentPage, leftPagesCount);
+    return IconButton(
+        onPressed: () {
+          overviewPageController.jumpToPage(page - 1);
+        },
+        icon: const Icon(Icons.chevron_left));
   }
 }
 
@@ -78,6 +88,14 @@ class MoveToRightButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right));
+    final overviewPageController = ref.watch(overviewPageControllerProvider);
+    final leftPagesCount = ref.watch(leftPagesProvider);
+    final currentPage = ref.watch(currentHomePageProvider);
+    final page = schildpadToPageViewIndex(currentPage, leftPagesCount);
+    return IconButton(
+        onPressed: () {
+          overviewPageController.jumpToPage(page + 1);
+        },
+        icon: const Icon(Icons.chevron_right));
   }
 }

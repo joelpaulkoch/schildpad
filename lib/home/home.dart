@@ -226,10 +226,19 @@ int pageViewToSchildpadIndex(int pageViewIndex, int leftPages) =>
 int schildpadToPageViewIndex(int schildpadIndex, int leftPages) =>
     schildpadIndex + leftPages;
 
+final homePageControllerProvider = Provider<PageController>((ref) {
+  final leftPagesCount = ref.watch(leftPagesProvider);
+  final currentPage = ref.watch(currentHomePageProvider);
+
+  final pageController = PageController(
+      initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
+  return pageController;
+});
+
 class HomeView extends ConsumerWidget {
-  const HomeView({
-    Key? key,
-  }) : super(key: key);
+  const HomeView({Key? key, required this.pageController}) : super(key: key);
+
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -237,9 +246,6 @@ class HomeView extends ConsumerWidget {
     final leftPagesCount = ref.watch(leftPagesProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
-    final currentPage = ref.read(currentHomePageProvider);
-    final pageController = PageController(
-        initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
 
     return PageView(
         controller: pageController,

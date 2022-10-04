@@ -9,6 +9,15 @@ import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/settings.dart';
 import 'package:schildpad/theme/theme.dart';
 
+final overviewPageControllerProvider = Provider<PageController>((ref) {
+  final leftPagesCount = ref.watch(leftPagesProvider);
+  final currentPage = ref.watch(currentHomePageProvider);
+
+  final pageController = PageController(
+      initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
+  return pageController;
+});
+
 class OverviewScreen extends ConsumerWidget {
   const OverviewScreen({Key? key}) : super(key: key);
 
@@ -24,6 +33,7 @@ class OverviewScreen extends ConsumerWidget {
     final rightPages = ref.watch(rightPagesProvider);
     final onLeftMostPage = currentPage == -leftPages;
     final onRightMostPage = currentPage == rightPages;
+    final overviewPageController = ref.watch(overviewPageControllerProvider);
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: schildpadSystemUiOverlayStyle,
@@ -47,8 +57,12 @@ class OverviewScreen extends ConsumerWidget {
                         child: AspectRatio(
                             aspectRatio: approxHomeViewAspectRatio(
                                 context, homeRowCount, totalRows),
-                            child: const Card(
-                                child: Hero(tag: 'home', child: HomeView())))),
+                            child: Card(
+                                child: Hero(
+                                    tag: 'home',
+                                    child: HomeView(
+                                      pageController: overviewPageController,
+                                    ))))),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),

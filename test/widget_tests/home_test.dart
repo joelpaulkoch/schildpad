@@ -33,12 +33,12 @@ main() {
       final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
         ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
-
+      final pageController = PageController();
       // GIVEN:
       // I am on the HomeView and there is exactly one app
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeView())));
+      ], child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -74,11 +74,12 @@ main() {
         ..removeAll()
         ..addElement(0, 0, _getTestApp(0, 0, 0));
 
+      final pageController = PageController();
       await tester.pumpWidget(ProviderScope(overrides: [
         homeColumnCountProvider.overrideWithValue(2),
         homeRowCountProvider.overrideWithValue(1),
         homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeView())));
+      ], child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -137,9 +138,10 @@ main() {
         ..addElement(0, 0, _getTestApp(0, 0, 0))
         ..addElement(0, 1, _getTestApp(0, 0, 1));
 
+      final pageController = PageController();
       await tester.pumpWidget(ProviderScope(overrides: [
         homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeView())));
+      ], child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -195,6 +197,7 @@ main() {
                 origin: GlobalElementCoordinates.onHome(
                     pageIndex: 0, column: 0, row: 0)));
 
+      final pageController = PageController();
       await tester.pumpWidget(ProviderScope(
           overrides: [
             homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
@@ -207,8 +210,8 @@ main() {
               ),
             ))
           ],
-          child: const MaterialApp(
-            home: HomeView(),
+          child: MaterialApp(
+            home: HomeView(pageController: pageController),
           )));
       await tester.pumpAndSettle();
 
