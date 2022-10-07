@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_test/hive_test.dart';
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
 void main() {
-  setUpAll(() async {
-    await Hive.initFlutter('schildpad/overview_screen_test');
+  setUp(() async {
+    await setUpTestHive();
   });
-  setUp(() async {});
   tearDown(() async {
-    await Hive.deleteFromDisk();
+    tearDownTestHive();
   });
 
   testWidgets('Overview shows up', (WidgetTester tester) async {

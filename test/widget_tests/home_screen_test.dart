@@ -136,5 +136,5 @@ void main() {
       final trashFinder = find.byType(TrashArea).hitTestable();
       expect(trashFinder, findsNothing);
     });
-  });
+  }, skip: true);
 }

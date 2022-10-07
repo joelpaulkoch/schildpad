@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_test/hive_test.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
 main() {
-  setUpAll(() async {
-    await Hive.initFlutter('schildpad/home_test');
+  setUp(() async {
+    await setUpTestHive();
   });
-  setUp(() async {});
-  tearDown(() async {});
-  tearDownAll(() async {});
+  tearDown(() async {
+    tearDownTestHive();
+  });
 
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
