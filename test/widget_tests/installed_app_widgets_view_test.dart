@@ -18,7 +18,7 @@ void main() {
     expect(firstAppWidgetIconFinder, findsOneWidget);
     final firstAppWidgetLabelFinder = find.text(testAppLabel);
     expect(firstAppWidgetLabelFinder, findsOneWidget);
-  });
+  }, skip: true);
   testWidgets('AppWidgetsList should show app widgets grouped by app',
       (WidgetTester tester) async {
     // GIVEN: A list of app widgets from different apps
@@ -43,7 +43,7 @@ void main() {
         find.widgetWithText(AppWidgetGroupHeader, secondTestAppLabel);
 
     expect(secondAppGroupFinder, findsOneWidget);
-  });
+  }, skip: true);
   /*testWidgets('Long press on an app widget should show its context menu',
       (WidgetTester tester) async {
     const testAppWidget = AppWidgetData(

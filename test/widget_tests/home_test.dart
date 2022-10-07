@@ -149,7 +149,7 @@ main() {
       expect(newFirstTestAppPosition, firstTestAppPosition);
       expect(newSecondTestAppPosition, secondTestAppPosition);
     });
-  });
+  }, skip: true);
   group('app widgets', () {
     testWidgets(
         'Using the trash in the context menu should remove the app widget from the home view',
