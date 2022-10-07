@@ -1,30 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:schildpad/installed_app_widgets/app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets_view.dart';
-import 'package:schildpad/installed_apps/apps.dart';
 
 void main() {
   testWidgets('AppWidgetsList should show widgets',
       (WidgetTester tester) async {
     // GIVEN: A list containing a app widget
-    const testAppPackage = 'com.test.app';
     const testAppLabel = 'testApp';
-    const testAppWidgetId = 'com.test.app.widget';
-    const testAppWidgetPreview = Icon(Icons.account_balance);
 
     // WHEN: we visualize it using AppWidgetsList
-    await tester.pumpWidget(ProviderScope(overrides: [
-      appsWithWidgetsProvider
-          .overrideWithValue(const AsyncData([testAppPackage])),
-      appLabelProvider(testAppPackage)
-          .overrideWithValue(const AsyncData(testAppLabel)),
-      appPackageApplicationWidgetIdsProvider(testAppPackage)
-          .overrideWithValue(const AsyncData([testAppWidgetId])),
-      appWidgetPreviewProvider(testAppPackage)
-          .overrideWithValue(const AsyncData(testAppWidgetPreview))
-    ], child: const MaterialApp(home: AppWidgetsList())));
+    await tester.pumpWidget(const ProviderScope(
+        overrides: [], child: MaterialApp(home: AppWidgetsList())));
 
     //THEN: the widgets icon and label are shown
     final firstAppWidgetIconFinder = find.text(testAppLabel);
@@ -35,33 +22,13 @@ void main() {
   testWidgets('AppWidgetsList should show app widgets grouped by app',
       (WidgetTester tester) async {
     // GIVEN: A list of app widgets from different apps
-    const firstTestAppPackage = 'com.first.app';
     const firstTestAppLabel = 'firstTestApp';
-    const firstTestAppWidgetId = 'com.first.app.widget';
-    const firstTestAppWidgetPreview = Icon(Icons.account_balance);
 
-    const secondTestAppPackage = 'com.second.app';
     const secondTestAppLabel = 'secondTestApp';
-    const secondTestAppWidgetId = 'com.second.app.widget';
-    const secondTestAppWidgetPreview = Icon(Icons.access_alarms_rounded);
 
     // WHEN: we visualize them using AppWidgetsList
-    await tester.pumpWidget(ProviderScope(overrides: [
-      appsWithWidgetsProvider.overrideWithValue(
-          const AsyncData([firstTestAppPackage, secondTestAppPackage])),
-      appLabelProvider(firstTestAppPackage)
-          .overrideWithValue(const AsyncData(firstTestAppLabel)),
-      appPackageApplicationWidgetIdsProvider(firstTestAppPackage)
-          .overrideWithValue(const AsyncData([firstTestAppWidgetId])),
-      appWidgetPreviewProvider(firstTestAppPackage)
-          .overrideWithValue(const AsyncData(firstTestAppWidgetPreview)),
-      appLabelProvider(secondTestAppPackage)
-          .overrideWithValue(const AsyncData(secondTestAppLabel)),
-      appPackageApplicationWidgetIdsProvider(secondTestAppPackage)
-          .overrideWithValue(const AsyncData([secondTestAppWidgetId])),
-      appWidgetPreviewProvider(secondTestAppPackage)
-          .overrideWithValue(const AsyncData(secondTestAppWidgetPreview))
-    ], child: const MaterialApp(home: AppWidgetsList())));
+    await tester.pumpWidget(const ProviderScope(
+        overrides: [], child: MaterialApp(home: AppWidgetsList())));
 
     //THEN: they are shown grouped by app
     final firstAppWidgetFinder = find.text(firstTestAppLabel);

@@ -1,42 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/home.dart';
+import 'package:hive_test/hive_test.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
 
-ElementData _getTestApp(int page, int col, int row) => ElementData(
-    appData: const AppData(
-      packageName: 'testPackage',
-    ),
-    columnSpan: 1,
-    rowSpan: 1,
-    origin: GlobalElementCoordinates.onHome(
-      pageIndex: page,
-      column: col,
-      row: row,
-    ));
-
 void main() {
-  setUpAll(() async {
-    await Hive.initFlutter('schildpad/home_screen_test');
+  setUp(() async {
+    await setUpTestHive();
   });
-  setUp(() async {});
-  tearDown(() async {});
+  tearDown(() async {
+    tearDownTestHive();
+  });
   group('trash area', () {
     testWidgets(
         'Moving an app on the home view should cause the trash area to show up',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
-
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpWidget(const ProviderScope(
+          overrides: [], child: MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -62,13 +44,8 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an empty spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
-
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpWidget(const ProviderScope(
+          overrides: [], child: MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -97,14 +74,8 @@ void main() {
     testWidgets(
         'After dropping a dragged app on an occupied spot on the home view the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0))
-        ..addElement(0, 1, _getTestApp(0, 0, 1));
-
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpWidget(const ProviderScope(
+          overrides: [], child: MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -136,13 +107,8 @@ void main() {
     testWidgets(
         'After dropping a dragged app in the trash area the trash area should not be shown',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
-
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: const MaterialApp(home: HomeScreen())));
+      await tester.pumpWidget(const ProviderScope(
+          overrides: [], child: MaterialApp(home: HomeScreen())));
       await tester.pumpAndSettle();
 
       // GIVEN:

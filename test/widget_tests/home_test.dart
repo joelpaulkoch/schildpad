@@ -3,21 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
-import 'package:schildpad/installed_apps/apps.dart';
 import 'package:schildpad/installed_apps/installed_apps_view.dart';
-
-ElementData _getTestApp(int page, int col, int row) => ElementData(
-    appData: const AppData(
-      packageName: 'testPackage',
-    ),
-    columnSpan: 1,
-    rowSpan: 1,
-    origin: GlobalElementCoordinates.onHome(
-      pageIndex: page,
-      column: col,
-      row: row,
-    ));
 
 main() {
   setUpAll(() async {
@@ -30,15 +16,12 @@ main() {
   group('move apps on HomeView tests', () {
     testWidgets('Moving an app on the home view to an empty spot should work',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
       final pageController = PageController();
       // GIVEN:
       // I am on the HomeView and there is exactly one app
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: MaterialApp(home: HomeView(pageController: pageController))));
+      await tester.pumpWidget(ProviderScope(
+          overrides: const [],
+          child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       final testAppFinder = find.byType(InstalledAppDraggable);
@@ -70,16 +53,10 @@ main() {
     testWidgets(
         'After moving an app on the home view to an empty spot it should be possible to move it back',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 2, 1)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0));
-
       final pageController = PageController();
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeColumnCountProvider.overrideWithValue(2),
-        homeRowCountProvider.overrideWithValue(1),
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: MaterialApp(home: HomeView(pageController: pageController))));
+      await tester.pumpWidget(ProviderScope(
+          overrides: const [],
+          child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -133,15 +110,10 @@ main() {
     testWidgets(
         'Moving an app on the home view to an occupied spot should not work',
         (WidgetTester tester) async {
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(0, 0, _getTestApp(0, 0, 0))
-        ..addElement(0, 1, _getTestApp(0, 0, 1));
-
       final pageController = PageController();
-      await tester.pumpWidget(ProviderScope(overrides: [
-        homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-      ], child: MaterialApp(home: HomeView(pageController: pageController))));
+      await tester.pumpWidget(ProviderScope(
+          overrides: const [],
+          child: MaterialApp(home: HomeView(pageController: pageController))));
       await tester.pumpAndSettle();
 
       // GIVEN:
@@ -182,34 +154,9 @@ main() {
     testWidgets(
         'Using the trash in the context menu should remove the app widget from the home view',
         (WidgetTester tester) async {
-      const testAppWidget =
-          AppWidgetData(componentName: 'testComponent', appWidgetId: 0);
-
-      final homeGridStateNotifier = HomeGridStateNotifier(0, 4, 5)
-        ..removeAll()
-        ..addElement(
-            0,
-            0,
-            ElementData(
-                appWidgetData: testAppWidget,
-                columnSpan: 3,
-                rowSpan: 1,
-                origin: GlobalElementCoordinates.onHome(
-                    pageIndex: 0, column: 0, row: 0)));
-
       final pageController = PageController();
       await tester.pumpWidget(ProviderScope(
-          overrides: [
-            homeGridStateProvider(0).overrideWithValue(homeGridStateNotifier),
-            nativeAppWidgetProvider(testAppWidget.appWidgetId!)
-                .overrideWithValue(const Card(
-              color: Colors.deepOrange,
-              child: Icon(
-                Icons.ac_unit_sharp,
-                color: Colors.cyanAccent,
-              ),
-            ))
-          ],
+          overrides: const [],
           child: MaterialApp(
             home: HomeView(pageController: pageController),
           )));
