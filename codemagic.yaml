@@ -1,0 +1,51 @@
+workflows:
+  default-workflow:
+    name: Default Workflow
+    max_build_duration: 30
+    environment:
+      groups:
+        - google_play
+      android_signing:
+        - schildpad_keystore
+      flutter: stable
+      vars:
+        PACKAGE_NAME: "app.schildpad.schildpad"
+        GOOGLE_PLAY_TRACK: internal
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: '*'
+          include: true
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Unit tests
+        script: |
+          mkdir -p test-results
+          flutter test --machine > test-results/flutter.json
+        test_report: test-results/flutter.json
+      - name: Build AAB with Flutter
+        script: |
+          BUILD_NUMBER=($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1)
+          flutter build appbundle --release \
+          --build-number=$BUILD_NUMBER
+    artifacts:
+      - build/**/outputs/bundle/**/*.aab
+      - build/**/outputs/**/mapping.txt
+    publishing:
+      email:
+        recipients:
+          - codemagic@schildpad.app
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
