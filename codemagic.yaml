@@ -36,8 +36,8 @@ workflows:
       - name: Build AAB with Flutter
         script: |
           BUILD_NUMBER=($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1)
-          flutter build appbundle --release \
-          --build-number=$BUILD_NUMBER
+          echo "Build number $BUILD_NUMBER"
+          flutter build appbundle --release --build-number=$BUILD_NUMBER
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
@@ -48,4 +48,3 @@ workflows:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
-        submit_as_draft: true
