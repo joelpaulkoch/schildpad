@@ -35,9 +35,8 @@ workflows:
         test_report: test-results/flutter.json
       - name: Build AAB with Flutter
         script: |
-          LATEST_BUILD_NUMBER=$(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK")
-          NEXT_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
-          flutter build appbundle --release --build-number=$NEXT_BUILD_NUMBER
+          BUILD_NUMBER=$($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1)
+          flutter build appbundle --release --build-number=$BUILD_NUMBER
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
@@ -48,3 +47,4 @@ workflows:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
+        submit_as_draft: true
