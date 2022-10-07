@@ -96,6 +96,14 @@ class AppWidgetListTile extends ConsumerWidget {
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
 
+    final appWidgetPreview = ref
+        .watch(appWidgetPreviewProvider(applicationWidgetId))
+        .maybeWhen(data: (preview) => preview, orElse: () => Container());
+
+    final appWidgetLabel = ref
+        .watch(appWidgetLabelProvider(applicationWidgetId))
+        .maybeWhen(data: (label) => label, orElse: () => '');
+
     final appWidgetSizes = ref
         .watch(appWidgetSizesProvider(applicationWidgetId))
         .maybeWhen(
@@ -108,97 +116,118 @@ class AppWidgetListTile extends ConsumerWidget {
                 maxWidth: 0,
                 maxHeight: 0));
 
-    final widgetColumnSpan =
-        _getColumnSpan(context, columnCount, appWidgetSizes);
-    final widgetRowSpan = _getRowSpan(context, rowCount, appWidgetSizes);
+    final widgetColumnSpans =
+        _getColumnSpans(context, columnCount, appWidgetSizes);
+    final widgetRowSpans = _getRowSpans(context, rowCount, appWidgetSizes);
 
-    final appWidgetPreview = ref
-        .watch(appWidgetPreviewProvider(applicationWidgetId))
-        .maybeWhen(data: (preview) => preview, orElse: () => Container());
-
-    final appWidgetLabel = ref
-        .watch(appWidgetLabelProvider(applicationWidgetId))
-        .maybeWhen(data: (label) => label, orElse: () => '');
-
-    return LongPressDraggable(
-      data: ElementData(
-          appWidgetData: AppWidgetData(componentName: applicationWidgetId),
-          columnSpan: widgetColumnSpan,
-          rowSpan: widgetRowSpan,
-          origin: GlobalElementCoordinates.onList()),
-      maxSimultaneousDrags: 1,
-      feedback: ConstrainedBox(
-          constraints: BoxConstraints.tight(Size(
-              _getWidth(context, columnCount, appWidgetSizes),
-              _getHeight(context, rowCount, appWidgetSizes))),
-          child: appWidgetPreview),
-      childWhenDragging: const SizedBox.shrink(),
-      onDragStarted: () {
-        context.go(HomeScreen.routeName);
-      },
-      child: Card(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ConstrainedBox(
-                    constraints: BoxConstraints.loose(const Size(200, 300)),
-                    child: appWidgetPreview),
-                Text(
-                  '$widgetColumnSpan x $widgetRowSpan',
-                )
-              ],
+    return Column(
+      children: [
+        for (var widgetColumnSpan in widgetColumnSpans)
+          for (var widgetRowSpan in widgetRowSpans)
+            LongPressDraggable(
+              data: ElementData(
+                  appWidgetData:
+                      AppWidgetData(componentName: applicationWidgetId),
+                  columnSpan: widgetColumnSpan,
+                  rowSpan: widgetRowSpan,
+                  origin: GlobalElementCoordinates.onList()),
+              maxSimultaneousDrags: 1,
+              feedback: ConstrainedBox(
+                  constraints: BoxConstraints.tight(Size(
+                      _getWidth(context, widgetColumnSpan, columnCount),
+                      _getHeight(context, widgetRowSpan, rowCount))),
+                  child: appWidgetPreview),
+              childWhenDragging: const SizedBox.shrink(),
+              onDragStarted: () {
+                context.go(HomeScreen.routeName);
+              },
+              child: Card(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ConstrainedBox(
+                            constraints:
+                                BoxConstraints.loose(const Size(200, 300)),
+                            child: appWidgetPreview),
+                        Text(
+                          '$widgetColumnSpan x $widgetRowSpan',
+                        )
+                      ],
+                    ),
+                    Text(
+                      appWidgetLabel,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Text(
-              appWidgetLabel,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
 
-double _getWidth(BuildContext context, int columnCount, AppWidgetSizes sizes) {
-  if (sizes.targetWidth == 0) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return (sizes.minWidth <= screenWidth)
-        ? sizes.minWidth.toDouble()
-        : screenWidth;
-  }
-  return (sizes.targetWidth * columnCount).toDouble();
+double _getWidth(BuildContext context, int widgetColumns, int columnCount) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  return screenWidth * widgetColumns / columnCount.toDouble();
 }
 
-double _getHeight(BuildContext context, int rowCount, AppWidgetSizes sizes) {
-  if (sizes.targetHeight == 0) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    return (sizes.minHeight <= screenHeight)
-        ? sizes.minHeight.toDouble()
-        : screenHeight;
-  }
-  return (sizes.targetHeight * rowCount).toDouble();
+double _getHeight(BuildContext context, int widgetRows, int rowCount) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  return screenHeight * widgetRows / rowCount.toDouble();
 }
 
-int _getColumnSpan(
+List<int> _getColumnSpans(
     BuildContext context, int columnCount, AppWidgetSizes sizes) {
-  if (sizes.targetWidth == 0) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final columnWidth = screenWidth / columnCount;
-    final columnSpan = (sizes.minWidth / columnWidth).ceil();
-    return (columnSpan <= columnCount) ? columnSpan : columnCount;
+  final screenWidth = MediaQuery.of(context).size.width;
+  final columnWidth = screenWidth / columnCount;
+
+  var minColumnSpan = (sizes.minWidth / columnWidth).ceil();
+  if (minColumnSpan > columnCount) {
+    minColumnSpan = columnCount;
   }
-  return sizes.targetWidth;
+  int maxColumnSpan;
+  if (sizes.maxWidth != 0) {
+    maxColumnSpan = (sizes.maxWidth / columnWidth).floor();
+  } else if (sizes.targetWidth != 0) {
+    maxColumnSpan = sizes.targetWidth;
+  } else {
+    maxColumnSpan = columnCount;
+  }
+  if (maxColumnSpan > columnCount) {
+    maxColumnSpan = columnCount;
+  }
+
+  final columnSpans = [for (var c = minColumnSpan; c <= maxColumnSpan; c++) c];
+
+  return columnSpans;
 }
 
-int _getRowSpan(BuildContext context, int rowCount, AppWidgetSizes sizes) {
-  if (sizes.targetHeight == 0) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final rowHeight = screenHeight / rowCount;
-    final rowSpan = (sizes.minHeight / rowHeight).ceil();
-    return (rowSpan <= rowCount) ? rowSpan : rowCount;
+List<int> _getRowSpans(
+    BuildContext context, int rowCount, AppWidgetSizes sizes) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  final rowHeight = screenHeight / rowCount;
+
+  var minRowSpan = (sizes.minHeight / rowHeight).ceil();
+  if (minRowSpan > rowCount) {
+    minRowSpan = rowCount;
   }
-  return sizes.targetHeight;
+  int maxRowSpan;
+  if (sizes.maxHeight != 0) {
+    maxRowSpan = (sizes.maxHeight / rowHeight).floor();
+  } else if (sizes.targetHeight != 0) {
+    maxRowSpan = sizes.targetHeight;
+  } else {
+    maxRowSpan = rowCount;
+  }
+  if (maxRowSpan > rowCount) {
+    maxRowSpan = rowCount;
+  }
+
+  final rowSpans = [for (var c = minRowSpan; c <= maxRowSpan; c++) c];
+
+  return rowSpans;
 }
