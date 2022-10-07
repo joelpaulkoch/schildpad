@@ -30,6 +30,7 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
+  hive_test: ^1.0.1
 
   flutter_lints: ^2.0.1
 
