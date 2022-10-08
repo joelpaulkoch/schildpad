@@ -6,8 +6,6 @@ workflows:
       groups:
         - google_play
         - keystore_credentials
-      android_signing:
-        - schildpad_keystore
       flutter: stable
       vars:
         PACKAGE_NAME: "app.schildpad.schildpad"
