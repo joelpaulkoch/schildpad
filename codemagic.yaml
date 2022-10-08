@@ -33,14 +33,6 @@ workflows:
           mkdir -p test-results
           flutter test --machine > test-results/flutter.json
         test_report: test-results/flutter.json
-      - name: Integration tests
-        script: |
-          mkdir -p test-results 
-          flutter emulators --launch emulator &
-          # adb wait-for-device is used to wait for the emulator to finish loading:
-          adb wait-for-device
-          flutter -d emulator-5554 test --machine > test-results/flutter.json integration_test
-        test_report: test-results/flutter.json
       - name: Build AAB with Flutter
         script: |
           BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))
