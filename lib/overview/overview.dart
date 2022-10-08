@@ -21,18 +21,33 @@ class ShowAppWidgetsButton extends StatelessWidget {
   }
 }
 
-class DeletePageButton extends StatelessWidget {
-  const DeletePageButton({
-    Key? key,
-    required this.onTap,
-  }) : super(key: key);
+class DeletePageButton extends ConsumerWidget {
+  const DeletePageButton({Key? key, required this.page}) : super(key: key);
 
-  final VoidCallback onTap;
+  final int page;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final leftPages = ref.watch(leftPagesProvider);
+    final rightPages = ref.watch(rightPagesProvider);
+    final onLeftMostPage = page == -leftPages;
+    final onRightMostPage = page == rightPages;
+    final onOuterPage = (onLeftMostPage || onRightMostPage) && (page != 0);
+    final homeGridState = ref.watch(homeGridStateProvider(page).notifier);
+    final pageState = ref.watch(pagesProvider.notifier);
     return IconButton(
-        onPressed: onTap, icon: const Icon(Icons.delete_outline_rounded));
+        onPressed: onOuterPage
+            ? () {
+                homeGridState.removeAll();
+                if (page < 0) {
+                  pageState.removeLeftPage();
+                }
+                if (page > 0) {
+                  pageState.removeRightPage();
+                }
+              }
+            : null,
+        icon: const Icon(Icons.delete_outline_rounded));
   }
 }
 

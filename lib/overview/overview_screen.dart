@@ -76,7 +76,7 @@ class OverviewScreen extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: DeletePageButton(onTap: () {}),
+                  child: DeletePageButton(page: currentPage),
                 ),
                 const Expanded(
                   child: ShowAppWidgetsButton(),
