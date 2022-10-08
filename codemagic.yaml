@@ -5,6 +5,7 @@ workflows:
     environment:
       groups:
         - google_play
+        - keystore_credentials
       android_signing:
         - schildpad_keystore
       flutter: stable
@@ -22,6 +23,9 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
+      - name: Set up keystore
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
