@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
+import 'package:schildpad/settings/app_info.dart';
 import 'package:schildpad/settings/settings_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsIconButton extends StatelessWidget {
   const SettingsIconButton({
@@ -80,5 +82,48 @@ class ResetButton extends ConsumerWidget {
         },
         child: Text(AppLocalizations.of(context)!
             .resetConfirmationDialogConfirmButton));
+  }
+}
+
+class ContactListTile extends StatelessWidget {
+  const ContactListTile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.contact_support_outlined),
+      title: Text(
+        AppLocalizations.of(context)!.contactListTile,
+      ),
+      onTap: _contactSchildpad,
+    );
+  }
+}
+
+final Uri _contactUrl = Uri.parse('mailto:contact@schildpad.app');
+
+Future<void> _contactSchildpad() async {
+  if (!await launchUrl(_contactUrl)) {
+    throw 'Could not launch $_contactUrl';
+  }
+}
+
+class SchildpadAboutListTile extends ConsumerWidget {
+  const SchildpadAboutListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final schildpadVersion = ref.watch(schildpadVersionProvider);
+    final schildpadAppName = ref.watch(schildpadAppNameProvider);
+    return AboutListTile(
+        icon: const Icon(Icons.info_outline_rounded),
+        applicationName: schildpadAppName,
+        applicationIcon: SizedBox(
+            width: IconTheme.of(context).size,
+            height: IconTheme.of(context).size,
+            child: schildpadLogo),
+        applicationVersion: schildpadVersion);
   }
 }

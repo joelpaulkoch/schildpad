@@ -7,9 +7,9 @@
     "@widgetsTitle":{
       "description": "Title of the widgets screen"
     },
-    "aboutListTile": "About",
-    "@aboutListTile": {
-      "description": "Text on about list tile"
+    "contactListTile": "Contact",
+    "@contactListTile": {
+      "description": "Text on contact list tile"
     },              
     "resetListTile": "Reset",
     "@resetListTile": {
@@ -19,11 +19,11 @@
     "@resetConfirmationDialogTitle": {
       "description": "Title of the confirmation dialog to reset the app"
     },
-     "resetConfirmationDialogText": "Are you sure?",
+    "resetConfirmationDialogText": "Are you sure?",
     "@resetConfirmationDialogText": {
       "description": "Text shown in the confirmation dialog to reset the app"
     },
-        "resetConfirmationDialogConfirmButton": "Reset",
+    "resetConfirmationDialogConfirmButton": "Reset",
     "@resetConfirmationDialogConfirmButton": {
       "description": "Text of confirm button in the confirmation dialog to reset the app"
     },
