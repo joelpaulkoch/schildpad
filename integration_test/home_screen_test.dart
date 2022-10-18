@@ -76,7 +76,7 @@ void main() {
     });
   });
   group('move apps', () {
-    testWidgets('A dropped app should be added to the HomeScreen',
+    testWidgets('A dropped app should be added to the home grid',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -97,6 +97,26 @@ void main() {
       // the app is added to the HomeScreen
       expect(find.byType(AppIcon).hitTestable(), findsOneWidget);
     });
+    testWidgets('Dropping an app on the dock should add it to the dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the HomeScreen
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+
+      // When:
+      // I drop an app on the dock
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      await homeScreenRobot.addAppToDock(0);
+
+      // Then:
+      // the app is added to the dock
+      expect(find.byType(AppIcon).hitTestable(), findsOneWidget);
+    });
     testWidgets('Moving an app on the home screen to an empty spot should work',
         (WidgetTester tester) async {
       await app.main();
@@ -109,7 +129,7 @@ void main() {
       // and there is exactly one app
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
+      await homeScreenRobot.addAppToHome(0, 0);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
@@ -138,6 +158,7 @@ void main() {
     testWidgets(
         'Moving an app on the home screen to an occupied spot should not work',
         (WidgetTester tester) async {
+      //TODO reactivate this test when drag detection is fixed
       await app.main();
       await tester.pumpAndSettle();
 
@@ -148,8 +169,8 @@ void main() {
       // and there are two apps
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
-      await homeScreenRobot.addApp(0, 1);
+      await homeScreenRobot.addAppToHome(0, 0);
+      await homeScreenRobot.addAppToHome(0, 1);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
@@ -183,7 +204,7 @@ void main() {
       // and there is exactly one app
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
+      await homeScreenRobot.addAppToHome(0, 0);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
@@ -211,7 +232,7 @@ void main() {
       // and there is exactly one app
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
+      await homeScreenRobot.addAppToHome(0, 0);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
@@ -285,8 +306,8 @@ void main() {
       // and there are two apps
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
-      await homeScreenRobot.addApp(0, 1);
+      await homeScreenRobot.addAppToHome(0, 0);
+      await homeScreenRobot.addAppToHome(0, 1);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
@@ -312,7 +333,7 @@ void main() {
       // and there is exactly one app
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addApp(0, 0);
+      await homeScreenRobot.addAppToHome(0, 0);
       final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
@@ -54,7 +55,7 @@ class HomeScreenRobot {
     await longPressDragGesture.moveTo(position);
   }
 
-  Future<void> addApp(int column, int row) async {
+  Future<void> addAppToHome(int column, int row) async {
     await openAppList();
 
     final installedAppFinder =
@@ -69,7 +70,28 @@ class HomeScreenRobot {
     await longPressDragGesture.moveBy(smallOffset);
     await tester.pumpAndSettle();
 
-    final dropOffset = getGridCellPosition(column, row);
+    final dropOffset = _getHomeGridCellPosition(column, row);
+    await longPressDragGesture.moveTo(dropOffset);
+    await longPressDragGesture.up();
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> addAppToDock(int column) async {
+    await openAppList();
+
+    final installedAppFinder =
+        find.byType(InstalledAppDraggable).hitTestable().first;
+    expect(installedAppFinder, findsOneWidget);
+
+    const smallOffset = Offset(100, 100);
+
+    final longPressDragGesture =
+        await tester.startGesture(tester.getCenter(installedAppFinder));
+    await tester.pumpAndSettle();
+    await longPressDragGesture.moveBy(smallOffset);
+    await tester.pumpAndSettle();
+
+    final dropOffset = _getDockGridCellPosition(column);
     await longPressDragGesture.moveTo(dropOffset);
     await longPressDragGesture.up();
     await tester.pumpAndSettle();
@@ -83,7 +105,7 @@ class HomeScreenRobot {
     await longPressDragGesture.moveBy(smallOffset);
     await tester.pumpAndSettle();
 
-    final dropOffset = getGridCellPosition(column, row);
+    final dropOffset = _getHomeGridCellPosition(column, row);
     await longPressDragGesture.moveTo(dropOffset);
     await longPressDragGesture.up();
     await tester.pumpAndSettle();
@@ -107,7 +129,7 @@ class HomeScreenRobot {
     await tester.pumpAndSettle();
   }
 
-  Offset getGridCellPosition(int column, int row) {
+  Offset _getHomeGridCellPosition(int column, int row) {
     final homeGridFinder = find.byType(HomeViewGrid);
     expect(homeGridFinder, findsOneWidget);
     final homeGridOrigin = tester.getTopLeft(homeGridFinder);
@@ -116,5 +138,16 @@ class HomeScreenRobot {
     final xPos = column / homeGridColumns * homeGridSize.width;
     final yPos = row / homeGridRows * homeGridSize.height;
     return homeGridOrigin + Offset(xPos, yPos);
+  }
+
+  Offset _getDockGridCellPosition(int column) {
+    final dockGridFinder = find.byType(DockGrid);
+    expect(dockGridFinder, findsOneWidget);
+    final dockGridOrigin = tester.getTopLeft(dockGridFinder);
+    final dockGridSize = tester.getSize(dockGridFinder);
+
+    final xPos = column / homeGridColumns * dockGridSize.width +
+        0.5 * dockGridSize.width;
+    return dockGridOrigin + Offset(xPos, dockGridSize.height / 2);
   }
 }
