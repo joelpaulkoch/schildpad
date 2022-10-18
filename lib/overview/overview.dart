@@ -41,9 +41,11 @@ class DeletePageButton extends ConsumerWidget {
                 homeGridState.removeAll();
                 if (page < 0) {
                   pageState.removeLeftPage();
+                  ref.read(currentHomePageProvider.notifier).state++;
                 }
                 if (page > 0) {
                   pageState.removeRightPage();
+                  ref.read(currentHomePageProvider.notifier).state--;
                 }
               }
             : null,

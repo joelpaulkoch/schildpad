@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
@@ -6,11 +7,15 @@ import 'package:schildpad/main.dart' as app;
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
+import 'robot/overview_screen_robot.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
+  tearDown(() async {
+    await Hive.deleteFromDisk();
+  });
   group('navigate', () {
-    testWidgets('Button on OverviewScreen should open appwidgets screen',
+    testWidgets('navigating to appwidgets screen should be possible',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -21,19 +26,75 @@ void main() {
       await tester.pumpAndSettle();
 
       // Given:
-      // I am on the OverviewScreen
+      // I am on the overview screen
       expect(find.byType(OverviewScreen), findsOneWidget);
 
       // When:
-      // I press the app widgets button
-      final appWidgetsButtonFinder = find.byType(ShowAppWidgetsButton);
-      expect(appWidgetsButtonFinder, findsOneWidget);
-      await tester.tap(appWidgetsButtonFinder);
+      // I open the appwidgets screen
+      final overviewScreenRobot = OverviewScreenRobot(tester);
+      await overviewScreenRobot.openAppWidgetsScreen();
+
+      // Then:
+      // it is opened
+      expect(find.byType(AppWidgetsScreen), findsOneWidget);
+    });
+  });
+  group('pages', () {
+    testWidgets('adding a page should be possible',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the overview screen
+      expect(find.byType(OverviewScreen), findsOneWidget);
+      // and there is only one page
+      final pageFinder = find.byType(MoveToRightButton);
+      expect(pageFinder, findsNothing);
+
+      // When:
+      // I add a page
+      final overviewScreenRobot = OverviewScreenRobot(tester);
+      await overviewScreenRobot.addPageOnRightSide();
       await tester.pumpAndSettle();
 
       // Then:
-      // AppWidgetsScreen is opened
-      expect(find.byType(AppWidgetsScreen), findsOneWidget);
+      // there are two pages
+      expect(pageFinder, findsOneWidget);
+    });
+    testWidgets('deleting an outer page should be possible',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      await tester.longPress(homeScreenFinder);
+      await tester.pumpAndSettle();
+
+      // Given:
+      // I am on the overview screen
+      expect(find.byType(OverviewScreen), findsOneWidget);
+      // and there are two pages
+      final overviewScreenRobot = OverviewScreenRobot(tester);
+      await overviewScreenRobot.addPageOnRightSide();
+      await tester.pumpAndSettle();
+      final pageFinder = find.byType(MoveToRightButton);
+      expect(pageFinder, findsOneWidget);
+
+      // When:
+      // I delete the outer page
+      await overviewScreenRobot.moveToRightPage();
+      await overviewScreenRobot.deletePage();
+
+      // Then:
+      // there there is only one page left
+      expect(pageFinder, findsNothing);
     });
   });
 }
