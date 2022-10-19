@@ -3,8 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/apps.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/main.dart' as app;
 import 'package:schildpad/overview/overview_screen.dart';
 

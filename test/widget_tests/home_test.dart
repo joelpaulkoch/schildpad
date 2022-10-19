@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_test/hive_test.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 
 main() {
   setUp(() async {

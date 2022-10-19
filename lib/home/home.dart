@@ -8,8 +8,7 @@ import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
-import 'package:schildpad/installed_apps/apps.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 
 final homeColumnCountProvider = Provider<int>((ref) {
   return 4;

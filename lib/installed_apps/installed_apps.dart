@@ -1,8 +1,10 @@
+import 'dart:developer' as dev;
+
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/installed_apps/apps.dart';
+import 'package:schildpad/installed_apps/installed_applications.dart';
 import 'package:schildpad/settings/settings.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
@@ -104,5 +106,85 @@ class InstalledAppDraggable extends ConsumerWidget {
       onDragEnd: onDragEnd,
       child: Material(type: MaterialType.transparency, child: appIcon),
     );
+  }
+}
+
+final appsUpdateProvider = Provider<int>((ref) {
+  final updateCount = ref.watch(_appsUpdateStreamProvider);
+  return updateCount.maybeWhen(data: (data) => data, orElse: () => 0);
+});
+
+final _appsUpdateStreamProvider = StreamProvider<int>((ref) async* {
+  final stream = getApplicationsUpdateStream();
+
+  await for (final counter in stream) {
+    dev.log('update $counter');
+    yield counter;
+  }
+});
+
+class AppData {
+  const AppData({
+    required this.packageName,
+  });
+
+  final String packageName;
+}
+
+final appPackagesProvider = FutureProvider<List<String>>((ref) async {
+  ref.watch(appsUpdateProvider);
+  return await getApplicationIds();
+});
+
+final appLabelProvider =
+    FutureProvider.family<String, String>((ref, packageName) async {
+  return await getApplicationLabel(packageName);
+});
+
+final _appLaunchFunctionProvider =
+    FutureProvider.family<VoidCallback, String>((ref, packageName) async {
+  return await getApplicationLaunchFunction(packageName);
+});
+
+final appIconImageProvider =
+    FutureProvider.family<Image, String>((ref, packageName) async {
+  final appIcon = await getApplicationIcon(packageName);
+  return Image.memory(appIcon);
+});
+
+final _appIconSizeProvider = Provider<double>((ref) {
+  return 60;
+});
+
+class AppIcon extends ConsumerWidget {
+  const AppIcon({Key? key, required this.packageName, this.showAppName = false})
+      : super(key: key);
+
+  final String packageName;
+  final bool showAppName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appIconSize = ref.watch(_appIconSizeProvider);
+    final appIconImage = ref.watch(appIconImageProvider(packageName)).maybeWhen(
+        data: (appIcon) => appIcon,
+        error: (_, __) => const Icon(
+              Icons.android_outlined,
+              color: Colors.red,
+            ),
+        orElse: () => const Icon(Icons.android_outlined));
+    final appLaunch =
+        ref.watch(_appLaunchFunctionProvider(packageName)).maybeWhen(
+            data: (launchFunction) => launchFunction,
+            orElse: () {
+              return null;
+            });
+    final appLabel = ref.watch(appLabelProvider(packageName)).maybeWhen(
+        data: (label) => label, error: (_, __) => 'error', orElse: () => '...');
+    return ApplicationIcon(
+        applicationIconSize: appIconSize,
+        applicationIconImage: appIconImage,
+        applicationLaunchFunction: appLaunch,
+        applicationLabel: appLabel);
   }
 }

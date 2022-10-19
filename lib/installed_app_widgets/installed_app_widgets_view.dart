@@ -5,7 +5,7 @@ import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
-import 'package:schildpad/installed_apps/apps.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 
 class AppWidgetsList extends ConsumerWidget {
   const AppWidgetsList({

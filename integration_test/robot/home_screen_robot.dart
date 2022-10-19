@@ -3,7 +3,7 @@ import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 
 class HomeScreenRobot {
   HomeScreenRobot(this.tester,

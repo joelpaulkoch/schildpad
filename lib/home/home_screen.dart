@@ -6,7 +6,7 @@ import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/installed_apps_view.dart';
+import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
