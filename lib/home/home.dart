@@ -8,6 +8,7 @@ import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
 final homeColumnCountProvider = Provider<int>((ref) {
@@ -154,7 +155,8 @@ class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
     } else if (appWidget != null) {
       ElementData elementData = data;
       if (elementData.isAppWidgetData) {
-        final widgetId = await createWidget(data.appWidgetData!.componentName);
+        final widgetId =
+            await createApplicationWidget(data.appWidgetData!.componentName);
         elementData = data.copyWithAppWidgetData(
             data.appWidgetData!.componentName, widgetId);
       }

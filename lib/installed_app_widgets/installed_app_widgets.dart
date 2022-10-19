@@ -1,25 +1,36 @@
-import 'dart:developer' as dev;
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
-Future<int> createWidget(String componentName) async {
-  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  final int appWidgetId =
-      await platform.invokeMethod('createWidget', [componentName]);
-  dev.log('created widget for $componentName and got id : $appWidgetId');
-  return appWidgetId;
-}
+final applicationWidgetIdsProvider = FutureProvider<List<String>>((ref) async {
+  return await getAllApplicationWidgetIds();
+});
 
-Future<void> deleteWidget(int widgetId) async {
-  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
-  await platform.invokeMethod('deleteWidget', [widgetId]);
-  dev.log('deleted widget $widgetId');
-}
+final appPackageApplicationWidgetIdsProvider =
+    FutureProvider.family<List<String>, String>((ref, packageName) async {
+  return await getApplicationWidgetIds(packageName);
+});
+
+final appWidgetSizesProvider =
+    FutureProvider.family<ApplicationWidgetSizes, String>(
+        (ref, applicationWidgetId) async {
+  return getApplicationWidgetSizes(applicationWidgetId);
+});
+
+final appWidgetPreviewProvider = FutureProvider.autoDispose
+    .family<Widget, String>((ref, applicationWidgetId) async {
+  final preview = await getApplicationWidgetPreview(applicationWidgetId);
+  return Image.memory(preview);
+});
+
+final appWidgetLabelProvider = FutureProvider.autoDispose
+    .family<String, String>((ref, applicationWidgetId) async {
+  return await getApplicationWidgetLabel(applicationWidgetId);
+});
+
+final appsWithWidgetsProvider = FutureProvider<List<String>>((ref) async {
+  return await getAllApplicationIdsWithWidgets();
+});
 
 class AppWidgetData {
   const AppWidgetData({
@@ -56,56 +67,8 @@ class AppWidget extends ConsumerWidget {
 
 final nativeAppWidgetProvider =
     Provider.family<Widget, int>((ref, appWidgetId) {
-  final widget = NativeAppWidget._internal(
+  final widget = ApplicationWidget(
     appWidgetId: appWidgetId,
   );
   return widget;
 });
-
-class NativeAppWidget extends StatelessWidget {
-  const NativeAppWidget._internal({Key? key, required this.appWidgetId})
-      : super(key: key);
-
-  final int appWidgetId;
-
-  @override
-  Widget build(BuildContext context) {
-    // This is used in the platform side to register the view.
-    const String viewType = 'app.schildpad.schildpad/appwidgetview';
-    // Pass parameters to the platform side.
-    Map<String, dynamic> creationParams = <String, dynamic>{
-      'appWidgetId': appWidgetId
-    };
-
-    if (defaultTargetPlatform != TargetPlatform.android) {
-      throw UnsupportedError('Unsupported platform view');
-    }
-
-    dev.log('building new native widget view with id: $appWidgetId');
-    return PlatformViewLink(
-      viewType: viewType,
-      surfaceFactory: (context, controller) {
-        return AndroidViewSurface(
-          controller: controller as AndroidViewController,
-          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-        );
-      },
-      onCreatePlatformView: (params) {
-        // TODO check if initSurfaceAndroidView can be used
-        return PlatformViewsService.initSurfaceAndroidView(
-          id: params.id,
-          viewType: viewType,
-          layoutDirection: TextDirection.ltr,
-          creationParams: creationParams,
-          creationParamsCodec: const StandardMessageCodec(),
-          onFocus: () {
-            params.onFocusChanged(true);
-          },
-        )
-          ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-          ..create();
-      },
-    );
-  }
-}

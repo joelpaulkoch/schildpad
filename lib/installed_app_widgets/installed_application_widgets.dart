@@ -1,6 +1,20 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+Future<int> createApplicationWidget(String componentName) async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  final int appWidgetId =
+      await platform.invokeMethod('createWidget', [componentName]);
+  return appWidgetId;
+}
+
+Future<void> deleteApplicationWidget(int widgetId) async {
+  const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
+  await platform.invokeMethod('deleteWidget', [widgetId]);
+}
 
 Future<List<String>> getAllApplicationWidgetIds() async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
@@ -46,12 +60,12 @@ Future<Uint8List> getApplicationWidgetPreview(
   return preview;
 }
 
-Future<AppWidgetSizes> getApplicationWidgetSizes(
+Future<ApplicationWidgetSizes> getApplicationWidgetSizes(
     String applicationWidgetId) async {
   const platform = MethodChannel('schildpad.schildpad.app/appwidgets');
   final Map sizes = await platform
       .invokeMethod('getApplicationWidgetSizes', [applicationWidgetId]);
-  return AppWidgetSizes(
+  return ApplicationWidgetSizes(
     minWidth: sizes['minWidth'] ?? 0,
     minHeight: sizes['minHeight'] ?? 0,
     targetWidth: sizes['targetWidth'] ?? 0,
@@ -61,8 +75,8 @@ Future<AppWidgetSizes> getApplicationWidgetSizes(
   );
 }
 
-class AppWidgetSizes {
-  AppWidgetSizes(
+class ApplicationWidgetSizes {
+  ApplicationWidgetSizes(
       {required this.minWidth,
       required this.minHeight,
       required this.targetWidth,
@@ -78,31 +92,49 @@ class AppWidgetSizes {
   final int maxHeight;
 }
 
-final applicationWidgetIdsProvider = FutureProvider<List<String>>((ref) async {
-  return await getAllApplicationWidgetIds();
-});
+class ApplicationWidget extends StatelessWidget {
+  const ApplicationWidget({Key? key, required this.appWidgetId})
+      : super(key: key);
 
-final appPackageApplicationWidgetIdsProvider =
-    FutureProvider.family<List<String>, String>((ref, packageName) async {
-  return await getApplicationWidgetIds(packageName);
-});
+  final int appWidgetId;
 
-final appWidgetSizesProvider = FutureProvider.family<AppWidgetSizes, String>(
-    (ref, applicationWidgetId) async {
-  return getApplicationWidgetSizes(applicationWidgetId);
-});
+  @override
+  Widget build(BuildContext context) {
+    // This is used in the platform side to register the view.
+    const String viewType = 'app.schildpad.schildpad/appwidgetview';
+    // Pass parameters to the platform side.
+    Map<String, dynamic> creationParams = <String, dynamic>{
+      'appWidgetId': appWidgetId
+    };
 
-final appWidgetPreviewProvider = FutureProvider.autoDispose
-    .family<Widget, String>((ref, applicationWidgetId) async {
-  final preview = await getApplicationWidgetPreview(applicationWidgetId);
-  return Image.memory(preview);
-});
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      throw UnsupportedError('Unsupported platform view');
+    }
 
-final appWidgetLabelProvider = FutureProvider.autoDispose
-    .family<String, String>((ref, applicationWidgetId) async {
-  return await getApplicationWidgetLabel(applicationWidgetId);
-});
-
-final appsWithWidgetsProvider = FutureProvider<List<String>>((ref) async {
-  return await getAllApplicationIdsWithWidgets();
-});
+    return PlatformViewLink(
+      viewType: viewType,
+      surfaceFactory: (context, controller) {
+        return AndroidViewSurface(
+          controller: controller as AndroidViewController,
+          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+        );
+      },
+      onCreatePlatformView: (params) {
+        // TODO check if initSurfaceAndroidView can be used
+        return PlatformViewsService.initSurfaceAndroidView(
+          id: params.id,
+          viewType: viewType,
+          layoutDirection: TextDirection.ltr,
+          creationParams: creationParams,
+          creationParamsCodec: const StandardMessageCodec(),
+          onFocus: () {
+            params.onFocusChanged(true);
+          },
+        )
+          ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+          ..create();
+      },
+    );
+  }
+}

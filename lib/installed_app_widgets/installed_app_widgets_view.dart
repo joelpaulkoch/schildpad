@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/installed_app_widgets/app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
 class AppWidgetsList extends ConsumerWidget {
@@ -108,7 +108,7 @@ class AppWidgetListTile extends ConsumerWidget {
         .watch(appWidgetSizesProvider(applicationWidgetId))
         .maybeWhen(
             data: (sizes) => sizes,
-            orElse: () => AppWidgetSizes(
+            orElse: () => ApplicationWidgetSizes(
                 minWidth: 0,
                 minHeight: 0,
                 targetWidth: 1,
@@ -181,7 +181,7 @@ double _getHeight(BuildContext context, int widgetRows, int rowCount) {
 }
 
 List<int> _getColumnSpans(
-    BuildContext context, int columnCount, AppWidgetSizes sizes) {
+    BuildContext context, int columnCount, ApplicationWidgetSizes sizes) {
   final screenWidth = MediaQuery.of(context).size.width;
   final columnWidth = screenWidth / columnCount;
 
@@ -207,7 +207,7 @@ List<int> _getColumnSpans(
 }
 
 List<int> _getRowSpans(
-    BuildContext context, int rowCount, AppWidgetSizes sizes) {
+    BuildContext context, int rowCount, ApplicationWidgetSizes sizes) {
   final screenHeight = MediaQuery.of(context).size.height;
   final rowHeight = screenHeight / rowCount;
 

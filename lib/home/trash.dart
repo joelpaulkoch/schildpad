@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
   return false;
@@ -51,7 +51,7 @@ class TrashArea extends ConsumerWidget {
               if (data.isAppWidgetData) {
                 final widgetId = data.appWidgetData?.appWidgetId;
                 if (widgetId != null) {
-                  await deleteWidget(widgetId);
+                  await deleteApplicationWidget(widgetId);
                 }
               }
 
