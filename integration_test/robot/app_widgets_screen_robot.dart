@@ -35,7 +35,7 @@ class AppWidgetsScreenRobot {
   }
 
   Offset getGridCellPosition(int column, int row) {
-    final homeGridFinder = find.byType(HomeViewGrid);
+    final homeGridFinder = find.byType(HomePage);
     expect(homeGridFinder, findsOneWidget);
     final homeGridOrigin = tester.getTopLeft(homeGridFinder);
     final homeGridSize = tester.getSize(homeGridFinder);

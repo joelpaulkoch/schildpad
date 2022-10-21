@@ -130,7 +130,7 @@ class HomeScreenRobot {
   }
 
   Offset _getHomeGridCellPosition(int column, int row) {
-    final homeGridFinder = find.byType(HomeViewGrid);
+    final homeGridFinder = find.byType(HomePage);
     expect(homeGridFinder, findsOneWidget);
     final homeGridOrigin = tester.getTopLeft(homeGridFinder);
     final homeGridSize = tester.getSize(homeGridFinder);
@@ -141,7 +141,7 @@ class HomeScreenRobot {
   }
 
   Offset _getDockGridCellPosition(int column) {
-    final dockGridFinder = find.byType(DockGrid);
+    final dockGridFinder = find.byType(Dock);
     expect(dockGridFinder, findsOneWidget);
     final dockGridOrigin = tester.getTopLeft(dockGridFinder);
     final dockGridSize = tester.getSize(dockGridFinder);

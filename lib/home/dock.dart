@@ -1,5 +1,3 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -17,7 +15,8 @@ final dockRowCountProvider = Provider<int>((ref) {
 final dockGridTilesProvider = Provider<List<FlexibleGridTile>>((ref) {
   ref.watch(isarUpdateProvider);
   final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
-
+  final columnCount = ref.watch(dockColumnCountProvider);
+  final rowCount = ref.watch(dockRowCountProvider);
   final gridTiles = tiles
       ?.filter()
       .coordinates((c) => c.locationEqualTo(Location.dock))
@@ -27,71 +26,13 @@ final dockGridTilesProvider = Provider<List<FlexibleGridTile>>((ref) {
       row: e.coordinates?.row ?? 0,
       columnSpan: e.columnSpan!,
       rowSpan: e.rowSpan!,
-      child: DockGridCell(
-        pageIndex: null,
-        column: e.coordinates?.column ?? 0,
-        row: e.coordinates?.row ?? 0,
+      child: GridCell(
+        coordinates: e.coordinates!,
+        columnCount: columnCount,
+        rowCount: rowCount,
       )));
   return flexibleGridTiles?.toList() ?? List.empty();
 });
-
-class DockGrid extends ConsumerWidget {
-  const DockGrid(
-    this.columnCount,
-    this.rowCount, {
-    Key? key,
-  }) : super(key: key);
-
-  final int columnCount;
-  final int rowCount;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding Dock');
-    final dockGridTiles = ref.watch(dockGridTilesProvider);
-    final defaultTiles = [];
-    for (var col = 0; col < columnCount; col++) {
-      for (var row = 0; row < rowCount; row++) {
-        if (!dockGridTiles.any((tile) => isInsideTile(col, row, tile))) {
-          defaultTiles.add(FlexibleGridTile(
-              column: col,
-              row: row,
-              child: DockGridCell(pageIndex: null, column: col, row: row)));
-        }
-      }
-    }
-
-    return FlexibleGrid(
-        columnCount: columnCount,
-        rowCount: rowCount,
-        gridTiles: [...dockGridTiles, ...defaultTiles]);
-  }
-}
-
-class DockGridCell extends ConsumerWidget {
-  const DockGridCell({
-    required this.pageIndex,
-    required this.column,
-    required this.row,
-    Key? key,
-  }) : super(key: key);
-
-  final int? pageIndex;
-  final int column;
-  final int row;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final columnCount = ref.watch(dockColumnCountProvider);
-    final rowCount = ref.watch(dockRowCountProvider);
-    return SchildpadGridCell(
-      coordinates: GlobalElementCoordinates(
-          location: Location.dock, column: column, row: row),
-      columnCount: columnCount,
-      rowCount: rowCount,
-    );
-  }
-}
 
 class Dock extends ConsumerWidget {
   const Dock({
@@ -102,7 +43,15 @@ class Dock extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dockColumnCount = ref.watch(dockColumnCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
+    final dockGridTiles = ref.watch(dockGridTilesProvider);
+
     return Container(
-        color: Colors.black38, child: DockGrid(dockColumnCount, dockRowCount));
+        color: Colors.black38,
+        child: Grid(
+            location: Location.dock,
+            page: null,
+            columnCount: dockColumnCount,
+            rowCount: dockRowCount,
+            tiles: dockGridTiles));
   }
 }

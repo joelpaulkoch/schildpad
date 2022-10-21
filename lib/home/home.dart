@@ -48,7 +48,8 @@ final homeGridTilesProvider =
     Provider.family<List<FlexibleGridTile>, int>((ref, pageIndex) {
   ref.watch(isarUpdateProvider);
   final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
-
+  final columnCount = ref.watch(homeColumnCountProvider);
+  final rowCount = ref.watch(homeRowCountProvider);
   final gridTiles = tiles
       ?.filter()
       .coordinates(
@@ -59,40 +60,16 @@ final homeGridTilesProvider =
       row: e.coordinates?.row ?? 0,
       columnSpan: e.columnSpan!,
       rowSpan: e.rowSpan!,
-      child: HomeGridCell(
-        pageIndex: pageIndex,
-        column: e.coordinates?.column ?? 0,
-        row: e.coordinates?.row ?? 0,
+      child: GridCell(
+        coordinates: e.coordinates!,
+        columnCount: columnCount,
+        rowCount: rowCount,
       )));
   return flexibleGridTiles?.toList() ?? List.empty();
 });
 
-class HomeGridCell extends ConsumerWidget {
-  const HomeGridCell({
-    Key? key,
-    required this.pageIndex,
-    required this.column,
-    required this.row,
-  }) : super(key: key);
-
-  final int pageIndex;
-  final int column;
-  final int row;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final columnCount = ref.watch(homeColumnCountProvider);
-    final rowCount = ref.watch(homeRowCountProvider);
-    return SchildpadGridCell(
-        coordinates: GlobalElementCoordinates(
-            location: Location.home, page: pageIndex, column: column, row: row),
-        columnCount: columnCount,
-        rowCount: rowCount);
-  }
-}
-
-class SchildpadGridCell extends ConsumerWidget {
-  const SchildpadGridCell(
+class GridCell extends ConsumerWidget {
+  const GridCell(
       {Key? key,
       required this.coordinates,
       required this.columnCount,
@@ -238,15 +215,13 @@ class HomeView extends ConsumerWidget {
         physics: const HomePageViewScrollPhysics(),
         children: List.generate(
             pageCount,
-            (index) => HomeViewGrid(
-                pageViewToSchildpadIndex(index, leftPagesCount),
-                columnCount,
-                rowCount)));
+            (index) => HomePage(pageViewToSchildpadIndex(index, leftPagesCount),
+                columnCount, rowCount)));
   }
 }
 
-class HomeViewGrid extends ConsumerWidget {
-  const HomeViewGrid(
+class HomePage extends ConsumerWidget {
+  const HomePage(
     this.pageIndex,
     this.columnCount,
     this.rowCount, {
@@ -260,15 +235,47 @@ class HomeViewGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeGridTiles = ref.watch(homeGridTilesProvider(pageIndex));
+    final columnCount = ref.watch(homeColumnCountProvider);
+    final rowCount = ref.watch(homeRowCountProvider);
+    return Grid(
+        location: Location.home,
+        page: pageIndex,
+        columnCount: columnCount,
+        rowCount: rowCount,
+        tiles: homeGridTiles);
+  }
+}
+
+class Grid extends StatelessWidget {
+  const Grid(
+      {Key? key,
+      required this.location,
+      this.page,
+      required this.columnCount,
+      required this.rowCount,
+      required this.tiles})
+      : super(key: key);
+  final Location location;
+  final int? page;
+  final int columnCount;
+  final int rowCount;
+  final List<FlexibleGridTile> tiles;
+
+  @override
+  Widget build(BuildContext context) {
     final defaultTiles = [];
     for (var col = 0; col < columnCount; col++) {
       for (var row = 0; row < rowCount; row++) {
-        if (!homeGridTiles.any((tile) => isInsideTile(col, row, tile))) {
+        if (!tiles.any((tile) => isInsideTile(col, row, tile))) {
           defaultTiles.add(FlexibleGridTile(
               column: col,
               row: row,
-              child:
-                  HomeGridCell(pageIndex: pageIndex, column: col, row: row)));
+              child: GridCell(
+                coordinates: GlobalElementCoordinates(
+                    location: location, page: null, column: col, row: row),
+                columnCount: columnCount,
+                rowCount: rowCount,
+              )));
         }
       }
     }
@@ -276,7 +283,7 @@ class HomeViewGrid extends ConsumerWidget {
     return FlexibleGrid(
         columnCount: columnCount,
         rowCount: rowCount,
-        gridTiles: [...homeGridTiles, ...defaultTiles]);
+        gridTiles: [...tiles, ...defaultTiles]);
   }
 }
 

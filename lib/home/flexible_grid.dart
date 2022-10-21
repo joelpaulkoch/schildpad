@@ -41,7 +41,7 @@ class FlexibleGrid extends StatelessWidget {
         children: <Widget>[
           for (final FlexibleGridTile tile in gridTiles)
             LayoutId(
-                id: GridCell(tile.column, tile.row),
+                id: _GridCell(tile.column, tile.row),
                 child: tile.child ?? const SizedBox.shrink())
         ]);
   }
@@ -62,11 +62,11 @@ class _FlexibleGridLayoutDelegate extends MultiChildLayoutDelegate {
 
     for (final FlexibleGridTile tile in gridTiles) {
       layoutChild(
-          GridCell(tile.column, tile.row),
+          _GridCell(tile.column, tile.row),
           BoxConstraints(
               maxWidth: columnWidth * tile.columnSpan,
               maxHeight: rowHeight * tile.rowSpan));
-      positionChild(GridCell(tile.column, tile.row),
+      positionChild(_GridCell(tile.column, tile.row),
           Offset(columnWidth * tile.column, rowHeight * tile.row));
     }
   }
@@ -130,8 +130,8 @@ List<FlexibleGridTile> generateDefaultGridTiles(int columnSpan, int rowSpan,
               ))).expand((element) => element).toList(growable: false);
 }
 
-class GridCell extends Equatable {
-  const GridCell(this.col, this.row);
+class _GridCell extends Equatable {
+  const _GridCell(this.col, this.row);
 
   final int col;
   final int row;
