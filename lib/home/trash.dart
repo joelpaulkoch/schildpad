@@ -25,16 +25,12 @@ class TrashArea extends ConsumerWidget {
             onWillAccept: (_) => true,
             onAccept: (data) async {
               final elementOrigin = data.origin;
-              final originPageIndex = elementOrigin.pageIndex;
               final originColumn = elementOrigin.column;
               final originRow = elementOrigin.row;
 
-              if (originColumn != null && originRow != null) {
-                dev.log(
-                    'Trash: removing element from ($originColumn, $originRow)');
-                await homeTileManager.removeElement(
-                    originPageIndex, originColumn, originRow);
-              }
+              dev.log(
+                  'Trash: removing element from ($originColumn, $originRow)');
+              await homeTileManager.removeElement(data.origin);
 
               if (data.isAppWidgetData) {
                 final widgetId = data.appWidgetData?.appWidgetId;

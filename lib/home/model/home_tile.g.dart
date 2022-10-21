@@ -21,36 +21,27 @@ const HomeTileSchema = CollectionSchema(
       id: 0,
       name: r'appData',
       type: IsarType.object,
-      target: r'AppData',
+      target: r'HomeTileAppData',
     ),
     r'appWidgetData': PropertySchema(
       id: 1,
       name: r'appWidgetData',
       type: IsarType.object,
-      target: r'AppWidgetData',
-    ),
-    r'column': PropertySchema(
-      id: 2,
-      name: r'column',
-      type: IsarType.long,
+      target: r'HomeTileAppWidgetData',
     ),
     r'columnSpan': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'columnSpan',
       type: IsarType.long,
     ),
-    r'page': PropertySchema(
-      id: 4,
-      name: r'page',
-      type: IsarType.long,
-    ),
-    r'row': PropertySchema(
-      id: 5,
-      name: r'row',
-      type: IsarType.long,
+    r'coordinates': PropertySchema(
+      id: 3,
+      name: r'coordinates',
+      type: IsarType.object,
+      target: r'GlobalElementCoordinates',
     ),
     r'rowSpan': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'rowSpan',
       type: IsarType.long,
     )
@@ -63,8 +54,9 @@ const HomeTileSchema = CollectionSchema(
   indexes: {},
   links: {},
   embeddedSchemas: {
-    r'AppData': AppDataSchema,
-    r'AppWidgetData': AppWidgetDataSchema
+    r'GlobalElementCoordinates': GlobalElementCoordinatesSchema,
+    r'HomeTileAppData': HomeTileAppDataSchema,
+    r'HomeTileAppWidgetData': HomeTileAppWidgetDataSchema
   },
   getId: _homeTileGetId,
   getLinks: _homeTileGetLinks,
@@ -82,7 +74,7 @@ int _homeTileEstimateSize(
     final value = object.appData;
     if (value != null) {
       bytesCount += 3 +
-          AppDataSchema.estimateSize(
+          HomeTileAppDataSchema.estimateSize(
               value, allOffsets[HomeTileAppData]!, allOffsets);
     }
   }
@@ -90,8 +82,16 @@ int _homeTileEstimateSize(
     final value = object.appWidgetData;
     if (value != null) {
       bytesCount += 3 +
-          AppWidgetDataSchema.estimateSize(
+          HomeTileAppWidgetDataSchema.estimateSize(
               value, allOffsets[HomeTileAppWidgetData]!, allOffsets);
+    }
+  }
+  {
+    final value = object.coordinates;
+    if (value != null) {
+      bytesCount += 3 +
+          GlobalElementCoordinatesSchema.estimateSize(
+              value, allOffsets[GlobalElementCoordinates]!, allOffsets);
     }
   }
   return bytesCount;
@@ -106,20 +106,23 @@ void _homeTileSerialize(
   writer.writeObject<HomeTileAppData>(
     offsets[0],
     allOffsets,
-    AppDataSchema.serialize,
+    HomeTileAppDataSchema.serialize,
     object.appData,
   );
   writer.writeObject<HomeTileAppWidgetData>(
     offsets[1],
     allOffsets,
-    AppWidgetDataSchema.serialize,
+    HomeTileAppWidgetDataSchema.serialize,
     object.appWidgetData,
   );
-  writer.writeLong(offsets[2], object.column);
-  writer.writeLong(offsets[3], object.columnSpan);
-  writer.writeLong(offsets[4], object.page);
-  writer.writeLong(offsets[5], object.row);
-  writer.writeLong(offsets[6], object.rowSpan);
+  writer.writeLong(offsets[2], object.columnSpan);
+  writer.writeObject<GlobalElementCoordinates>(
+    offsets[3],
+    allOffsets,
+    GlobalElementCoordinatesSchema.serialize,
+    object.coordinates,
+  );
+  writer.writeLong(offsets[4], object.rowSpan);
 }
 
 HomeTile _homeTileDeserialize(
@@ -128,23 +131,26 @@ HomeTile _homeTileDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = HomeTile();
-  object.appData = reader.readObjectOrNull<HomeTileAppData>(
-    offsets[0],
-    AppDataSchema.deserialize,
-    allOffsets,
+  final object = HomeTile(
+    appData: reader.readObjectOrNull<HomeTileAppData>(
+      offsets[0],
+      HomeTileAppDataSchema.deserialize,
+      allOffsets,
+    ),
+    appWidgetData: reader.readObjectOrNull<HomeTileAppWidgetData>(
+      offsets[1],
+      HomeTileAppWidgetDataSchema.deserialize,
+      allOffsets,
+    ),
+    columnSpan: reader.readLongOrNull(offsets[2]),
+    coordinates: reader.readObjectOrNull<GlobalElementCoordinates>(
+      offsets[3],
+      GlobalElementCoordinatesSchema.deserialize,
+      allOffsets,
+    ),
+    rowSpan: reader.readLongOrNull(offsets[4]),
   );
-  object.appWidgetData = reader.readObjectOrNull<HomeTileAppWidgetData>(
-    offsets[1],
-    AppWidgetDataSchema.deserialize,
-    allOffsets,
-  );
-  object.column = reader.readLongOrNull(offsets[2]);
-  object.columnSpan = reader.readLongOrNull(offsets[3]);
   object.id = id;
-  object.page = reader.readLongOrNull(offsets[4]);
-  object.row = reader.readLongOrNull(offsets[5]);
-  object.rowSpan = reader.readLongOrNull(offsets[6]);
   return object;
 }
 
@@ -158,24 +164,24 @@ P _homeTileDeserializeProp<P>(
     case 0:
       return (reader.readObjectOrNull<HomeTileAppData>(
         offset,
-        AppDataSchema.deserialize,
+        HomeTileAppDataSchema.deserialize,
         allOffsets,
       )) as P;
     case 1:
       return (reader.readObjectOrNull<HomeTileAppWidgetData>(
         offset,
-        AppWidgetDataSchema.deserialize,
+        HomeTileAppWidgetDataSchema.deserialize,
         allOffsets,
       )) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readObjectOrNull<GlobalElementCoordinates>(
+        offset,
+        GlobalElementCoordinatesSchema.deserialize,
+        allOffsets,
+      )) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
-    case 5:
-      return (reader.readLongOrNull(offset)) as P;
-    case 6:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -305,75 +311,6 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'column',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'column',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'column',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'column',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'column',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'column',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -444,6 +381,23 @@ extension HomeTileQueryFilter
     });
   }
 
+  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> coordinatesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'coordinates',
+      ));
+    });
+  }
+
+  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition>
+      coordinatesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'coordinates',
+      ));
+    });
+  }
+
   QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -488,144 +442,6 @@ extension HomeTileQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'page',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'page',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'page',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'page',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'page',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> pageBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'page',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'row',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'row',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'row',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'row',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'row',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'row',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -719,24 +535,19 @@ extension HomeTileQueryObject
       return query.object(q, r'appWidgetData');
     });
   }
+
+  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> coordinates(
+      FilterQuery<GlobalElementCoordinates> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'coordinates');
+    });
+  }
 }
 
 extension HomeTileQueryLinks
     on QueryBuilder<HomeTile, HomeTile, QFilterCondition> {}
 
 extension HomeTileQuerySortBy on QueryBuilder<HomeTile, HomeTile, QSortBy> {
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumn() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'column', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumnDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'column', Sort.desc);
-    });
-  }
-
   QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.asc);
@@ -746,30 +557,6 @@ extension HomeTileQuerySortBy on QueryBuilder<HomeTile, HomeTile, QSortBy> {
   QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumnSpanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.desc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'page', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'page', Sort.desc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByRow() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'row', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByRowDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'row', Sort.desc);
     });
   }
 
@@ -788,18 +575,6 @@ extension HomeTileQuerySortBy on QueryBuilder<HomeTile, HomeTile, QSortBy> {
 
 extension HomeTileQuerySortThenBy
     on QueryBuilder<HomeTile, HomeTile, QSortThenBy> {
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByColumn() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'column', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByColumnDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'column', Sort.desc);
-    });
-  }
-
   QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.asc);
@@ -824,30 +599,6 @@ extension HomeTileQuerySortThenBy
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'page', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'page', Sort.desc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByRow() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'row', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByRowDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'row', Sort.desc);
-    });
-  }
-
   QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByRowSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rowSpan', Sort.asc);
@@ -863,27 +614,9 @@ extension HomeTileQuerySortThenBy
 
 extension HomeTileQueryWhereDistinct
     on QueryBuilder<HomeTile, HomeTile, QDistinct> {
-  QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByColumn() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'column');
-    });
-  }
-
   QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'columnSpan');
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'page');
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByRow() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'row');
     });
   }
 
@@ -915,27 +648,16 @@ extension HomeTileQueryProperty
     });
   }
 
-  QueryBuilder<HomeTile, int?, QQueryOperations> columnProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'column');
-    });
-  }
-
   QueryBuilder<HomeTile, int?, QQueryOperations> columnSpanProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'columnSpan');
     });
   }
 
-  QueryBuilder<HomeTile, int?, QQueryOperations> pageProperty() {
+  QueryBuilder<HomeTile, GlobalElementCoordinates?, QQueryOperations>
+      coordinatesProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'page');
-    });
-  }
-
-  QueryBuilder<HomeTile, int?, QQueryOperations> rowProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'row');
+      return query.addPropertyName(r'coordinates');
     });
   }
 
@@ -953,9 +675,9 @@ extension HomeTileQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const AppDataSchema = Schema(
-  name: r'AppData',
-  id: 3950144987861183497,
+const HomeTileAppDataSchema = Schema(
+  name: r'HomeTileAppData',
+  id: -4655879528661853679,
   properties: {
     r'packageName': PropertySchema(
       id: 0,
@@ -963,13 +685,13 @@ const AppDataSchema = Schema(
       type: IsarType.string,
     )
   },
-  estimateSize: _appDataEstimateSize,
-  serialize: _appDataSerialize,
-  deserialize: _appDataDeserialize,
-  deserializeProp: _appDataDeserializeProp,
+  estimateSize: _homeTileAppDataEstimateSize,
+  serialize: _homeTileAppDataSerialize,
+  deserialize: _homeTileAppDataDeserialize,
+  deserializeProp: _homeTileAppDataDeserializeProp,
 );
 
-int _appDataEstimateSize(
+int _homeTileAppDataEstimateSize(
   HomeTileAppData object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -984,7 +706,7 @@ int _appDataEstimateSize(
   return bytesCount;
 }
 
-void _appDataSerialize(
+void _homeTileAppDataSerialize(
   HomeTileAppData object,
   IsarWriter writer,
   List<int> offsets,
@@ -993,7 +715,7 @@ void _appDataSerialize(
   writer.writeString(offsets[0], object.packageName);
 }
 
-HomeTileAppData _appDataDeserialize(
+HomeTileAppData _homeTileAppDataDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
@@ -1005,7 +727,7 @@ HomeTileAppData _appDataDeserialize(
   return object;
 }
 
-P _appDataDeserializeProp<P>(
+P _homeTileAppDataDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -1019,7 +741,7 @@ P _appDataDeserializeProp<P>(
   }
 }
 
-extension AppDataQueryFilter
+extension HomeTileAppDataQueryFilter
     on QueryBuilder<HomeTileAppData, HomeTileAppData, QFilterCondition> {
   QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
       packageNameIsNull() {
@@ -1176,15 +898,15 @@ extension AppDataQueryFilter
   }
 }
 
-extension AppDataQueryObject
+extension HomeTileAppDataQueryObject
     on QueryBuilder<HomeTileAppData, HomeTileAppData, QFilterCondition> {}
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const AppWidgetDataSchema = Schema(
-  name: r'AppWidgetData',
-  id: 5095303185153816698,
+const HomeTileAppWidgetDataSchema = Schema(
+  name: r'HomeTileAppWidgetData',
+  id: -9178401510266760846,
   properties: {
     r'appWidgetId': PropertySchema(
       id: 0,
@@ -1197,13 +919,13 @@ const AppWidgetDataSchema = Schema(
       type: IsarType.string,
     )
   },
-  estimateSize: _appWidgetDataEstimateSize,
-  serialize: _appWidgetDataSerialize,
-  deserialize: _appWidgetDataDeserialize,
-  deserializeProp: _appWidgetDataDeserializeProp,
+  estimateSize: _homeTileAppWidgetDataEstimateSize,
+  serialize: _homeTileAppWidgetDataSerialize,
+  deserialize: _homeTileAppWidgetDataDeserialize,
+  deserializeProp: _homeTileAppWidgetDataDeserializeProp,
 );
 
-int _appWidgetDataEstimateSize(
+int _homeTileAppWidgetDataEstimateSize(
   HomeTileAppWidgetData object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -1218,7 +940,7 @@ int _appWidgetDataEstimateSize(
   return bytesCount;
 }
 
-void _appWidgetDataSerialize(
+void _homeTileAppWidgetDataSerialize(
   HomeTileAppWidgetData object,
   IsarWriter writer,
   List<int> offsets,
@@ -1228,7 +950,7 @@ void _appWidgetDataSerialize(
   writer.writeString(offsets[1], object.componentName);
 }
 
-HomeTileAppWidgetData _appWidgetDataDeserialize(
+HomeTileAppWidgetData _homeTileAppWidgetDataDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
@@ -1241,7 +963,7 @@ HomeTileAppWidgetData _appWidgetDataDeserialize(
   return object;
 }
 
-P _appWidgetDataDeserializeProp<P>(
+P _homeTileAppWidgetDataDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -1257,8 +979,8 @@ P _appWidgetDataDeserializeProp<P>(
   }
 }
 
-extension AppWidgetDataQueryFilter on QueryBuilder<HomeTileAppWidgetData,
-    HomeTileAppWidgetData, QFilterCondition> {
+extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
+    HomeTileAppWidgetData, HomeTileAppWidgetData, QFilterCondition> {
   QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
       QAfterFilterCondition> appWidgetIdIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -1490,5 +1212,395 @@ extension AppWidgetDataQueryFilter on QueryBuilder<HomeTileAppWidgetData,
   }
 }
 
-extension AppWidgetDataQueryObject on QueryBuilder<HomeTileAppWidgetData,
-    HomeTileAppWidgetData, QFilterCondition> {}
+extension HomeTileAppWidgetDataQueryObject on QueryBuilder<
+    HomeTileAppWidgetData, HomeTileAppWidgetData, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+
+const GlobalElementCoordinatesSchema = Schema(
+  name: r'GlobalElementCoordinates',
+  id: -6163868732312298790,
+  properties: {
+    r'column': PropertySchema(
+      id: 0,
+      name: r'column',
+      type: IsarType.long,
+    ),
+    r'location': PropertySchema(
+      id: 1,
+      name: r'location',
+      type: IsarType.byte,
+      enumMap: _GlobalElementCoordinateslocationEnumValueMap,
+    ),
+    r'page': PropertySchema(
+      id: 2,
+      name: r'page',
+      type: IsarType.long,
+    ),
+    r'row': PropertySchema(
+      id: 3,
+      name: r'row',
+      type: IsarType.long,
+    )
+  },
+  estimateSize: _globalElementCoordinatesEstimateSize,
+  serialize: _globalElementCoordinatesSerialize,
+  deserialize: _globalElementCoordinatesDeserialize,
+  deserializeProp: _globalElementCoordinatesDeserializeProp,
+);
+
+int _globalElementCoordinatesEstimateSize(
+  GlobalElementCoordinates object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  return bytesCount;
+}
+
+void _globalElementCoordinatesSerialize(
+  GlobalElementCoordinates object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.column);
+  writer.writeByte(offsets[1], object.location.index);
+  writer.writeLong(offsets[2], object.page);
+  writer.writeLong(offsets[3], object.row);
+}
+
+GlobalElementCoordinates _globalElementCoordinatesDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = GlobalElementCoordinates(
+    column: reader.readLongOrNull(offsets[0]),
+    location: _GlobalElementCoordinateslocationValueEnumMap[
+            reader.readByteOrNull(offsets[1])] ??
+        Location.list,
+    page: reader.readLongOrNull(offsets[2]),
+    row: reader.readLongOrNull(offsets[3]),
+  );
+  return object;
+}
+
+P _globalElementCoordinatesDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readLongOrNull(offset)) as P;
+    case 1:
+      return (_GlobalElementCoordinateslocationValueEnumMap[
+              reader.readByteOrNull(offset)] ??
+          Location.list) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
+      return (reader.readLongOrNull(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+const _GlobalElementCoordinateslocationEnumValueMap = {
+  'list': 0,
+  'dock': 1,
+  'home': 2,
+};
+const _GlobalElementCoordinateslocationValueEnumMap = {
+  0: Location.list,
+  1: Location.dock,
+  2: Location.home,
+};
+
+extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
+    GlobalElementCoordinates, GlobalElementCoordinates, QFilterCondition> {
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'column',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'column',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'column',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'column',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'column',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> columnBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'column',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> locationEqualTo(Location value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'location',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> locationGreaterThan(
+    Location value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'location',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> locationLessThan(
+    Location value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'location',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> locationBetween(
+    Location lower,
+    Location upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'location',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'page',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'page',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'page',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'page',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'page',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> pageBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'page',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'row',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'row',
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'row',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'row',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'row',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
+      QAfterFilterCondition> rowBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'row',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension GlobalElementCoordinatesQueryObject on QueryBuilder<
+    GlobalElementCoordinates, GlobalElementCoordinates, QFilterCondition> {}

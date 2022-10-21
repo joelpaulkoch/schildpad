@@ -2,22 +2,19 @@ import 'package:isar/isar.dart';
 
 part 'home_tile.g.dart';
 
+//TODO remove nullables
 @collection
 class HomeTile {
   Id id = Isar.autoIncrement;
 
   HomeTile(
-      {this.page,
-      this.column,
-      this.row,
+      {this.coordinates,
       this.columnSpan,
       this.rowSpan,
       this.appData,
       this.appWidgetData});
 
-  int? page;
-  int? column;
-  int? row;
+  GlobalElementCoordinates? coordinates;
 
   int? columnSpan;
   int? rowSpan;
@@ -46,3 +43,17 @@ class HomeTileAppWidgetData {
 
   final int? appWidgetId;
 }
+
+@embedded
+class GlobalElementCoordinates {
+  GlobalElementCoordinates(
+      {this.location = Location.list, this.page, this.column, this.row});
+
+  @enumerated
+  Location location;
+  int? page;
+  int? column;
+  int? row;
+}
+
+enum Location { list, dock, home }

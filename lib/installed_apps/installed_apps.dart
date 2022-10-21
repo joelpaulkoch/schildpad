@@ -4,6 +4,7 @@ import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/model/home_tile.dart';
 import 'package:schildpad/installed_apps/installed_applications.dart';
 import 'package:schildpad/settings/settings.dart';
 

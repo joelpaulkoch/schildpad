@@ -49,26 +49,30 @@ final homeGridTilesProvider =
   ref.watch(isarUpdateProvider);
   final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
 
-  final gridTiles = tiles?.filter().pageEqualTo(pageIndex).findAllSync();
+  final gridTiles = tiles
+      ?.filter()
+      .coordinates(
+          (q) => q.locationEqualTo(Location.home).pageEqualTo(pageIndex))
+      .findAllSync();
   final flexibleGridTiles = gridTiles?.map((e) => FlexibleGridTile(
-      column: e.column!,
-      row: e.row!,
+      column: e.coordinates?.column ?? 0,
+      row: e.coordinates?.row ?? 0,
       columnSpan: e.columnSpan!,
       rowSpan: e.rowSpan!,
       child: HomeGridCell(
         pageIndex: pageIndex,
-        column: e.column!,
-        row: e.row!,
+        column: e.coordinates?.column ?? 0,
+        row: e.coordinates?.row ?? 0,
       )));
   return flexibleGridTiles?.toList() ?? List.empty();
 });
 
 class HomeGridCell extends ConsumerWidget {
   const HomeGridCell({
+    Key? key,
     required this.pageIndex,
     required this.column,
     required this.row,
-    Key? key,
   }) : super(key: key);
 
   final int pageIndex;
@@ -77,36 +81,42 @@ class HomeGridCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tile = ref.watch(tileProvider(GlobalElementCoordinates(
-        location: Location.home,
-        pageIndex: pageIndex,
-        column: column,
-        row: row)));
-
-    final tileManager = ref.watch(tileManagerProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
+    return SchildpadGridCell(
+        coordinates: GlobalElementCoordinates(
+            location: Location.home, page: pageIndex, column: column, row: row),
+        columnCount: columnCount,
+        rowCount: rowCount);
+  }
+}
+
+class SchildpadGridCell extends ConsumerWidget {
+  const SchildpadGridCell(
+      {Key? key,
+      required this.coordinates,
+      required this.columnCount,
+      required this.rowCount})
+      : super(key: key);
+  final GlobalElementCoordinates coordinates;
+  final int columnCount;
+  final int rowCount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tile = ref.watch(tileProvider(coordinates));
+    final tileManager = ref.watch(tileManagerProvider);
 
     return DragTarget<ElementData>(onWillAccept: (draggedData) {
       final data = draggedData;
       if (data != null) {
         return tileManager.canAddElement(
-            columnCount, rowCount, pageIndex, column, row, data);
+            columnCount, rowCount, coordinates, data);
       }
       return false;
     }, onAccept: (data) async {
-      await tileManager.addElement(
-          columnCount, rowCount, pageIndex, column, row, data);
-
-      final elementOrigin = data.origin;
-      final originPageIndex = elementOrigin.pageIndex;
-      final originColumn = elementOrigin.column;
-      final originRow = elementOrigin.row;
-
-      if (originColumn != null && originRow != null) {
-        await tileManager.removeElement(
-            originPageIndex, originColumn, originRow);
-      }
+      await tileManager.addElement(columnCount, rowCount, coordinates, data);
+      await tileManager.removeElement(data.origin);
       ref.read(showTrashProvider.notifier).state = false;
     }, builder: (_, accepted, rejected) {
       BoxDecoration? boxDecoration;
@@ -128,11 +138,7 @@ class HomeGridCell extends ConsumerWidget {
           appIcon: AppIcon(
             packageName: appPackage,
           ),
-          origin: GlobalElementCoordinates(
-              location: Location.home,
-              pageIndex: pageIndex,
-              column: column,
-              row: row),
+          origin: coordinates,
         );
       } else if (appWidgetData != null) {
         final componentName = appWidgetData.componentName!;
@@ -142,11 +148,7 @@ class HomeGridCell extends ConsumerWidget {
                 componentName: componentName, appWidgetId: widgetId),
             columnSpan: tile.columnSpan!,
             rowSpan: tile.rowSpan!,
-            origin: GlobalElementCoordinates(
-                location: Location.home,
-                pageIndex: pageIndex,
-                column: column,
-                row: row));
+            origin: coordinates);
       } else {
         child = const SizedBox.expand();
       }
@@ -166,18 +168,16 @@ final tileProvider = Provider.family<HomeTile, GlobalElementCoordinates>(
   ref.watch(isarUpdateProvider);
   final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
 
-  final homeTile = tiles
+  final tile = tiles
       ?.filter()
-      .pageEqualTo(globalCoordinates.pageIndex)
-      .columnEqualTo(globalCoordinates.column)
-      .rowEqualTo(globalCoordinates.row)
+      .coordinates((q) => q
+          .locationEqualTo(globalCoordinates.location)
+          .pageEqualTo(globalCoordinates.page)
+          .columnEqualTo(globalCoordinates.column)
+          .rowEqualTo(globalCoordinates.row))
       .findFirstSync();
 
-  return homeTile ??
-      HomeTile(
-          page: globalCoordinates.pageIndex,
-          column: globalCoordinates.column,
-          row: globalCoordinates.row);
+  return tile ?? HomeTile(coordinates: globalCoordinates);
 });
 
 class HomePageViewScrollPhysics extends ScrollPhysics {
@@ -388,18 +388,6 @@ class ElementData {
   bool get isEmpty => !isAppData && !isAppWidgetData;
 }
 
-class GlobalElementCoordinates {
-  GlobalElementCoordinates(
-      {required this.location, this.pageIndex, this.column, this.row});
-
-  final Location location;
-  final int? pageIndex;
-  final int? column;
-  final int? row;
-}
-
-enum Location { list, dock, home }
-
 final tileManagerProvider = Provider<TileManager>((ref) {
   final isarCollection =
       ref.watch(homeIsarProvider).whenOrNull(data: (collection) => collection);
@@ -411,35 +399,47 @@ class TileManager {
 
   final IsarCollection<HomeTile>? isarCollection;
 
-  bool canAddElement(int columnCount, int rowCount, int? pageIndex, int column,
-      int row, ElementData data) {
+  bool canAddElement(int columnCount, int rowCount,
+      GlobalElementCoordinates coordinates, ElementData data) {
     final homeTileCollection = isarCollection;
     if (homeTileCollection != null) {
-      final gridTiles =
-          homeTileCollection.filter().pageEqualTo(pageIndex).findAllSync();
+      final gridTiles = homeTileCollection
+          .filter()
+          .coordinates((c) => c
+              .locationEqualTo(coordinates.location)
+              .pageEqualTo(coordinates.page)
+              .columnEqualTo(coordinates.column)
+              .rowEqualTo(coordinates.row))
+          .findAllSync();
       final flexibleGridTiles = gridTiles
           .map((e) => FlexibleGridTile(
-                column: e.column!,
-                row: e.row!,
+                column: e.coordinates?.column ?? 0,
+                row: e.coordinates?.row ?? 0,
                 columnSpan: e.columnSpan!,
                 rowSpan: e.rowSpan!,
               ))
           .toList();
-      return canAdd(flexibleGridTiles, columnCount, rowCount, column, row,
-          data.columnSpan, data.rowSpan);
+      return canAdd(
+          flexibleGridTiles,
+          columnCount,
+          rowCount,
+          coordinates.column ?? 0,
+          coordinates.row ?? 0,
+          data.columnSpan,
+          data.rowSpan);
     }
     return false;
   }
 
-  Future<void> addElement(int columnCount, int rowCount, int? pageIndex,
-      int column, int row, ElementData data) async {
-    if (!canAddElement(columnCount, rowCount, pageIndex, column, row, data)) {
+  Future<void> addElement(int columnCount, int rowCount,
+      GlobalElementCoordinates coordinates, ElementData data) async {
+    if (!canAddElement(columnCount, rowCount, coordinates, data)) {
       return;
     }
     final homeTileCollection = isarCollection;
     if (homeTileCollection != null) {
       // delete current elements at same position
-      await removeElement(pageIndex, column, row);
+      await removeElement(coordinates);
 
       // add new element
       final app = data.appData;
@@ -451,9 +451,7 @@ class TileManager {
         widgetId = null;
       }
       final tileToAdd = HomeTile(
-          page: pageIndex,
-          column: column,
-          row: row,
+          coordinates: coordinates,
           columnSpan: data.columnSpan,
           rowSpan: data.rowSpan,
           appData: HomeTileAppData(packageName: app?.packageName),
@@ -464,15 +462,17 @@ class TileManager {
     }
   }
 
-  Future<void> removeElement(int? pageIndex, int column, int row) async {
+  Future<void> removeElement(GlobalElementCoordinates coordinates) async {
     final homeTileCollection = isarCollection;
     if (homeTileCollection != null) {
       await homeTileCollection.isar.writeTxn(() async =>
           await homeTileCollection
               .filter()
-              .pageEqualTo(pageIndex)
-              .columnEqualTo(column)
-              .rowEqualTo(row)
+              .coordinates((q) => q
+                  .locationEqualTo(coordinates.location)
+                  .pageEqualTo(coordinates.page)
+                  .columnEqualTo(coordinates.column)
+                  .rowEqualTo(coordinates.row))
               .deleteAll());
     }
   }
