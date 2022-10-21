@@ -33,12 +33,12 @@ class DeletePageButton extends ConsumerWidget {
     final onLeftMostPage = page == -leftPages;
     final onRightMostPage = page == rightPages;
     final onOuterPage = (onLeftMostPage || onRightMostPage) && (page != 0);
-    final homeGridState = ref.watch(homeGridStateProvider(page).notifier);
+    final tileManager = ref.watch(tileManagerProvider);
     final pageState = ref.watch(pagesProvider.notifier);
     return IconButton(
         onPressed: onOuterPage
-            ? () {
-                homeGridState.removeAll();
+            ? () async {
+                await tileManager.removeAll();
                 if (page < 0) {
                   pageState.removeLeftPage();
                   ref.read(currentHomePageProvider.notifier).state++;

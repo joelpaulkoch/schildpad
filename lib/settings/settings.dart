@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/settings/app_info.dart';
@@ -63,21 +62,19 @@ class ResetButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tileManager = ref.watch(tileManagerProvider);
     return TextButton(
         onPressed: () {
-          ref.read(dockGridStateProvider.notifier).removeAll();
+          tileManager.removeAll();
 
           final leftPages = ref.read(leftPagesProvider);
           for (var i = -leftPages; i < 0; i++) {
-            ref.read(homeGridStateProvider(i).notifier).removeAll();
             ref.read(pagesProvider.notifier).removeLeftPage();
           }
           final rightPages = ref.read(rightPagesProvider);
           for (var i = rightPages; i > 0; i--) {
-            ref.read(homeGridStateProvider(i).notifier).removeAll();
             ref.read(pagesProvider.notifier).removeRightPage();
           }
-          ref.read(homeGridStateProvider(0).notifier).removeAll();
           Navigator.of(context).pop();
         },
         child: Text(AppLocalizations.of(context)!

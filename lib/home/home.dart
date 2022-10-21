@@ -1,10 +1,8 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:schildpad/home/dock.dart';
+import 'package:isar/isar.dart';
 import 'package:schildpad/home/flexible_grid.dart';
+import 'package:schildpad/home/model/home_tile.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -36,168 +34,142 @@ double homeGridRowHeight(BuildContext context, int rowCount) {
   return homeViewWidth / rowCount;
 }
 
-String _getHomeDataHiveBoxName(int pageIndex) => 'home_data_$pageIndex';
+final homeIsarProvider = FutureProvider<IsarCollection<HomeTile>>((ref) async {
+  final isar = await Isar.open([HomeTileSchema]);
+  return isar.homeTiles;
+});
 
-String _getHomeDataHiveKey(int column, int row) => '${column}_$row';
+final isarUpdateProvider = StreamProvider<void>((ref) async* {
+  final isar = await Isar.open([HomeTileSchema]);
+  yield* isar.homeTiles.watchLazy().cast();
+});
 
 final homeGridTilesProvider =
     Provider.family<List<FlexibleGridTile>, int>((ref, pageIndex) {
-  final tiles = ref.watch(homeGridStateProvider(pageIndex));
-  return tiles;
+  ref.watch(isarUpdateProvider);
+  final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
+
+  final gridTiles = tiles?.filter().pageEqualTo(pageIndex).findAllSync();
+  final flexibleGridTiles = gridTiles?.map((e) => FlexibleGridTile(
+      column: e.column!,
+      row: e.row!,
+      columnSpan: e.columnSpan!,
+      rowSpan: e.rowSpan!,
+      child: HomeGridCell(
+        pageIndex: pageIndex,
+        column: e.column!,
+        row: e.row!,
+      )));
+  return flexibleGridTiles?.toList() ?? List.empty();
 });
 
-final _homeGridHiveBoxProvider =
-    FutureProvider.family<Box<List<String>>, int>((ref, pageIndex) async {
-  final box = Hive.openBox<List<String>>(_getHomeDataHiveBoxName(pageIndex));
-  return box;
-});
-
-final homeGridStateProvider = StateNotifierProvider.family<
-    HomeGridStateNotifier, List<FlexibleGridTile>, int>((ref, pageIndex) {
-  final columns = ref.watch(homeColumnCountProvider);
-  final rows = ref.watch(homeRowCountProvider);
-  final hiveBox = ref.watch(_homeGridHiveBoxProvider(pageIndex)).valueOrNull;
-  return HomeGridStateNotifier(pageIndex, columns, rows, hiveBox: hiveBox);
-});
-
-class HomeGridStateNotifier extends StateNotifier<List<FlexibleGridTile>> {
-  HomeGridStateNotifier(this.pageIndex, this.columnCount, this.rowCount,
-      {this.hiveBox})
-      : super([]) {
-    final box = hiveBox;
-    if (box != null) {
-      var tiles = <FlexibleGridTile>[];
-
-      for (String key in box.keys) {
-        final colRow = key.split('_');
-        final column = int.parse(colRow[0]);
-        final row = int.parse(colRow[1]);
-        final List elementData = box.get(key) ?? [];
-
-        Widget? tileChild;
-        var columnSpan = 1;
-        var rowSpan = 1;
-        if (elementData.length == 1) {
-          final appPackage = elementData.cast<String>().first;
-          tileChild = InstalledAppDraggable(
-              app: AppData(packageName: appPackage),
-              appIcon: AppIcon(packageName: appPackage),
-              origin: GlobalElementCoordinates.onHome(
-                pageIndex: pageIndex,
-                column: column,
-                row: row,
-              ));
-        } else if (elementData.length == 4) {
-          final appWidgetData = elementData.cast<String>();
-          final componentName = appWidgetData.first;
-          final appWidgetId = int.tryParse(appWidgetData.elementAt(1));
-          if (appWidgetId == null) {
-            box.delete(key);
-            tileChild = HomeGridEmptyCell(
-                pageIndex: pageIndex, column: column, row: row);
-          }
-          columnSpan = int.parse(appWidgetData.elementAt(2));
-          rowSpan = int.parse(appWidgetData.elementAt(3));
-          tileChild = HomeGridWidget(
-              appWidgetData: AppWidgetData(
-                  componentName: componentName, appWidgetId: appWidgetId),
-              columnSpan: columnSpan,
-              rowSpan: rowSpan,
-              origin: GlobalElementCoordinates.onHome(
-                  pageIndex: pageIndex, column: column, row: row));
-        } else {
-          box.delete(key);
-          tileChild =
-              HomeGridEmptyCell(pageIndex: pageIndex, column: column, row: row);
-        }
-
-        final tile = FlexibleGridTile(
-            column: column,
-            row: row,
-            columnSpan: columnSpan,
-            rowSpan: rowSpan,
-            child: Center(child: tileChild));
-
-        tiles = addTile(tiles, columnCount, rowCount, tile);
-      }
-      state = tiles;
-    }
-  }
+class HomeGridCell extends ConsumerWidget {
+  const HomeGridCell({
+    required this.pageIndex,
+    required this.column,
+    required this.row,
+    Key? key,
+  }) : super(key: key);
 
   final int pageIndex;
-  final int columnCount;
-  final int rowCount;
+  final int column;
+  final int row;
 
-  final Box<List<String>>? hiveBox;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tile = ref.watch(tileProvider(GlobalElementCoordinates.onHome(
+        pageIndex: pageIndex, column: column, row: row)));
 
-  bool canAddElement(int column, int row, ElementData data) {
-    return canAdd(state, columnCount, rowCount, column, row, data.columnSpan,
-        data.rowSpan);
-  }
+    final tileManager = ref.watch(tileManagerProvider);
+    final columnCount = ref.watch(homeColumnCountProvider);
+    final rowCount = ref.watch(homeRowCountProvider);
 
-  void addElement(int column, int row, ElementData data) async {
-    Widget? widgetToAdd;
-    List<String> dataToPersist = [];
-
-    final app = data.appData;
-    final appWidget = data.appWidgetData;
-
-    if (app != null) {
-      widgetToAdd = InstalledAppDraggable(
-          app: app,
-          appIcon: AppIcon(packageName: app.packageName),
-          origin: GlobalElementCoordinates.onHome(
-            pageIndex: pageIndex,
-            column: column,
-            row: row,
-          ));
-      dataToPersist.add(app.packageName);
-    } else if (appWidget != null) {
-      ElementData elementData = data;
-      if (elementData.isAppWidgetData) {
-        final widgetId =
-            await createApplicationWidget(data.appWidgetData!.componentName);
-        elementData = data.copyWithAppWidgetData(
-            data.appWidgetData!.componentName, widgetId);
+    return DragTarget<ElementData>(onWillAccept: (draggedData) {
+      final data = draggedData;
+      if (data != null) {
+        return tileManager.canAddElement(
+            columnCount, rowCount, pageIndex, column, row, data);
       }
-      widgetToAdd = HomeGridWidget(
-          appWidgetData: elementData.appWidgetData!,
-          columnSpan: elementData.columnSpan,
-          rowSpan: elementData.rowSpan,
+      return false;
+    }, onAccept: (data) async {
+      await tileManager.addElement(
+          columnCount, rowCount, pageIndex, column, row, data);
+
+      final elementOrigin = data.origin;
+      final originPageIndex = elementOrigin.pageIndex;
+      final originColumn = elementOrigin.column;
+      final originRow = elementOrigin.row;
+
+      if (originColumn != null && originRow != null) {
+        await tileManager.removeElement(
+            originPageIndex, originColumn, originRow);
+      }
+      ref.read(showTrashProvider.notifier).state = false;
+    }, builder: (_, accepted, rejected) {
+      BoxDecoration? boxDecoration;
+      if (rejected.isNotEmpty) {
+        boxDecoration =
+            BoxDecoration(border: Border.all(color: Colors.red, width: 3));
+      } else if (accepted.isNotEmpty) {
+        boxDecoration = BoxDecoration(
+            border: Border.all(color: Colors.greenAccent, width: 3));
+      }
+      final appData = tile.appData;
+      final appWidgetData = tile.appWidgetData;
+
+      final Widget child;
+      if (appData?.packageName != null) {
+        final appPackage = appData?.packageName ?? '';
+        child = InstalledAppDraggable(
+          app: AppData(packageName: appPackage),
+          appIcon: AppIcon(
+            packageName: appPackage,
+          ),
           origin: GlobalElementCoordinates.onHome(
-              pageIndex: pageIndex, column: column, row: row));
-      dataToPersist.add(appWidget.componentName);
-      dataToPersist.add('${elementData.appWidgetData!.appWidgetId}');
-      dataToPersist.add('${elementData.columnSpan}');
-      dataToPersist.add('${elementData.rowSpan}');
-    }
+              pageIndex: pageIndex, column: column, row: row),
+        );
+      } else if (appWidgetData != null) {
+        final componentName = appWidgetData.componentName!;
+        final widgetId = appWidgetData.appWidgetId!;
+        child = HomeGridWidget(
+            appWidgetData: AppWidgetData(
+                componentName: componentName, appWidgetId: widgetId),
+            columnSpan: tile.columnSpan!,
+            rowSpan: tile.rowSpan!,
+            origin: GlobalElementCoordinates.onHome(
+                pageIndex: pageIndex, column: column, row: row));
+      } else {
+        child = const SizedBox.expand();
+      }
 
-    final tileToAdd = FlexibleGridTile(
-        column: column,
-        row: row,
-        columnSpan: data.columnSpan,
-        rowSpan: data.rowSpan,
-        child: Center(child: widgetToAdd));
-
-    final stateBefore = state;
-    state = addTile(state, columnCount, rowCount, tileToAdd);
-    if (state != stateBefore) {
-      dev.log('saving element in ($column, $row)');
-      hiveBox?.put(_getHomeDataHiveKey(column, row), dataToPersist);
-    }
-  }
-
-  void removeElement(int columnStart, int rowStart) {
-    state = [...removeTile(state, columnStart, rowStart)];
-    dev.log('deleting element in ($columnStart, $rowStart)');
-    hiveBox?.delete(_getHomeDataHiveKey(columnStart, rowStart));
-  }
-
-  void removeAll() {
-    hiveBox?.clear();
-    state = [];
+      return OverflowBox(
+        child: Container(
+          foregroundDecoration: boxDecoration,
+          child: child,
+        ),
+      );
+    });
   }
 }
+
+final tileProvider = Provider.family<HomeTile, GlobalElementCoordinates>(
+    (ref, globalCoordinates) {
+  ref.watch(isarUpdateProvider);
+  final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
+
+  final homeTile = tiles
+      ?.filter()
+      .pageEqualTo(globalCoordinates.pageIndex)
+      .columnEqualTo(globalCoordinates.column)
+      .rowEqualTo(globalCoordinates.row)
+      .findFirstSync();
+
+  return homeTile ??
+      HomeTile(
+          page: globalCoordinates.pageIndex,
+          column: globalCoordinates.column,
+          row: globalCoordinates.row);
+});
 
 class HomePageViewScrollPhysics extends ScrollPhysics {
   const HomePageViewScrollPhysics({ScrollPhysics? parent})
@@ -278,7 +250,6 @@ class HomeViewGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    dev.log('rebuilding HomeViewGrid $pageIndex');
     final homeGridTiles = ref.watch(homeGridTilesProvider(pageIndex));
     final defaultTiles = [];
     for (var col = 0; col < columnCount; col++) {
@@ -287,8 +258,8 @@ class HomeViewGrid extends ConsumerWidget {
           defaultTiles.add(FlexibleGridTile(
               column: col,
               row: row,
-              child: HomeGridEmptyCell(
-                  pageIndex: pageIndex, column: col, row: row)));
+              child:
+                  HomeGridCell(pageIndex: pageIndex, column: col, row: row)));
         }
       }
     }
@@ -300,75 +271,29 @@ class HomeViewGrid extends ConsumerWidget {
   }
 }
 
-class HomeGridEmptyCell extends ConsumerWidget {
-  const HomeGridEmptyCell({
-    required this.pageIndex,
-    required this.column,
-    required this.row,
+class AppWidgetError extends StatelessWidget {
+  const AppWidgetError({
     Key? key,
   }) : super(key: key);
 
-  final int pageIndex;
-  final int column;
-  final int row;
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DragTarget<ElementData>(onWillAccept: (draggedData) {
-      final data = draggedData;
-      if (data != null) {
-        final willAccept = ref
-            .read(homeGridStateProvider(pageIndex).notifier)
-            .canAddElement(column, row, data);
-        dev.log('($column, $row) will accept: $willAccept');
-        return willAccept;
-      }
-      return false;
-    }, onAccept: (data) {
-      dev.log('dropped in ($column, $row)');
-
-      ref
-          .read(homeGridStateProvider(pageIndex).notifier)
-          .addElement(column, row, data);
-      final elementOrigin = data.origin;
-      final originPageIndex = elementOrigin.pageIndex;
-      final originColumn = elementOrigin.column;
-      final originRow = elementOrigin.row;
-
-      if (elementOrigin.isOnDock && originColumn != null && originRow != null) {
-        dev.log('removing element from dock ($originColumn, $originRow)');
-        ref
-            .read(dockGridStateProvider.notifier)
-            .removeElement(originColumn, originRow);
-      } else if (elementOrigin.isOnHome &&
-          originPageIndex != null &&
-          originColumn != null &&
-          originRow != null) {
-        dev.log(
-            'removing element from page $originPageIndex ($originColumn, $originRow)');
-        ref
-            .read(homeGridStateProvider(originPageIndex).notifier)
-            .removeElement(originColumn, originRow);
-      }
-      ref.read(showTrashProvider.notifier).state = false;
-    }, builder: (_, accepted, rejected) {
-      if (rejected.isNotEmpty) {
-        return OverflowBox(
-          child: Container(
-            foregroundDecoration:
-                BoxDecoration(border: Border.all(color: Colors.red, width: 3)),
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+        child: Card(
+      color: Colors.amber,
+      child: Column(
+        children: const [
+          Icon(
+            Icons.bubble_chart,
+            color: Colors.white,
           ),
-        );
-      } else if (accepted.isNotEmpty) {
-        return OverflowBox(
-          child: Container(
-            foregroundDecoration: BoxDecoration(
-                border: Border.all(color: Colors.greenAccent, width: 3)),
-          ),
-        );
-      }
-      return const SizedBox.expand();
-    });
+          Icon(
+            Icons.adb_outlined,
+            color: Colors.white,
+          )
+        ],
+      ),
+    ));
   }
 }
 
@@ -408,32 +333,6 @@ class HomeGridWidget extends StatelessWidget {
     } else {
       return const AppWidgetError();
     }
-  }
-}
-
-class AppWidgetError extends StatelessWidget {
-  const AppWidgetError({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-        child: Card(
-      color: Colors.amber,
-      child: Column(
-        children: const [
-          Icon(
-            Icons.bubble_chart,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.adb_outlined,
-            color: Colors.white,
-          )
-        ],
-      ),
-    ));
   }
 }
 
@@ -507,4 +406,90 @@ class GlobalElementCoordinates {
       !isOnDock && (pageIndex != null) && (column != null) && (row != null);
 
   bool get isOnList => !isOnDock && !isOnHome;
+}
+
+final tileManagerProvider = Provider<TileManager>((ref) {
+  final isarCollection =
+      ref.watch(homeIsarProvider).whenOrNull(data: (collection) => collection);
+  return TileManager(isarCollection);
+});
+
+class TileManager {
+  TileManager(this.isarCollection);
+
+  final IsarCollection<HomeTile>? isarCollection;
+
+  bool canAddElement(int columnCount, int rowCount, int? pageIndex, int column,
+      int row, ElementData data) {
+    final homeTileCollection = isarCollection;
+    if (homeTileCollection != null) {
+      final gridTiles =
+          homeTileCollection.filter().pageEqualTo(pageIndex).findAllSync();
+      final flexibleGridTiles = gridTiles
+          .map((e) => FlexibleGridTile(
+                column: e.column!,
+                row: e.row!,
+                columnSpan: e.columnSpan!,
+                rowSpan: e.rowSpan!,
+              ))
+          .toList();
+      return canAdd(flexibleGridTiles, columnCount, rowCount, column, row,
+          data.columnSpan, data.rowSpan);
+    }
+    return false;
+  }
+
+  Future<void> addElement(int columnCount, int rowCount, int? pageIndex,
+      int column, int row, ElementData data) async {
+    if (!canAddElement(columnCount, rowCount, pageIndex, column, row, data)) {
+      return;
+    }
+    final homeTileCollection = isarCollection;
+    if (homeTileCollection != null) {
+      // delete current elements at same position
+      await removeElement(pageIndex, column, row);
+
+      // add new element
+      final app = data.appData;
+      final appWidget = data.appWidgetData;
+      final int? widgetId;
+      if (app == null && appWidget != null) {
+        widgetId = await createApplicationWidget(appWidget.componentName);
+      } else {
+        widgetId = null;
+      }
+      final tileToAdd = HomeTile(
+          page: pageIndex,
+          column: column,
+          row: row,
+          columnSpan: data.columnSpan,
+          rowSpan: data.rowSpan,
+          appData: HomeTileAppData(packageName: app?.packageName),
+          appWidgetData: HomeTileAppWidgetData(
+              componentName: appWidget?.componentName, appWidgetId: widgetId));
+      await homeTileCollection.isar
+          .writeTxn(() async => await homeTileCollection.put(tileToAdd));
+    }
+  }
+
+  Future<void> removeElement(int? pageIndex, int column, int row) async {
+    final homeTileCollection = isarCollection;
+    if (homeTileCollection != null) {
+      await homeTileCollection.isar.writeTxn(() async =>
+          await homeTileCollection
+              .filter()
+              .pageEqualTo(pageIndex)
+              .columnEqualTo(column)
+              .rowEqualTo(row)
+              .deleteAll());
+    }
+  }
+
+  Future<void> removeAll() async {
+    final homeTileCollection = isarCollection;
+    if (homeTileCollection != null) {
+      await homeTileCollection.isar
+          .writeTxn(() async => await homeTileCollection.clear());
+    }
+  }
 }

@@ -5,6 +5,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 0.3.0
 
+isar_version: &isar_version 3.0.2
+
 environment:
   sdk: ">=2.16.2 <3.0.0"
 
@@ -26,6 +28,8 @@ dependencies:
   flutter_svg: ^1.1.5
   package_info_plus: ^1.4.3+1
   url_launcher: ^6.1.6
+  isar: *isar_version
+  isar_flutter_libs: *isar_version
 
 dev_dependencies:
   integration_test:
@@ -33,7 +37,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_test: ^1.0.1
-
+  isar_generator: *isar_version
+  build_runner: any
   flutter_lints: ^2.0.1
 
 flutter:

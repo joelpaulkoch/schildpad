@@ -2,7 +2,6 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
@@ -20,6 +19,7 @@ class TrashArea extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final showTrash = ref.watch(showTrashProvider);
+    final homeTileManager = ref.watch(tileManagerProvider);
     return showTrash
         ? DragTarget<ElementData>(
             onWillAccept: (_) => true,
@@ -29,23 +29,11 @@ class TrashArea extends ConsumerWidget {
               final originColumn = elementOrigin.column;
               final originRow = elementOrigin.row;
 
-              if (elementOrigin.isOnDock &&
-                  originColumn != null &&
-                  originRow != null) {
+              if (originColumn != null && originRow != null) {
                 dev.log(
-                    'Trash: removing element from dock ($originColumn, $originRow)');
-                ref
-                    .read(dockGridStateProvider.notifier)
-                    .removeElement(originColumn, originRow);
-              } else if (elementOrigin.isOnHome &&
-                  originPageIndex != null &&
-                  originColumn != null &&
-                  originRow != null) {
-                dev.log(
-                    'Trash: removing element from page $originPageIndex ($originColumn, $originRow)');
-                ref
-                    .read(homeGridStateProvider(originPageIndex).notifier)
-                    .removeElement(originColumn, originRow);
+                    'Trash: removing element from ($originColumn, $originRow)');
+                await homeTileManager.removeElement(
+                    originPageIndex, originColumn, originRow);
               }
 
               if (data.isAppWidgetData) {
