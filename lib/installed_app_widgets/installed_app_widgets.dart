@@ -200,7 +200,7 @@ class AppWidgetListTile extends ConsumerWidget {
                       AppWidgetData(componentName: applicationWidgetId),
                   columnSpan: widgetColumnSpan,
                   rowSpan: widgetRowSpan,
-                  origin: GlobalElementCoordinates.onList()),
+                  origin: GlobalElementCoordinates(location: Location.list)),
               maxSimultaneousDrags: 1,
               feedback: ConstrainedBox(
                   constraints: BoxConstraints.tight(Size(

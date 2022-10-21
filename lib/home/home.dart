@@ -77,8 +77,11 @@ class HomeGridCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tile = ref.watch(tileProvider(GlobalElementCoordinates.onHome(
-        pageIndex: pageIndex, column: column, row: row)));
+    final tile = ref.watch(tileProvider(GlobalElementCoordinates(
+        location: Location.home,
+        pageIndex: pageIndex,
+        column: column,
+        row: row)));
 
     final tileManager = ref.watch(tileManagerProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
@@ -125,8 +128,11 @@ class HomeGridCell extends ConsumerWidget {
           appIcon: AppIcon(
             packageName: appPackage,
           ),
-          origin: GlobalElementCoordinates.onHome(
-              pageIndex: pageIndex, column: column, row: row),
+          origin: GlobalElementCoordinates(
+              location: Location.home,
+              pageIndex: pageIndex,
+              column: column,
+              row: row),
         );
       } else if (appWidgetData != null) {
         final componentName = appWidgetData.componentName!;
@@ -136,8 +142,11 @@ class HomeGridCell extends ConsumerWidget {
                 componentName: componentName, appWidgetId: widgetId),
             columnSpan: tile.columnSpan!,
             rowSpan: tile.rowSpan!,
-            origin: GlobalElementCoordinates.onHome(
-                pageIndex: pageIndex, column: column, row: row));
+            origin: GlobalElementCoordinates(
+                location: Location.home,
+                pageIndex: pageIndex,
+                column: column,
+                row: row));
       } else {
         child = const SizedBox.expand();
       }
@@ -380,33 +389,16 @@ class ElementData {
 }
 
 class GlobalElementCoordinates {
-  GlobalElementCoordinates.onDock(
-      {required int this.column, required int this.row})
-      : isOnDock = true,
-        pageIndex = null;
+  GlobalElementCoordinates(
+      {required this.location, this.pageIndex, this.column, this.row});
 
-  GlobalElementCoordinates.onHome(
-      {required int this.pageIndex,
-      required int this.column,
-      required int this.row})
-      : isOnDock = false;
-
-  GlobalElementCoordinates.onList()
-      : isOnDock = false,
-        pageIndex = null,
-        column = null,
-        row = null;
-
-  final bool isOnDock;
+  final Location location;
   final int? pageIndex;
   final int? column;
   final int? row;
-
-  bool get isOnHome =>
-      !isOnDock && (pageIndex != null) && (column != null) && (row != null);
-
-  bool get isOnList => !isOnDock && !isOnHome;
 }
+
+enum Location { list, dock, home }
 
 final tileManagerProvider = Provider<TileManager>((ref) {
   final isarCollection =

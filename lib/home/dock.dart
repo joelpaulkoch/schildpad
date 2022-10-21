@@ -82,8 +82,8 @@ class DockGridCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tile = ref.watch(tileProvider(
-        GlobalElementCoordinates.onDock(column: column, row: row)));
+    final tile = ref.watch(tileProvider(GlobalElementCoordinates(
+        location: Location.dock, column: column, row: row)));
 
     final tileManager = ref.watch(tileManagerProvider);
     final columnCount = ref.watch(homeColumnCountProvider);
@@ -130,7 +130,8 @@ class DockGridCell extends ConsumerWidget {
           appIcon: AppIcon(
             packageName: appPackage,
           ),
-          origin: GlobalElementCoordinates.onDock(column: column, row: row),
+          origin: GlobalElementCoordinates(
+              location: Location.dock, column: column, row: row),
         );
       } else if (appWidgetData != null) {
         final componentName = appWidgetData.componentName!;
@@ -140,7 +141,8 @@ class DockGridCell extends ConsumerWidget {
                 componentName: componentName, appWidgetId: widgetId),
             columnSpan: tile.columnSpan!,
             rowSpan: tile.rowSpan!,
-            origin: GlobalElementCoordinates.onDock(column: column, row: row));
+            origin: GlobalElementCoordinates(
+                location: Location.dock, column: column, row: row));
       } else {
         child = const SizedBox.expand();
       }

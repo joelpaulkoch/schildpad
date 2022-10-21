@@ -51,7 +51,7 @@ class InstalledAppsGrid extends ConsumerWidget {
                         packageName: packageName,
                         showAppName: true,
                       ),
-                      origin: GlobalElementCoordinates.onList(),
+                      origin: GlobalElementCoordinates(location: Location.list),
                       onDragStarted: Backdrop.of(context).revealBackLayer,
                     ))
                 .toList(),
