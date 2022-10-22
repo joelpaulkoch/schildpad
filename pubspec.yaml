@@ -21,8 +21,6 @@ dependencies:
   flutter_riverpod: ^2.0.2
   equatable: ^2.0.3
   android_intent_plus: ^3.1.1
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
   backdrop: ^0.8.0
   cupertino_icons: ^1.0.5
   flutter_svg: ^1.1.5
@@ -36,7 +34,6 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  hive_test: ^1.0.1
   isar_generator: *isar_version
   build_runner: any
   flutter_lints: ^2.0.1

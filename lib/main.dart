@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/model/home_tile.dart';
@@ -18,7 +17,6 @@ final isarProvider = FutureProvider<Isar>((ref) async {
 });
 
 Future<void> main() async {
-  await Hive.initFlutter();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
