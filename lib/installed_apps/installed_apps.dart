@@ -3,8 +3,7 @@ import 'dart:developer' as dev;
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/home/home.dart';
-import 'package:schildpad/home/model/home_tile.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_apps/installed_applications.dart';
 import 'package:schildpad/settings/settings.dart';
 
@@ -52,7 +51,8 @@ class InstalledAppsGrid extends ConsumerWidget {
                         packageName: packageName,
                         showAppName: true,
                       ),
-                      origin: GlobalElementCoordinates(location: Location.list),
+                      origin: const GlobalElementCoordinates(
+                          location: Location.list),
                       onDragStarted: Backdrop.of(context).revealBackLayer,
                     ))
                 .toList(),
@@ -123,14 +123,6 @@ final _appsUpdateStreamProvider = StreamProvider<int>((ref) async* {
     yield counter;
   }
 });
-
-class AppData {
-  const AppData({
-    required this.packageName,
-  });
-
-  final String packageName;
-}
 
 final appPackagesProvider = FutureProvider<List<String>>((ref) async {
   ref.watch(appsUpdateProvider);

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/home/model/home_tile.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
 
@@ -36,22 +36,6 @@ final appWidgetLabelProvider = FutureProvider.autoDispose
 final appsWithWidgetsProvider = FutureProvider<List<String>>((ref) async {
   return await getAllApplicationIdsWithWidgets();
 });
-
-class AppWidgetData {
-  const AppWidgetData({
-    required this.componentName,
-    this.appWidgetId,
-  });
-
-  final String componentName;
-
-  final int? appWidgetId;
-
-  AppWidgetData copyWith(int appWidgetId) => AppWidgetData(
-        componentName: componentName,
-        appWidgetId: appWidgetId,
-      );
-}
 
 class AppWidget extends ConsumerWidget {
   const AppWidget({
@@ -201,7 +185,8 @@ class AppWidgetListTile extends ConsumerWidget {
                       AppWidgetData(componentName: applicationWidgetId),
                   columnSpan: widgetColumnSpan,
                   rowSpan: widgetRowSpan,
-                  origin: GlobalElementCoordinates(location: Location.list)),
+                  origin:
+                      const GlobalElementCoordinates(location: Location.list)),
               maxSimultaneousDrags: 1,
               feedback: ConstrainedBox(
                   constraints: BoxConstraints.tight(Size(

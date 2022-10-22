@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/home.dart';
-import 'package:schildpad/home/model/home_tile.dart';
+import 'package:schildpad/home/model/tile.dart';
 
 final dockColumnCountProvider = Provider<int>((ref) {
   return 4;
@@ -22,12 +22,12 @@ final dockGridTilesProvider = Provider<List<FlexibleGridTile>>((ref) {
       .coordinates((c) => c.locationEqualTo(Location.dock))
       .findAllSync();
   final flexibleGridTiles = gridTiles?.map((e) => FlexibleGridTile(
-      column: e.coordinates?.column ?? 0,
-      row: e.coordinates?.row ?? 0,
-      columnSpan: e.columnSpan!,
-      rowSpan: e.rowSpan!,
+      column: e.coordinates.column,
+      row: e.coordinates.row,
+      columnSpan: e.columnSpan,
+      rowSpan: e.rowSpan,
       child: GridCell(
-        coordinates: e.coordinates!,
+        coordinates: e.coordinates,
         columnCount: columnCount,
         rowCount: rowCount,
       )));

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/flexible_grid.dart';
-import 'package:schildpad/home/model/home_tile.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -35,14 +35,14 @@ double homeGridRowHeight(BuildContext context, int rowCount) {
   return homeViewWidth / rowCount;
 }
 
-final homeIsarProvider = FutureProvider<IsarCollection<HomeTile>>((ref) async {
+final homeIsarProvider = FutureProvider<IsarCollection<Tile>>((ref) async {
   final isarFuture = ref.watch(isarProvider.future);
-  return await isarFuture.then((isar) => isar.homeTiles);
+  return await isarFuture.then((isar) => isar.tiles);
 });
 
 final isarUpdateProvider = StreamProvider<void>((ref) async* {
   final isarFuture = ref.watch(isarProvider.future);
-  yield* await isarFuture.then((isar) => isar.homeTiles.watchLazy());
+  yield* await isarFuture.then((isar) => isar.tiles.watchLazy());
 });
 
 final homeGridTilesProvider =
@@ -57,12 +57,12 @@ final homeGridTilesProvider =
           (q) => q.locationEqualTo(Location.home).pageEqualTo(pageIndex))
       .findAllSync();
   final flexibleGridTiles = gridTiles?.map((e) => FlexibleGridTile(
-      column: e.coordinates?.column ?? 0,
-      row: e.coordinates?.row ?? 0,
-      columnSpan: e.columnSpan!,
-      rowSpan: e.rowSpan!,
+      column: e.coordinates.column,
+      row: e.coordinates.row,
+      columnSpan: e.columnSpan,
+      rowSpan: e.rowSpan,
       child: GridCell(
-        coordinates: e.coordinates!,
+        coordinates: e.coordinates,
         columnCount: columnCount,
         rowCount: rowCount,
       )));
@@ -105,8 +105,8 @@ class GridCell extends ConsumerWidget {
         boxDecoration = BoxDecoration(
             border: Border.all(color: Colors.greenAccent, width: 3));
       }
-      final appData = tile.appData;
-      final appWidgetData = tile.appWidgetData;
+      final appData = tile.tileData?.appData;
+      final appWidgetData = tile.tileData?.appWidgetData;
 
       final Widget child;
       if (appData?.packageName != null) {
@@ -119,13 +119,13 @@ class GridCell extends ConsumerWidget {
           origin: coordinates,
         );
       } else if (appWidgetData != null) {
-        final componentName = appWidgetData.componentName!;
+        final componentName = appWidgetData.componentName;
         final widgetId = appWidgetData.appWidgetId!;
         child = HomeGridWidget(
             appWidgetData: AppWidgetData(
                 componentName: componentName, appWidgetId: widgetId),
-            columnSpan: tile.columnSpan!,
-            rowSpan: tile.rowSpan!,
+            columnSpan: tile.columnSpan,
+            rowSpan: tile.rowSpan,
             origin: coordinates);
       } else {
         child = const SizedBox.expand();
@@ -141,8 +141,8 @@ class GridCell extends ConsumerWidget {
   }
 }
 
-final tileProvider = Provider.family<HomeTile, GlobalElementCoordinates>(
-    (ref, globalCoordinates) {
+final tileProvider =
+    Provider.family<Tile, GlobalElementCoordinates>((ref, globalCoordinates) {
   ref.watch(isarUpdateProvider);
   final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
 
@@ -155,7 +155,7 @@ final tileProvider = Provider.family<HomeTile, GlobalElementCoordinates>(
           .rowEqualTo(globalCoordinates.row))
       .findFirstSync();
 
-  return tile ?? HomeTile(coordinates: globalCoordinates);
+  return tile ?? Tile(coordinates: globalCoordinates);
 });
 
 class HomePageViewScrollPhysics extends ScrollPhysics {
@@ -353,49 +353,6 @@ class HomeGridWidget extends StatelessWidget {
   }
 }
 
-class ElementData {
-  ElementData(
-      {this.appData,
-      this.appWidgetData,
-      required this.columnSpan,
-      required this.rowSpan,
-      required this.origin});
-
-  ElementData.fromAppData(
-      {required AppData this.appData,
-      required this.columnSpan,
-      required this.rowSpan,
-      required this.origin})
-      : appWidgetData = null;
-
-  ElementData.fromAppWidgetData(
-      {required AppWidgetData this.appWidgetData,
-      required this.columnSpan,
-      required this.rowSpan,
-      required this.origin})
-      : appData = null;
-
-  final AppData? appData;
-  final AppWidgetData? appWidgetData;
-  final int columnSpan;
-  final int rowSpan;
-  final GlobalElementCoordinates origin;
-
-  ElementData copyWithAppWidgetData(String componentName, int appWidgetId) =>
-      ElementData.fromAppWidgetData(
-          appWidgetData: AppWidgetData(
-              componentName: componentName, appWidgetId: appWidgetId),
-          columnSpan: columnSpan,
-          rowSpan: rowSpan,
-          origin: origin);
-
-  bool get isAppData => appData != null;
-
-  bool get isAppWidgetData => !isAppData && appWidgetData != null;
-
-  bool get isEmpty => !isAppData && !isAppWidgetData;
-}
-
 final tileManagerProvider = Provider<TileManager>((ref) {
   final isarCollection =
       ref.watch(homeIsarProvider).whenOrNull(data: (collection) => collection);
@@ -405,7 +362,7 @@ final tileManagerProvider = Provider<TileManager>((ref) {
 class TileManager {
   TileManager(this.isarCollection);
 
-  final IsarCollection<HomeTile>? isarCollection;
+  final IsarCollection<Tile>? isarCollection;
 
   bool canAddElement(int columnCount, int rowCount,
       GlobalElementCoordinates coordinates, ElementData data) {
@@ -421,20 +378,14 @@ class TileManager {
           .findAllSync();
       final flexibleGridTiles = gridTiles
           .map((e) => FlexibleGridTile(
-                column: e.coordinates?.column ?? 0,
-                row: e.coordinates?.row ?? 0,
-                columnSpan: e.columnSpan!,
-                rowSpan: e.rowSpan!,
+                column: e.coordinates.column,
+                row: e.coordinates.row,
+                columnSpan: e.columnSpan,
+                rowSpan: e.rowSpan,
               ))
           .toList();
-      return canAdd(
-          flexibleGridTiles,
-          columnCount,
-          rowCount,
-          coordinates.column ?? 0,
-          coordinates.row ?? 0,
-          data.columnSpan,
-          data.rowSpan);
+      return canAdd(flexibleGridTiles, columnCount, rowCount,
+          coordinates.column, coordinates.row, data.columnSpan, data.rowSpan);
     }
     return false;
   }
@@ -458,13 +409,19 @@ class TileManager {
       } else {
         widgetId = null;
       }
-      final tileToAdd = HomeTile(
-          coordinates: coordinates,
-          columnSpan: data.columnSpan,
-          rowSpan: data.rowSpan,
-          appData: HomeTileAppData(packageName: app?.packageName),
-          appWidgetData: HomeTileAppWidgetData(
-              componentName: appWidget?.componentName, appWidgetId: widgetId));
+      final tileToAdd = Tile(
+        coordinates: coordinates,
+        columnSpan: data.columnSpan,
+        rowSpan: data.rowSpan,
+        tileData: ElementData(
+            columnSpan: data.columnSpan,
+            rowSpan: data.rowSpan,
+            origin: coordinates,
+            appData: app,
+            appWidgetData: AppWidgetData(
+                componentName: appWidget?.componentName ?? '',
+                appWidgetId: widgetId)),
+      );
       await homeTileCollection.isar
           .writeTxn(() async => await homeTileCollection.put(tileToAdd));
     }

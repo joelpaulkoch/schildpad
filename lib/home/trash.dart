@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
@@ -32,7 +33,7 @@ class TrashArea extends ConsumerWidget {
                   'Trash: removing element from ($originColumn, $originRow)');
               await homeTileManager.removeElement(data.origin);
 
-              if (data.isAppWidgetData) {
+              if (data.appData == null && data.appWidgetData != null) {
                 final widgetId = data.appWidgetData?.appWidgetId;
                 if (widgetId != null) {
                   await deleteApplicationWidget(widgetId);

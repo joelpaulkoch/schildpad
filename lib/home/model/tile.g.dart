@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_tile.dart';
+part of 'tile.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,152 +9,124 @@ part of 'home_tile.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-extension GetHomeTileCollection on Isar {
-  IsarCollection<HomeTile> get homeTiles => this.collection();
+extension GetTileCollection on Isar {
+  IsarCollection<Tile> get tiles => this.collection();
 }
 
-const HomeTileSchema = CollectionSchema(
-  name: r'HomeTile',
-  id: -7289812824508021333,
+const TileSchema = CollectionSchema(
+  name: r'Tile',
+  id: 7333498075616056013,
   properties: {
-    r'appData': PropertySchema(
-      id: 0,
-      name: r'appData',
-      type: IsarType.object,
-      target: r'HomeTileAppData',
-    ),
-    r'appWidgetData': PropertySchema(
-      id: 1,
-      name: r'appWidgetData',
-      type: IsarType.object,
-      target: r'HomeTileAppWidgetData',
-    ),
     r'columnSpan': PropertySchema(
-      id: 2,
+      id: 0,
       name: r'columnSpan',
       type: IsarType.long,
     ),
     r'coordinates': PropertySchema(
-      id: 3,
+      id: 1,
       name: r'coordinates',
       type: IsarType.object,
       target: r'GlobalElementCoordinates',
     ),
     r'rowSpan': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'rowSpan',
       type: IsarType.long,
+    ),
+    r'tileData': PropertySchema(
+      id: 3,
+      name: r'tileData',
+      type: IsarType.object,
+      target: r'ElementData',
     )
   },
-  estimateSize: _homeTileEstimateSize,
-  serialize: _homeTileSerialize,
-  deserialize: _homeTileDeserialize,
-  deserializeProp: _homeTileDeserializeProp,
+  estimateSize: _tileEstimateSize,
+  serialize: _tileSerialize,
+  deserialize: _tileDeserialize,
+  deserializeProp: _tileDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {
     r'GlobalElementCoordinates': GlobalElementCoordinatesSchema,
-    r'HomeTileAppData': HomeTileAppDataSchema,
-    r'HomeTileAppWidgetData': HomeTileAppWidgetDataSchema
+    r'ElementData': ElementDataSchema,
+    r'AppData': AppDataSchema,
+    r'AppWidgetData': AppWidgetDataSchema
   },
-  getId: _homeTileGetId,
-  getLinks: _homeTileGetLinks,
-  attach: _homeTileAttach,
+  getId: _tileGetId,
+  getLinks: _tileGetLinks,
+  attach: _tileAttach,
   version: '3.0.2',
 );
 
-int _homeTileEstimateSize(
-  HomeTile object,
+int _tileEstimateSize(
+  Tile object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 +
+      GlobalElementCoordinatesSchema.estimateSize(object.coordinates,
+          allOffsets[GlobalElementCoordinates]!, allOffsets);
   {
-    final value = object.appData;
+    final value = object.tileData;
     if (value != null) {
       bytesCount += 3 +
-          HomeTileAppDataSchema.estimateSize(
-              value, allOffsets[HomeTileAppData]!, allOffsets);
-    }
-  }
-  {
-    final value = object.appWidgetData;
-    if (value != null) {
-      bytesCount += 3 +
-          HomeTileAppWidgetDataSchema.estimateSize(
-              value, allOffsets[HomeTileAppWidgetData]!, allOffsets);
-    }
-  }
-  {
-    final value = object.coordinates;
-    if (value != null) {
-      bytesCount += 3 +
-          GlobalElementCoordinatesSchema.estimateSize(
-              value, allOffsets[GlobalElementCoordinates]!, allOffsets);
+          ElementDataSchema.estimateSize(
+              value, allOffsets[ElementData]!, allOffsets);
     }
   }
   return bytesCount;
 }
 
-void _homeTileSerialize(
-  HomeTile object,
+void _tileSerialize(
+  Tile object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeObject<HomeTileAppData>(
-    offsets[0],
-    allOffsets,
-    HomeTileAppDataSchema.serialize,
-    object.appData,
-  );
-  writer.writeObject<HomeTileAppWidgetData>(
-    offsets[1],
-    allOffsets,
-    HomeTileAppWidgetDataSchema.serialize,
-    object.appWidgetData,
-  );
-  writer.writeLong(offsets[2], object.columnSpan);
+  writer.writeLong(offsets[0], object.columnSpan);
   writer.writeObject<GlobalElementCoordinates>(
-    offsets[3],
+    offsets[1],
     allOffsets,
     GlobalElementCoordinatesSchema.serialize,
     object.coordinates,
   );
-  writer.writeLong(offsets[4], object.rowSpan);
+  writer.writeLong(offsets[2], object.rowSpan);
+  writer.writeObject<ElementData>(
+    offsets[3],
+    allOffsets,
+    ElementDataSchema.serialize,
+    object.tileData,
+  );
 }
 
-HomeTile _homeTileDeserialize(
+Tile _tileDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = HomeTile(
-    appData: reader.readObjectOrNull<HomeTileAppData>(
-      offsets[0],
-      HomeTileAppDataSchema.deserialize,
-      allOffsets,
-    ),
-    appWidgetData: reader.readObjectOrNull<HomeTileAppWidgetData>(
-      offsets[1],
-      HomeTileAppWidgetDataSchema.deserialize,
-      allOffsets,
-    ),
-    columnSpan: reader.readLongOrNull(offsets[2]),
+  final object = Tile(
+    columnSpan: reader.readLongOrNull(offsets[0]) ?? 1,
     coordinates: reader.readObjectOrNull<GlobalElementCoordinates>(
+          offsets[1],
+          GlobalElementCoordinatesSchema.deserialize,
+          allOffsets,
+        ) ??
+        defaultCoordinates,
+    rowSpan: reader.readLongOrNull(offsets[2]) ?? 1,
+    tileData: reader.readObjectOrNull<ElementData>(
       offsets[3],
-      GlobalElementCoordinatesSchema.deserialize,
+      ElementDataSchema.deserialize,
       allOffsets,
     ),
-    rowSpan: reader.readLongOrNull(offsets[4]),
   );
   object.id = id;
   return object;
 }
 
-P _homeTileDeserializeProp<P>(
+P _tileDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -162,54 +134,49 @@ P _homeTileDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readObjectOrNull<HomeTileAppData>(
-        offset,
-        HomeTileAppDataSchema.deserialize,
-        allOffsets,
-      )) as P;
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     case 1:
-      return (reader.readObjectOrNull<HomeTileAppWidgetData>(
-        offset,
-        HomeTileAppWidgetDataSchema.deserialize,
-        allOffsets,
-      )) as P;
-    case 2:
-      return (reader.readLongOrNull(offset)) as P;
-    case 3:
       return (reader.readObjectOrNull<GlobalElementCoordinates>(
+            offset,
+            GlobalElementCoordinatesSchema.deserialize,
+            allOffsets,
+          ) ??
+          defaultCoordinates) as P;
+    case 2:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
+    case 3:
+      return (reader.readObjectOrNull<ElementData>(
         offset,
-        GlobalElementCoordinatesSchema.deserialize,
+        ElementDataSchema.deserialize,
         allOffsets,
       )) as P;
-    case 4:
-      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _homeTileGetId(HomeTile object) {
+Id _tileGetId(Tile object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _homeTileGetLinks(HomeTile object) {
+List<IsarLinkBase<dynamic>> _tileGetLinks(Tile object) {
   return [];
 }
 
-void _homeTileAttach(IsarCollection<dynamic> col, Id id, HomeTile object) {
+void _tileAttach(IsarCollection<dynamic> col, Id id, Tile object) {
   object.id = id;
 }
 
-extension HomeTileQueryWhereSort on QueryBuilder<HomeTile, HomeTile, QWhere> {
-  QueryBuilder<HomeTile, HomeTile, QAfterWhere> anyId() {
+extension TileQueryWhereSort on QueryBuilder<Tile, Tile, QWhere> {
+  QueryBuilder<Tile, Tile, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
-  QueryBuilder<HomeTile, HomeTile, QAfterWhereClause> idEqualTo(Id id) {
+extension TileQueryWhere on QueryBuilder<Tile, Tile, QWhereClause> {
+  QueryBuilder<Tile, Tile, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -218,7 +185,7 @@ extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Tile, Tile, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -240,7 +207,7 @@ extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Tile, Tile, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -249,7 +216,7 @@ extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Tile, Tile, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -258,7 +225,7 @@ extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterWhereClause> idBetween(
+  QueryBuilder<Tile, Tile, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -275,61 +242,8 @@ extension HomeTileQueryWhere on QueryBuilder<HomeTile, HomeTile, QWhereClause> {
   }
 }
 
-extension HomeTileQueryFilter
-    on QueryBuilder<HomeTile, HomeTile, QFilterCondition> {
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> appDataIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'appData',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> appDataIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'appData',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition>
-      appWidgetDataIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'appWidgetData',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition>
-      appWidgetDataIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'appWidgetData',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'columnSpan',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition>
-      columnSpanIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'columnSpan',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanEqualTo(
-      int? value) {
+extension TileQueryFilter on QueryBuilder<Tile, Tile, QFilterCondition> {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> columnSpanEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'columnSpan',
@@ -338,8 +252,8 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanGreaterThan(
-    int? value, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> columnSpanGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -351,8 +265,8 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanLessThan(
-    int? value, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> columnSpanLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -364,9 +278,9 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> columnSpanBetween(
-    int? lower,
-    int? upper, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> columnSpanBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -381,24 +295,7 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> coordinatesIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'coordinates',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition>
-      coordinatesIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'coordinates',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -407,7 +304,7 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -420,7 +317,7 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -433,7 +330,7 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> idBetween(
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -450,24 +347,7 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'rowSpan',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'rowSpan',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanEqualTo(
-      int? value) {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> rowSpanEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'rowSpan',
@@ -476,8 +356,8 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanGreaterThan(
-    int? value, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> rowSpanGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -489,8 +369,8 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanLessThan(
-    int? value, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> rowSpanLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -502,9 +382,9 @@ extension HomeTileQueryFilter
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> rowSpanBetween(
-    int? lower,
-    int? upper, {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> rowSpanBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -518,152 +398,149 @@ extension HomeTileQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> tileDataIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'tileData',
+      ));
+    });
+  }
+
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> tileDataIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'tileData',
+      ));
+    });
+  }
 }
 
-extension HomeTileQueryObject
-    on QueryBuilder<HomeTile, HomeTile, QFilterCondition> {
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> appData(
-      FilterQuery<HomeTileAppData> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'appData');
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> appWidgetData(
-      FilterQuery<HomeTileAppWidgetData> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'appWidgetData');
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTile, QAfterFilterCondition> coordinates(
+extension TileQueryObject on QueryBuilder<Tile, Tile, QFilterCondition> {
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> coordinates(
       FilterQuery<GlobalElementCoordinates> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'coordinates');
     });
   }
+
+  QueryBuilder<Tile, Tile, QAfterFilterCondition> tileData(
+      FilterQuery<ElementData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'tileData');
+    });
+  }
 }
 
-extension HomeTileQueryLinks
-    on QueryBuilder<HomeTile, HomeTile, QFilterCondition> {}
+extension TileQueryLinks on QueryBuilder<Tile, Tile, QFilterCondition> {}
 
-extension HomeTileQuerySortBy on QueryBuilder<HomeTile, HomeTile, QSortBy> {
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumnSpan() {
+extension TileQuerySortBy on QueryBuilder<Tile, Tile, QSortBy> {
+  QueryBuilder<Tile, Tile, QAfterSortBy> sortByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.asc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByColumnSpanDesc() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> sortByColumnSpanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.desc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByRowSpan() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> sortByRowSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rowSpan', Sort.asc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> sortByRowSpanDesc() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> sortByRowSpanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rowSpan', Sort.desc);
     });
   }
 }
 
-extension HomeTileQuerySortThenBy
-    on QueryBuilder<HomeTile, HomeTile, QSortThenBy> {
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByColumnSpan() {
+extension TileQuerySortThenBy on QueryBuilder<Tile, Tile, QSortThenBy> {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.asc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByColumnSpanDesc() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenByColumnSpanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'columnSpan', Sort.desc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenById() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByRowSpan() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenByRowSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rowSpan', Sort.asc);
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QAfterSortBy> thenByRowSpanDesc() {
+  QueryBuilder<Tile, Tile, QAfterSortBy> thenByRowSpanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rowSpan', Sort.desc);
     });
   }
 }
 
-extension HomeTileQueryWhereDistinct
-    on QueryBuilder<HomeTile, HomeTile, QDistinct> {
-  QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByColumnSpan() {
+extension TileQueryWhereDistinct on QueryBuilder<Tile, Tile, QDistinct> {
+  QueryBuilder<Tile, Tile, QDistinct> distinctByColumnSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'columnSpan');
     });
   }
 
-  QueryBuilder<HomeTile, HomeTile, QDistinct> distinctByRowSpan() {
+  QueryBuilder<Tile, Tile, QDistinct> distinctByRowSpan() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'rowSpan');
     });
   }
 }
 
-extension HomeTileQueryProperty
-    on QueryBuilder<HomeTile, HomeTile, QQueryProperty> {
-  QueryBuilder<HomeTile, int, QQueryOperations> idProperty() {
+extension TileQueryProperty on QueryBuilder<Tile, Tile, QQueryProperty> {
+  QueryBuilder<Tile, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<HomeTile, HomeTileAppData?, QQueryOperations> appDataProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'appData');
-    });
-  }
-
-  QueryBuilder<HomeTile, HomeTileAppWidgetData?, QQueryOperations>
-      appWidgetDataProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'appWidgetData');
-    });
-  }
-
-  QueryBuilder<HomeTile, int?, QQueryOperations> columnSpanProperty() {
+  QueryBuilder<Tile, int, QQueryOperations> columnSpanProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'columnSpan');
     });
   }
 
-  QueryBuilder<HomeTile, GlobalElementCoordinates?, QQueryOperations>
+  QueryBuilder<Tile, GlobalElementCoordinates, QQueryOperations>
       coordinatesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'coordinates');
     });
   }
 
-  QueryBuilder<HomeTile, int?, QQueryOperations> rowSpanProperty() {
+  QueryBuilder<Tile, int, QQueryOperations> rowSpanProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'rowSpan');
+    });
+  }
+
+  QueryBuilder<Tile, ElementData?, QQueryOperations> tileDataProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'tileData');
     });
   }
 }
@@ -675,59 +552,130 @@ extension HomeTileQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const HomeTileAppDataSchema = Schema(
-  name: r'HomeTileAppData',
-  id: -4655879528661853679,
+const ElementDataSchema = Schema(
+  name: r'ElementData',
+  id: -89844720841365758,
   properties: {
-    r'packageName': PropertySchema(
+    r'appData': PropertySchema(
       id: 0,
-      name: r'packageName',
-      type: IsarType.string,
+      name: r'appData',
+      type: IsarType.object,
+      target: r'AppData',
+    ),
+    r'appWidgetData': PropertySchema(
+      id: 1,
+      name: r'appWidgetData',
+      type: IsarType.object,
+      target: r'AppWidgetData',
+    ),
+    r'columnSpan': PropertySchema(
+      id: 2,
+      name: r'columnSpan',
+      type: IsarType.long,
+    ),
+    r'origin': PropertySchema(
+      id: 3,
+      name: r'origin',
+      type: IsarType.object,
+      target: r'GlobalElementCoordinates',
+    ),
+    r'rowSpan': PropertySchema(
+      id: 4,
+      name: r'rowSpan',
+      type: IsarType.long,
     )
   },
-  estimateSize: _homeTileAppDataEstimateSize,
-  serialize: _homeTileAppDataSerialize,
-  deserialize: _homeTileAppDataDeserialize,
-  deserializeProp: _homeTileAppDataDeserializeProp,
+  estimateSize: _elementDataEstimateSize,
+  serialize: _elementDataSerialize,
+  deserialize: _elementDataDeserialize,
+  deserializeProp: _elementDataDeserializeProp,
 );
 
-int _homeTileAppDataEstimateSize(
-  HomeTileAppData object,
+int _elementDataEstimateSize(
+  ElementData object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.packageName;
+    final value = object.appData;
     if (value != null) {
-      bytesCount += 3 + value.length * 3;
+      bytesCount += 3 +
+          AppDataSchema.estimateSize(value, allOffsets[AppData]!, allOffsets);
     }
   }
+  {
+    final value = object.appWidgetData;
+    if (value != null) {
+      bytesCount += 3 +
+          AppWidgetDataSchema.estimateSize(
+              value, allOffsets[AppWidgetData]!, allOffsets);
+    }
+  }
+  bytesCount += 3 +
+      GlobalElementCoordinatesSchema.estimateSize(
+          object.origin, allOffsets[GlobalElementCoordinates]!, allOffsets);
   return bytesCount;
 }
 
-void _homeTileAppDataSerialize(
-  HomeTileAppData object,
+void _elementDataSerialize(
+  ElementData object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.packageName);
+  writer.writeObject<AppData>(
+    offsets[0],
+    allOffsets,
+    AppDataSchema.serialize,
+    object.appData,
+  );
+  writer.writeObject<AppWidgetData>(
+    offsets[1],
+    allOffsets,
+    AppWidgetDataSchema.serialize,
+    object.appWidgetData,
+  );
+  writer.writeLong(offsets[2], object.columnSpan);
+  writer.writeObject<GlobalElementCoordinates>(
+    offsets[3],
+    allOffsets,
+    GlobalElementCoordinatesSchema.serialize,
+    object.origin,
+  );
+  writer.writeLong(offsets[4], object.rowSpan);
 }
 
-HomeTileAppData _homeTileAppDataDeserialize(
+ElementData _elementDataDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = HomeTileAppData(
-    packageName: reader.readStringOrNull(offsets[0]),
+  final object = ElementData(
+    appData: reader.readObjectOrNull<AppData>(
+      offsets[0],
+      AppDataSchema.deserialize,
+      allOffsets,
+    ),
+    appWidgetData: reader.readObjectOrNull<AppWidgetData>(
+      offsets[1],
+      AppWidgetDataSchema.deserialize,
+      allOffsets,
+    ),
+    columnSpan: reader.readLongOrNull(offsets[2]) ?? 1,
+    origin: reader.readObjectOrNull<GlobalElementCoordinates>(
+          offsets[3],
+          GlobalElementCoordinatesSchema.deserialize,
+          allOffsets,
+        ) ??
+        defaultCoordinates,
+    rowSpan: reader.readLongOrNull(offsets[4]) ?? 1,
   );
   return object;
 }
 
-P _homeTileAppDataDeserializeProp<P>(
+P _elementDataDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -735,35 +683,274 @@ P _homeTileAppDataDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readObjectOrNull<AppData>(
+        offset,
+        AppDataSchema.deserialize,
+        allOffsets,
+      )) as P;
+    case 1:
+      return (reader.readObjectOrNull<AppWidgetData>(
+        offset,
+        AppWidgetDataSchema.deserialize,
+        allOffsets,
+      )) as P;
+    case 2:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
+    case 3:
+      return (reader.readObjectOrNull<GlobalElementCoordinates>(
+            offset,
+            GlobalElementCoordinatesSchema.deserialize,
+            allOffsets,
+          ) ??
+          defaultCoordinates) as P;
+    case 4:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-extension HomeTileAppDataQueryFilter
-    on QueryBuilder<HomeTileAppData, HomeTileAppData, QFilterCondition> {
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameIsNull() {
+extension ElementDataQueryFilter
+    on QueryBuilder<ElementData, ElementData, QFilterCondition> {
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      appDataIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'packageName',
+        property: r'appData',
       ));
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameIsNotNull() {
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      appDataIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'packageName',
+        property: r'appData',
       ));
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameEqualTo(
-    String? value, {
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      appWidgetDataIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'appWidgetData',
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      appWidgetDataIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'appWidgetData',
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      columnSpanEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'columnSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      columnSpanGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'columnSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      columnSpanLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'columnSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      columnSpanBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'columnSpan',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> rowSpanEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rowSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition>
+      rowSpanGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'rowSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> rowSpanLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'rowSpan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> rowSpanBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'rowSpan',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension ElementDataQueryObject
+    on QueryBuilder<ElementData, ElementData, QFilterCondition> {
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> appData(
+      FilterQuery<AppData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'appData');
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> appWidgetData(
+      FilterQuery<AppWidgetData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'appWidgetData');
+    });
+  }
+
+  QueryBuilder<ElementData, ElementData, QAfterFilterCondition> origin(
+      FilterQuery<GlobalElementCoordinates> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'origin');
+    });
+  }
+}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+
+const AppDataSchema = Schema(
+  name: r'AppData',
+  id: 3950144987861183497,
+  properties: {
+    r'packageName': PropertySchema(
+      id: 0,
+      name: r'packageName',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _appDataEstimateSize,
+  serialize: _appDataSerialize,
+  deserialize: _appDataDeserialize,
+  deserializeProp: _appDataDeserializeProp,
+);
+
+int _appDataEstimateSize(
+  AppData object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.packageName.length * 3;
+  return bytesCount;
+}
+
+void _appDataSerialize(
+  AppData object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.packageName);
+}
+
+AppData _appDataDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = AppData(
+    packageName: reader.readStringOrNull(offsets[0]) ?? '',
+  );
+  return object;
+}
+
+P _appDataDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readStringOrNull(offset) ?? '') as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension AppDataQueryFilter
+    on QueryBuilder<AppData, AppData, QFilterCondition> {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -775,9 +962,8 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameGreaterThan(
-    String? value, {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameGreaterThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -791,9 +977,8 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameLessThan(
-    String? value, {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameLessThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -807,10 +992,9 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -827,8 +1011,7 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameStartsWith(
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -841,8 +1024,7 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameEndsWith(
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -855,8 +1037,9 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameContains(
+      String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'packageName',
@@ -866,8 +1049,9 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'packageName',
@@ -877,8 +1061,7 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
-      packageNameIsEmpty() {
+  QueryBuilder<AppData, AppData, QAfterFilterCondition> packageNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'packageName',
@@ -887,7 +1070,7 @@ extension HomeTileAppDataQueryFilter
     });
   }
 
-  QueryBuilder<HomeTileAppData, HomeTileAppData, QAfterFilterCondition>
+  QueryBuilder<AppData, AppData, QAfterFilterCondition>
       packageNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -898,15 +1081,15 @@ extension HomeTileAppDataQueryFilter
   }
 }
 
-extension HomeTileAppDataQueryObject
-    on QueryBuilder<HomeTileAppData, HomeTileAppData, QFilterCondition> {}
+extension AppDataQueryObject
+    on QueryBuilder<AppData, AppData, QFilterCondition> {}
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const HomeTileAppWidgetDataSchema = Schema(
-  name: r'HomeTileAppWidgetData',
-  id: -9178401510266760846,
+const AppWidgetDataSchema = Schema(
+  name: r'AppWidgetData',
+  id: 5095303185153816698,
   properties: {
     r'appWidgetId': PropertySchema(
       id: 0,
@@ -919,29 +1102,24 @@ const HomeTileAppWidgetDataSchema = Schema(
       type: IsarType.string,
     )
   },
-  estimateSize: _homeTileAppWidgetDataEstimateSize,
-  serialize: _homeTileAppWidgetDataSerialize,
-  deserialize: _homeTileAppWidgetDataDeserialize,
-  deserializeProp: _homeTileAppWidgetDataDeserializeProp,
+  estimateSize: _appWidgetDataEstimateSize,
+  serialize: _appWidgetDataSerialize,
+  deserialize: _appWidgetDataDeserialize,
+  deserializeProp: _appWidgetDataDeserializeProp,
 );
 
-int _homeTileAppWidgetDataEstimateSize(
-  HomeTileAppWidgetData object,
+int _appWidgetDataEstimateSize(
+  AppWidgetData object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.componentName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.componentName.length * 3;
   return bytesCount;
 }
 
-void _homeTileAppWidgetDataSerialize(
-  HomeTileAppWidgetData object,
+void _appWidgetDataSerialize(
+  AppWidgetData object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -950,20 +1128,20 @@ void _homeTileAppWidgetDataSerialize(
   writer.writeString(offsets[1], object.componentName);
 }
 
-HomeTileAppWidgetData _homeTileAppWidgetDataDeserialize(
+AppWidgetData _appWidgetDataDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = HomeTileAppWidgetData(
+  final object = AppWidgetData(
     appWidgetId: reader.readLongOrNull(offsets[0]),
-    componentName: reader.readStringOrNull(offsets[1]),
+    componentName: reader.readStringOrNull(offsets[1]) ?? '',
   );
   return object;
 }
 
-P _homeTileAppWidgetDataDeserializeProp<P>(
+P _appWidgetDataDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -973,16 +1151,16 @@ P _homeTileAppWidgetDataDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
-    HomeTileAppWidgetData, HomeTileAppWidgetData, QFilterCondition> {
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdIsNull() {
+extension AppWidgetDataQueryFilter
+    on QueryBuilder<AppWidgetData, AppWidgetData, QFilterCondition> {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'appWidgetId',
@@ -990,8 +1168,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdIsNotNull() {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'appWidgetId',
@@ -999,8 +1177,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdEqualTo(int? value) {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'appWidgetId',
@@ -1009,8 +1187,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdGreaterThan(
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdGreaterThan(
     int? value, {
     bool include = false,
   }) {
@@ -1023,8 +1201,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdLessThan(
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdLessThan(
     int? value, {
     bool include = false,
   }) {
@@ -1037,8 +1215,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> appWidgetIdBetween(
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      appWidgetIdBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -1055,27 +1233,9 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'componentName',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'componentName',
-      ));
-    });
-  }
-
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameEqualTo(
-    String? value, {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1087,9 +1247,9 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameGreaterThan(
-    String? value, {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameGreaterThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1103,9 +1263,9 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameLessThan(
-    String? value, {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameLessThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1119,10 +1279,10 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1139,8 +1299,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameStartsWith(
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1153,8 +1313,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameEndsWith(
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1167,8 +1327,7 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-          QAfterFilterCondition>
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
       componentNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -1179,8 +1338,7 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-          QAfterFilterCondition>
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
       componentNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1191,8 +1349,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameIsEmpty() {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'componentName',
@@ -1201,8 +1359,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<HomeTileAppWidgetData, HomeTileAppWidgetData,
-      QAfterFilterCondition> componentNameIsNotEmpty() {
+  QueryBuilder<AppWidgetData, AppWidgetData, QAfterFilterCondition>
+      componentNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'componentName',
@@ -1212,8 +1370,8 @@ extension HomeTileAppWidgetDataQueryFilter on QueryBuilder<
   }
 }
 
-extension HomeTileAppWidgetDataQueryObject on QueryBuilder<
-    HomeTileAppWidgetData, HomeTileAppWidgetData, QFilterCondition> {}
+extension AppWidgetDataQueryObject
+    on QueryBuilder<AppWidgetData, AppWidgetData, QFilterCondition> {}
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
@@ -1278,12 +1436,12 @@ GlobalElementCoordinates _globalElementCoordinatesDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = GlobalElementCoordinates(
-    column: reader.readLongOrNull(offsets[0]),
+    column: reader.readLongOrNull(offsets[0]) ?? 0,
     location: _GlobalElementCoordinateslocationValueEnumMap[
             reader.readByteOrNull(offsets[1])] ??
         Location.list,
     page: reader.readLongOrNull(offsets[2]),
-    row: reader.readLongOrNull(offsets[3]),
+    row: reader.readLongOrNull(offsets[3]) ?? 0,
   );
   return object;
 }
@@ -1296,7 +1454,7 @@ P _globalElementCoordinatesDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 1:
       return (_GlobalElementCoordinateslocationValueEnumMap[
               reader.readByteOrNull(offset)] ??
@@ -1304,7 +1462,7 @@ P _globalElementCoordinatesDeserializeProp<P>(
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1324,25 +1482,7 @@ const _GlobalElementCoordinateslocationValueEnumMap = {
 extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
     GlobalElementCoordinates, GlobalElementCoordinates, QFilterCondition> {
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> columnIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'column',
-      ));
-    });
-  }
-
-  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> columnIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'column',
-      ));
-    });
-  }
-
-  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> columnEqualTo(int? value) {
+      QAfterFilterCondition> columnEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'column',
@@ -1353,7 +1493,7 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> columnGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1367,7 +1507,7 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> columnLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1381,8 +1521,8 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> columnBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1528,25 +1668,7 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> rowIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'row',
-      ));
-    });
-  }
-
-  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> rowIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'row',
-      ));
-    });
-  }
-
-  QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
-      QAfterFilterCondition> rowEqualTo(int? value) {
+      QAfterFilterCondition> rowEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'row',
@@ -1557,7 +1679,7 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> rowGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1571,7 +1693,7 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> rowLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1585,8 +1707,8 @@ extension GlobalElementCoordinatesQueryFilter on QueryBuilder<
 
   QueryBuilder<GlobalElementCoordinates, GlobalElementCoordinates,
       QAfterFilterCondition> rowBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

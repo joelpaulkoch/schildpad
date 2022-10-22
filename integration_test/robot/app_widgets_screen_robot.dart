@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class AppWidgetsScreenRobot {

@@ -5,15 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/home/model/home_tile.dart';
 import 'package:schildpad/home/model/page_counter.dart';
+import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
 final isarProvider = FutureProvider<Isar>((ref) async {
-  return await Isar.open([HomeTileSchema, PageCounterSchema]);
+  return await Isar.open([TileSchema, PageCounterSchema]);
 });
 
 Future<void> main() async {
