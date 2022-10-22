@@ -31,13 +31,13 @@ final pagesProvider = Provider<PageCounter>((ref) {
 
 final pagesIsarProvider =
     FutureProvider<IsarCollection<PageCounter>>((ref) async {
-  final isarFuture = ref.watch(isarProvider.future);
-  return await isarFuture.then((isar) => isar.pageCounters);
+  final isar = await ref.watch(isarProvider.future);
+  return isar.pageCounters;
 });
 
 final isarPagesUpdateProvider = StreamProvider<void>((ref) async* {
-  final isarFuture = ref.watch(isarProvider.future);
-  yield* await isarFuture.then((isar) => isar.pageCounters.watchLazy());
+  final isar = await ref.watch(isarProvider.future);
+  yield* isar.pageCounters.watchLazy();
 });
 
 final pageCounterManagerProvider = Provider<PageCounterManager>((ref) {

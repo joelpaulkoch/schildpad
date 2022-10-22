@@ -21,6 +21,7 @@ class HomeScreen extends ConsumerWidget {
     final homeRowCount = ref.watch(homeRowCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
     final homePageController = ref.watch(homePageControllerProvider);
+    final showTrash = ref.watch(showTrashProvider);
     return SafeArea(
       top: true,
       bottom: true,
@@ -69,7 +70,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const TrashArea(),
+                      if (showTrash) const TrashArea(),
                       Expanded(
                         flex: homeRowCount,
                         child: Align(
