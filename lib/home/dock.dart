@@ -14,12 +14,12 @@ final dockRowCountProvider = Provider<int>((ref) {
 
 final dockGridTilesProvider =
     FutureProvider<List<FlexibleGridTile>>((ref) async {
-  ref.watch(isarUpdateProvider);
+  ref.watch(isarTilesUpdateProvider);
 
   final columnCount = ref.watch(dockColumnCountProvider);
   final rowCount = ref.watch(dockRowCountProvider);
 
-  final tiles = await ref.watch(homeIsarProvider.future);
+  final tiles = await ref.watch(isarTilesProvider.future);
   return tiles
       .filter()
       .coordinates((c) => c.locationEqualTo(Location.dock))

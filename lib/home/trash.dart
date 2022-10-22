@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/model/tile.dart';
+import 'package:schildpad/home/tile_manager.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
@@ -20,11 +20,11 @@ class TrashArea extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeTileManager = ref.watch(tileManagerProvider);
+    final tileManager = ref.watch(tileManagerProvider);
     return DragTarget<ElementData>(
       onWillAccept: (_) => true,
       onAccept: (data) async {
-        await homeTileManager.removeElement(data.origin);
+        await tileManager.removeElement(data.origin);
 
         if (_isAppWidgetData(data)) {
           final widgetId = data.appWidgetData?.appWidgetId;

@@ -19,7 +19,7 @@ final appPackageApplicationWidgetIdsProvider =
 final appWidgetSizesProvider =
     FutureProvider.family<ApplicationWidgetSizes, String>(
         (ref, applicationWidgetId) async {
-  return getApplicationWidgetSizes(applicationWidgetId);
+  return await getApplicationWidgetSizes(applicationWidgetId);
 });
 
 final appWidgetPreviewProvider = FutureProvider.autoDispose

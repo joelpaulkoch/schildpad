@@ -55,7 +55,7 @@ class OverviewScreen extends ConsumerWidget {
                     child: GestureDetector(
                         onTap: () => context.go(HomeScreen.routeName),
                         child: AspectRatio(
-                            aspectRatio: approxHomeViewAspectRatio(
+                            aspectRatio: _approxHomeViewAspectRatio(
                                 context, homeRowCount, totalRows),
                             child: Card(
                                 child: Hero(
@@ -88,4 +88,12 @@ class OverviewScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+double _approxHomeViewAspectRatio(
+    BuildContext context, int homeRowCount, int totalRows) {
+  final homeViewWidth = MediaQuery.of(context).size.width;
+  final displayHeight = MediaQuery.of(context).size.height;
+  final homeViewHeight = displayHeight * homeRowCount / totalRows;
+  return homeViewWidth / homeViewHeight;
 }
