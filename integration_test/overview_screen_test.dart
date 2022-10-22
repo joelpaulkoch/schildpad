@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:isar/isar.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/main.dart' as app;
@@ -12,7 +12,11 @@ import 'robot/overview_screen_robot.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   tearDown(() async {
-    await Hive.deleteFromDisk();
+    final isar = Isar.getInstance();
+    await isar?.writeTxn(() async {
+      await isar.clear();
+    });
+    await isar?.close(deleteFromDisk: true);
   });
   group('navigate', () {
     testWidgets('navigating to appwidgets screen should be possible',

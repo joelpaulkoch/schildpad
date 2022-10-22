@@ -8,6 +8,7 @@ import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
+import 'package:schildpad/main.dart';
 
 final homeColumnCountProvider = Provider<int>((ref) {
   return 4;
@@ -35,13 +36,13 @@ double homeGridRowHeight(BuildContext context, int rowCount) {
 }
 
 final homeIsarProvider = FutureProvider<IsarCollection<HomeTile>>((ref) async {
-  final isar = await Isar.open([HomeTileSchema]);
-  return isar.homeTiles;
+  final isarFuture = ref.watch(isarProvider.future);
+  return await isarFuture.then((isar) => isar.homeTiles);
 });
 
 final isarUpdateProvider = StreamProvider<void>((ref) async* {
-  final isar = await Isar.open([HomeTileSchema]);
-  yield* isar.homeTiles.watchLazy().cast();
+  final isarFuture = ref.watch(isarProvider.future);
+  yield* await isarFuture.then((isar) => isar.homeTiles.watchLazy());
 });
 
 final homeGridTilesProvider =
@@ -272,7 +273,7 @@ class Grid extends StatelessWidget {
               row: row,
               child: GridCell(
                 coordinates: GlobalElementCoordinates(
-                    location: location, page: null, column: col, row: row),
+                    location: location, page: page, column: col, row: row),
                 columnCount: columnCount,
                 rowCount: rowCount,
               )));

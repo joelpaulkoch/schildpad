@@ -34,17 +34,18 @@ class DeletePageButton extends ConsumerWidget {
     final onRightMostPage = page == rightPages;
     final onOuterPage = (onLeftMostPage || onRightMostPage) && (page != 0);
     final tileManager = ref.watch(tileManagerProvider);
-    final pageState = ref.watch(pagesProvider.notifier);
+    final pageCounterManager = ref.watch(pageCounterManagerProvider);
+
     return IconButton(
         onPressed: onOuterPage
             ? () async {
                 await tileManager.removeAll();
                 if (page < 0) {
-                  pageState.removeLeftPage();
+                  await pageCounterManager.removeLeftPage();
                   ref.read(currentHomePageProvider.notifier).state++;
                 }
                 if (page > 0) {
-                  pageState.removeRightPage();
+                  await pageCounterManager.removeRightPage();
                   ref.read(currentHomePageProvider.notifier).state--;
                 }
               }
@@ -60,8 +61,9 @@ class AddLeftPageButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageCounterManager = ref.watch(pageCounterManagerProvider);
     return IconButton(
-        onPressed: ref.read(pagesProvider.notifier).addLeftPage,
+        onPressed: () async => await pageCounterManager.addLeftPage(),
         icon: const Icon(Icons.add));
   }
 }
@@ -73,8 +75,9 @@ class AddRightPageButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageCounterManager = ref.watch(pageCounterManagerProvider);
     return IconButton(
-        onPressed: ref.read(pagesProvider.notifier).addRightPage,
+        onPressed: () async => await pageCounterManager.addRightPage(),
         icon: const Icon(Icons.add));
   }
 }

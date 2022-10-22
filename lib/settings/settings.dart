@@ -63,17 +63,19 @@ class ResetButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tileManager = ref.watch(tileManagerProvider);
+    final pageCounterManager = ref.watch(pageCounterManagerProvider);
+
     return TextButton(
         onPressed: () {
           tileManager.removeAll();
 
           final leftPages = ref.read(leftPagesProvider);
           for (var i = -leftPages; i < 0; i++) {
-            ref.read(pagesProvider.notifier).removeLeftPage();
+            pageCounterManager.removeLeftPage();
           }
           final rightPages = ref.read(rightPagesProvider);
           for (var i = rightPages; i > 0; i--) {
-            ref.read(pagesProvider.notifier).removeRightPage();
+            pageCounterManager.removeRightPage();
           }
           Navigator.of(context).pop();
         },

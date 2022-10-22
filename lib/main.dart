@@ -4,11 +4,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:isar/isar.dart';
 import 'package:schildpad/home/home_screen.dart';
+import 'package:schildpad/home/model/home_tile.dart';
+import 'package:schildpad/home/model/page_counter.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
+
+final isarProvider = FutureProvider<Isar>((ref) async {
+  return await Isar.open([HomeTileSchema, PageCounterSchema]);
+});
 
 Future<void> main() async {
   await Hive.initFlutter();

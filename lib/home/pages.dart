@@ -1,6 +1,7 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:isar/isar.dart';
+import 'package:schildpad/home/model/page_counter.dart';
+import 'package:schildpad/main.dart';
 
 final leftPagesProvider = Provider<int>((ref) {
   return ref.watch(pagesProvider).leftPages;
@@ -20,61 +21,85 @@ final pageCountProvider = Provider<int>((ref) {
   return left + 1 + right;
 });
 
-const _pagesBoxName = 'pages';
-
-final _pagesBoxProvider = FutureProvider<Box<int>>((ref) async {
-  return await Hive.openBox<int>(_pagesBoxName);
+final pagesProvider = Provider<PageCounter>((ref) {
+  ref.watch(isarPagesUpdateProvider);
+  final pages = ref
+      .watch(pagesIsarProvider)
+      .whenOrNull(data: (pageCounter) => pageCounter);
+  return pages?.getSync(0) ?? PageCounter(leftPages: 0, rightPages: 0);
 });
 
-final pagesProvider =
-    StateNotifierProvider<PagesStateNotifier, PageCounter>((ref) {
-  final hiveBox = ref.watch(_pagesBoxProvider).valueOrNull;
-  return PagesStateNotifier(hiveBox: hiveBox);
+final pagesIsarProvider =
+    FutureProvider<IsarCollection<PageCounter>>((ref) async {
+  final isarFuture = ref.watch(isarProvider.future);
+  return await isarFuture.then((isar) => isar.pageCounters);
 });
 
-class PagesStateNotifier extends StateNotifier<PageCounter> {
-  PagesStateNotifier({this.hiveBox}) : super(const PageCounter(0, 0)) {
-    final leftPages = hiveBox?.get('leftPages') ?? 0;
-    final rightPages = hiveBox?.get('rightPages') ?? 0;
+final isarPagesUpdateProvider = StreamProvider<void>((ref) async* {
+  final isarFuture = ref.watch(isarProvider.future);
+  yield* await isarFuture.then((isar) => isar.pageCounters.watchLazy());
+});
 
-    state = PageCounter(leftPages, rightPages);
+final pageCounterManagerProvider = Provider<PageCounterManager>((ref) {
+  final isarCollection =
+      ref.watch(pagesIsarProvider).whenOrNull(data: (collection) => collection);
+  return PageCounterManager(isarCollection);
+});
+
+class PageCounterManager {
+  PageCounterManager(this.isarCollection);
+
+  final IsarCollection<PageCounter>? isarCollection;
+
+  Future<void> addLeftPage() async {
+    final pagesCollection = isarCollection;
+
+    await pagesCollection?.isar.writeTxn(() async {
+      final pageCounter = await pagesCollection.get(0);
+      final leftPages = pageCounter?.leftPages ?? 0;
+      final rightPages = pageCounter?.rightPages ?? 0;
+      await pagesCollection
+          .put(PageCounter(leftPages: leftPages + 1, rightPages: rightPages));
+    });
   }
 
-  final Box<int>? hiveBox;
+  Future<void> addRightPage() async {
+    final pagesCollection = isarCollection;
 
-  void addLeftPage() {
-    state = PageCounter(state.leftPages + 1, state.rightPages);
-    hiveBox?.put('leftPages', state.leftPages);
+    await pagesCollection?.isar.writeTxn(() async {
+      final pageCounter = await pagesCollection.get(0);
+      final leftPages = pageCounter?.leftPages ?? 0;
+      final rightPages = pageCounter?.rightPages ?? 0;
+      await pagesCollection
+          .put(PageCounter(leftPages: leftPages, rightPages: rightPages + 1));
+    });
   }
 
-  void addRightPage() {
-    state = PageCounter(state.leftPages, state.rightPages + 1);
-    hiveBox?.put('rightPages', state.rightPages);
+  Future<void> removeLeftPage() async {
+    final pagesCollection = isarCollection;
+
+    await pagesCollection?.isar.writeTxn(() async {
+      final pageCounter = await pagesCollection.get(0);
+      final leftPages = pageCounter?.leftPages ?? 0;
+      final rightPages = pageCounter?.rightPages ?? 0;
+      if (leftPages > 0) {
+        await pagesCollection
+            .put(PageCounter(leftPages: leftPages - 1, rightPages: rightPages));
+      }
+    });
   }
 
-  void removeLeftPage() {
-    if (state.leftPages > 0) {
-      state = PageCounter(state.leftPages - 1, state.rightPages);
-      hiveBox?.put('leftPages', state.leftPages);
-    }
+  Future<void> removeRightPage() async {
+    final pagesCollection = isarCollection;
+
+    await pagesCollection?.isar.writeTxn(() async {
+      final pageCounter = await pagesCollection.get(0);
+      final leftPages = pageCounter?.leftPages ?? 0;
+      final rightPages = pageCounter?.rightPages ?? 0;
+      if (rightPages > 0) {
+        await pagesCollection
+            .put(PageCounter(leftPages: leftPages, rightPages: rightPages - 1));
+      }
+    });
   }
-
-  void removeRightPage() {
-    if (state.rightPages > 0) {
-      state = PageCounter(state.leftPages, state.rightPages - 1);
-      hiveBox?.put('rightPages', state.rightPages);
-    }
-  }
-}
-
-class PageCounter extends Equatable {
-  const PageCounter(this.leftPages, this.rightPages)
-      : assert(leftPages >= 0),
-        assert(rightPages >= 0);
-
-  final int leftPages;
-  final int rightPages;
-
-  @override
-  List<Object?> get props => [leftPages, rightPages];
 }
