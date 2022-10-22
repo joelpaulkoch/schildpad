@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/home/tile_manager.dart';
+import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
@@ -43,11 +42,11 @@ class DeletePageButton extends ConsumerWidget {
                 await tileManager.removeAll();
                 if (page < 0) {
                   await pageCounterManager.removeLeftPage();
-                  ref.read(currentHomePageProvider.notifier).state++;
+                  ref.read(currentPageProvider.notifier).state++;
                 }
                 if (page > 0) {
                   await pageCounterManager.removeRightPage();
-                  ref.read(currentHomePageProvider.notifier).state--;
+                  ref.read(currentPageProvider.notifier).state--;
                 }
               }
             : null,
@@ -92,7 +91,7 @@ class MoveToLeftButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final overviewPageController = ref.watch(overviewPageControllerProvider);
     final leftPagesCount = ref.watch(leftPagesProvider);
-    final currentPage = ref.watch(currentHomePageProvider);
+    final currentPage = ref.watch(currentPageProvider);
     final page = schildpadToPageViewIndex(currentPage, leftPagesCount);
     return IconButton(
         onPressed: () {
@@ -111,7 +110,7 @@ class MoveToRightButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final overviewPageController = ref.watch(overviewPageControllerProvider);
     final leftPagesCount = ref.watch(leftPagesProvider);
-    final currentPage = ref.watch(currentHomePageProvider);
+    final currentPage = ref.watch(currentPageProvider);
     final page = schildpadToPageViewIndex(currentPage, leftPagesCount);
     return IconButton(
         onPressed: () {

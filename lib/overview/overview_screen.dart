@@ -11,7 +11,7 @@ import 'package:schildpad/theme/theme.dart';
 
 final overviewPageControllerProvider = Provider<PageController>((ref) {
   final leftPagesCount = ref.watch(leftPagesProvider);
-  final currentPage = ref.watch(currentHomePageProvider);
+  final currentPage = ref.watch(currentPageProvider);
 
   final pageController = PageController(
       initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
@@ -28,7 +28,7 @@ class OverviewScreen extends ConsumerWidget {
     final homeRowCount = ref.watch(homeRowCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
     final totalRows = homeRowCount + dockRowCount;
-    final currentPage = ref.watch(currentHomePageProvider);
+    final currentPage = ref.watch(currentPageProvider);
     final leftPages = ref.watch(leftPagesProvider);
     final rightPages = ref.watch(rightPagesProvider);
     final onLeftMostPage = currentPage == -leftPages;
@@ -60,7 +60,7 @@ class OverviewScreen extends ConsumerWidget {
                             child: Card(
                                 child: Hero(
                                     tag: 'home',
-                                    child: HomeView(
+                                    child: HomePageView(
                                       pageController: overviewPageController,
                                     ))))),
                   ),

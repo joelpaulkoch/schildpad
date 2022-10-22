@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/pages.dart';
-import 'package:schildpad/home/tile_manager.dart';
+import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/settings/app_info.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';

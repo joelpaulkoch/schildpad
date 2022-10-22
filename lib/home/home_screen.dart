@@ -76,7 +76,7 @@ class HomeScreen extends ConsumerWidget {
                         child: Align(
                             child: Hero(
                                 tag: 'home',
-                                child: HomeView(
+                                child: HomePageView(
                                   pageController: homePageController,
                                 ))),
                       ),

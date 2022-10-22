@@ -15,6 +15,11 @@ final initialPageProvider = Provider<int>((ref) {
   return ref.watch(leftPagesProvider);
 });
 
+final currentPageProvider = StateProvider<int>((ref) {
+  final initialPage = ref.read(initialPageProvider);
+  return initialPage;
+});
+
 final pageCountProvider = Provider<int>((ref) {
   final left = ref.watch(leftPagesProvider);
   final right = ref.watch(rightPagesProvider);
@@ -103,3 +108,9 @@ class PageCounterManager {
     });
   }
 }
+
+int pageViewToSchildpadIndex(int pageViewIndex, int leftPages) =>
+    pageViewIndex - leftPages;
+
+int schildpadToPageViewIndex(int schildpadIndex, int leftPages) =>
+    schildpadIndex + leftPages;

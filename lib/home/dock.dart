@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/flexible_grid.dart';
-import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/grid.dart';
 import 'package:schildpad/home/model/tile.dart';
+import 'package:schildpad/home/tile.dart';
 
 final dockColumnCountProvider = Provider<int>((ref) {
   return 4;
@@ -29,7 +30,7 @@ final dockGridTilesProvider =
           row: e.coordinates.row,
           columnSpan: e.columnSpan,
           rowSpan: e.rowSpan,
-          child: GridCell(
+          child: GridElement(
             coordinates: e.coordinates,
             columnCount: columnCount,
             rowCount: rowCount,

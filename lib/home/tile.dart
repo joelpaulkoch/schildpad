@@ -1,9 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/flexible_grid.dart';
-import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
+import 'package:schildpad/main.dart';
+
+final isarTilesProvider = FutureProvider<IsarCollection<Tile>>((ref) async {
+  final isar = await ref.watch(isarProvider.future);
+  return isar.tiles;
+});
+
+final isarTilesUpdateProvider = StreamProvider<void>((ref) async* {
+  final isar = await ref.watch(isarProvider.future);
+  yield* isar.tiles.watchLazy();
+});
+
+final tileProvider =
+    Provider.family<Tile, GlobalElementCoordinates>((ref, globalCoordinates) {
+  ref.watch(isarTilesUpdateProvider);
+  final tiles = ref.watch(isarTilesProvider).whenOrNull(data: (tiles) => tiles);
+
+  final tile = tiles
+      ?.filter()
+      .coordinates((q) => q
+          .locationEqualTo(globalCoordinates.location)
+          .pageEqualTo(globalCoordinates.page)
+          .columnEqualTo(globalCoordinates.column)
+          .rowEqualTo(globalCoordinates.row))
+      .findFirstSync();
+
+  return tile ?? Tile(coordinates: globalCoordinates);
+});
 
 final tileManagerProvider = Provider<TileManager>((ref) {
   final isarCollection =

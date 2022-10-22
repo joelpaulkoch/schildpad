@@ -287,3 +287,80 @@ List<int> _getRowSpans(
 
   return rowSpans;
 }
+
+class AppWidgetError extends StatelessWidget {
+  const AppWidgetError({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+        child: Card(
+      color: Colors.amber,
+      child: Column(
+        children: const [
+          Icon(
+            Icons.bubble_chart,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.adb_outlined,
+            color: Colors.white,
+          )
+        ],
+      ),
+    ));
+  }
+}
+
+class AppWidgetDraggable extends ConsumerWidget {
+  const AppWidgetDraggable({
+    Key? key,
+    required this.appWidgetData,
+    required this.columnSpan,
+    required this.rowSpan,
+    required this.origin,
+  }) : super(key: key);
+
+  final AppWidgetData appWidgetData;
+  final GlobalElementCoordinates origin;
+  final int columnSpan;
+  final int rowSpan;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final columnCount = ref.watch(homeColumnCountProvider);
+    final rowCount = ref.watch(homeRowCountProvider);
+
+    final appWidgetPreview = ref
+        .watch(appWidgetPreviewProvider(appWidgetData.componentName))
+        .maybeWhen(
+            data: (preview) => preview,
+            orElse: () => Container(color: Colors.amber));
+
+    final widgetId = appWidgetData.appWidgetId;
+    assert(widgetId != null);
+
+    if (widgetId != null) {
+      return LongPressDraggable(
+          data: ElementData(
+            appWidgetData: appWidgetData,
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
+            origin: origin,
+          ),
+          maxSimultaneousDrags: 1,
+          feedback: ConstrainedBox(
+              constraints: BoxConstraints.tight(Size(
+                  _getWidth(context, columnSpan, columnCount),
+                  _getHeight(context, rowSpan, rowCount))),
+              child: appWidgetPreview),
+          child: AppWidget(
+            appWidgetData: appWidgetData,
+          ));
+    } else {
+      return const AppWidgetError();
+    }
+  }
+}
