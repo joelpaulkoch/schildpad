@@ -12,26 +12,29 @@ final dockRowCountProvider = Provider<int>((ref) {
   return 1;
 });
 
-final dockGridTilesProvider = Provider<List<FlexibleGridTile>>((ref) {
+final dockGridTilesProvider =
+    FutureProvider<List<FlexibleGridTile>>((ref) async {
   ref.watch(isarUpdateProvider);
-  final tiles = ref.watch(homeIsarProvider).whenOrNull(data: (tiles) => tiles);
+
   final columnCount = ref.watch(dockColumnCountProvider);
   final rowCount = ref.watch(dockRowCountProvider);
-  final gridTiles = tiles
-      ?.filter()
+
+  final tiles = await ref.watch(homeIsarProvider.future);
+  return tiles
+      .filter()
       .coordinates((c) => c.locationEqualTo(Location.dock))
-      .findAllSync();
-  final flexibleGridTiles = gridTiles?.map((e) => FlexibleGridTile(
-      column: e.coordinates.column,
-      row: e.coordinates.row,
-      columnSpan: e.columnSpan,
-      rowSpan: e.rowSpan,
-      child: GridCell(
-        coordinates: e.coordinates,
-        columnCount: columnCount,
-        rowCount: rowCount,
-      )));
-  return flexibleGridTiles?.toList() ?? List.empty();
+      .findAllSync()
+      .map((e) => FlexibleGridTile(
+          column: e.coordinates.column,
+          row: e.coordinates.row,
+          columnSpan: e.columnSpan,
+          rowSpan: e.rowSpan,
+          child: GridCell(
+            coordinates: e.coordinates,
+            columnCount: columnCount,
+            rowCount: rowCount,
+          )))
+      .toList();
 });
 
 class Dock extends ConsumerWidget {
@@ -43,7 +46,8 @@ class Dock extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dockColumnCount = ref.watch(dockColumnCountProvider);
     final dockRowCount = ref.watch(dockRowCountProvider);
-    final dockGridTiles = ref.watch(dockGridTilesProvider);
+    final dockGridTiles = ref.watch(dockGridTilesProvider).maybeWhen(
+        data: (tiles) => tiles, orElse: () => List<FlexibleGridTile>.empty());
 
     return Container(
         color: Colors.black38,
