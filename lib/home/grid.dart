@@ -69,6 +69,23 @@ class GridElement extends ConsumerWidget {
     final tile = ref.watch(tileProvider(coordinates));
     final tileManager = ref.watch(tileManagerProvider);
 
+    final appData = tile.tileData?.appData;
+    final appWidgetData = tile.tileData?.appWidgetData;
+
+    /* app widget gets special treatment because you cannot drag it inside drag target
+     * when this is fixed this part should be moved inside the DragTarget
+     */
+    if (_isAppWidgetData(tile.tileData)) {
+      if (appWidgetData != null) {
+        assert(appWidgetData.appWidgetId != null);
+        return AppWidgetDraggable(
+            appWidgetData: appWidgetData,
+            columnSpan: tile.columnSpan,
+            rowSpan: tile.rowSpan,
+            origin: coordinates);
+      }
+    }
+
     return DragTarget<ElementData>(onWillAccept: (draggedData) {
       final data = draggedData;
 
@@ -92,9 +109,6 @@ class GridElement extends ConsumerWidget {
             border: Border.all(color: Colors.greenAccent, width: 3));
       }
 
-      final appData = tile.tileData?.appData;
-      final appWidgetData = tile.tileData?.appWidgetData;
-
       final Widget child;
       if (appData != null) {
         child = InstalledAppDraggable(
@@ -104,13 +118,6 @@ class GridElement extends ConsumerWidget {
           ),
           origin: coordinates,
         );
-      } else if (appWidgetData != null) {
-        assert(appWidgetData.appWidgetId != null);
-        child = AppWidgetDraggable(
-            appWidgetData: appWidgetData,
-            columnSpan: tile.columnSpan,
-            rowSpan: tile.rowSpan,
-            origin: coordinates);
       } else {
         child = const SizedBox.expand();
       }
@@ -124,3 +131,6 @@ class GridElement extends ConsumerWidget {
     });
   }
 }
+
+bool _isAppWidgetData(ElementData? data) =>
+    data != null && data.appData == null && data.appWidgetData != null;
