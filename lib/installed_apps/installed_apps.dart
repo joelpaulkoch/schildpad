@@ -65,7 +65,6 @@ class InstalledAppDraggable extends ConsumerWidget {
     Key? key,
     required this.app,
     required this.appIcon,
-    this.showAppName = false,
     this.onDragStarted,
     this.onDragCompleted,
     this.onDraggableCanceled,
@@ -74,7 +73,6 @@ class InstalledAppDraggable extends ConsumerWidget {
   }) : super(key: key);
 
   final AppData app;
-  final bool showAppName;
   final VoidCallback? onDragStarted;
   final VoidCallback? onDragCompleted;
   final Function(Velocity, Offset)? onDraggableCanceled;
@@ -175,9 +173,11 @@ class AppIcon extends ConsumerWidget {
     final appLabel = ref.watch(appLabelProvider(packageName)).maybeWhen(
         data: (label) => label, error: (_, __) => 'error', orElse: () => '...');
     return ApplicationIcon(
-        applicationIconSize: appIconSize,
-        applicationIconImage: appIconImage,
-        applicationLaunchFunction: appLaunch,
-        applicationLabel: appLabel);
+      applicationIconSize: appIconSize,
+      applicationIconImage: appIconImage,
+      applicationLaunchFunction: appLaunch,
+      applicationLabel: appLabel,
+      showApplicationLabel: showAppName,
+    );
   }
 }

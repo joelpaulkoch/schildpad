@@ -115,6 +115,7 @@ class GridElement extends ConsumerWidget {
           app: appData,
           appIcon: AppIcon(
             packageName: appData.packageName,
+            showAppName: false,
           ),
           origin: coordinates,
         );
