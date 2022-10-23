@@ -72,13 +72,14 @@ class OverviewScreen extends ConsumerWidget {
                   ),
                 ],
               )),
-          Expanded(
+          Flexible(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
+                Flexible(
                   child: DeletePageButton(page: currentPage),
                 ),
-                const Expanded(
+                const Flexible(
                   child: ShowAppWidgetsButton(),
                 )
               ],
