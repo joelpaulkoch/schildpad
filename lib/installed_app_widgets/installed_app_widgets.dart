@@ -153,7 +153,10 @@ class AppWidgetGroupHeader extends ConsumerWidget {
         .watch(appIconImageProvider(appPackage))
         .maybeWhen(data: (data) => data, orElse: () => const Icon(Icons.adb));
     return ListTile(
-      leading: appIconImage,
+      leading: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: appIconImage,
+      ),
       title: Text(groupTitle),
     );
   }
@@ -249,14 +252,28 @@ class AppWidgetListTile extends ConsumerWidget {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ConstrainedBox(
-                            constraints:
-                                BoxConstraints.loose(const Size(200, 300)),
-                            child: appWidgetPreview),
-                        Text(
-                          '$widgetColumnSpan x $widgetRowSpan',
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ConstrainedBox(
+                                constraints:
+                                    BoxConstraints.loose(const Size(200, 300)),
+                                child: appWidgetPreview),
+                          ),
+                        ),
+                        Flexible(
+                          child: Align(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AppWidgetDimensionInfo(
+                                columnSpan: widgetColumnSpan,
+                                rowSpan: widgetRowSpan,
+                              ),
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -270,6 +287,72 @@ class AppWidgetListTile extends ConsumerWidget {
             ),
       ],
     );
+  }
+}
+
+class AppWidgetDimensionInfo extends ConsumerWidget {
+  const AppWidgetDimensionInfo({
+    Key? key,
+    required this.columnSpan,
+    required this.rowSpan,
+  }) : super(key: key);
+
+  final int columnSpan;
+  final int rowSpan;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final int columnCount = ref.watch(homeColumnCountProvider);
+    final int rowCount = ref.watch(homeRowCountProvider);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        WidgetDimensionVisualization(
+            columnSpan: columnSpan,
+            rowSpan: rowSpan,
+            columnCount: columnCount,
+            rowCount: rowCount),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            '$columnSpan x $rowSpan',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class WidgetDimensionVisualization extends StatelessWidget {
+  const WidgetDimensionVisualization(
+      {Key? key,
+      required this.columnSpan,
+      required this.rowSpan,
+      required this.columnCount,
+      required this.rowCount})
+      : super(key: key);
+
+  final int columnSpan;
+  final int rowSpan;
+  final int columnCount;
+  final int rowCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      for (var column = 0; column < columnCount; column++)
+        Column(children: [
+          for (var row = 0; row < rowCount; row++)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                  color: (column < columnSpan && row < rowSpan)
+                      ? Theme.of(context).unselectedWidgetColor
+                      : Colors.transparent,
+                  border: Border.all(color: Theme.of(context).dividerColor)),
+              child: const SizedBox(width: 20, height: 20),
+            ),
+        ])
+    ]);
   }
 }
 
