@@ -16,7 +16,7 @@ void main() {
     await isar?.writeTxn(() async {
       await isar.clear();
     });
-    await isar?.close(deleteFromDisk: true);
+    await isar?.close();
   });
   group('navigate', () {
     testWidgets('navigating to appwidgets screen should be possible',
