@@ -49,18 +49,16 @@ class AppWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var appWidgetId = appWidgetData.appWidgetId;
     assert(appWidgetId != null);
-    final nativeWidget = ref.watch(nativeAppWidgetProvider(appWidgetId!));
-    return nativeWidget;
+
+    if (appWidgetId != null) {
+      return ApplicationWidget(
+        appWidgetId: appWidgetId,
+      );
+    } else {
+      return const AppWidgetError();
+    }
   }
 }
-
-final nativeAppWidgetProvider =
-    Provider.family<Widget, int>((ref, appWidgetId) {
-  final widget = ApplicationWidget(
-    appWidgetId: appWidgetId,
-  );
-  return widget;
-});
 
 class AppWidgetsList extends ConsumerWidget {
   const AppWidgetsList({
@@ -69,23 +67,72 @@ class AppWidgetsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apps = ref
-        .watch(appsWithWidgetsProvider)
-        .maybeWhen(data: (appPackages) => appPackages, orElse: () => []);
+    final apps = ref.watch(appsWithWidgetsProvider).maybeWhen(
+        data: (appPackages) => appPackages, orElse: () => List<String>.empty());
+    return AppWidgetExpansionPanelList(
+      apps: apps,
+    );
+  }
+}
+
+class AppWidgetExpansionPanelList extends StatefulWidget {
+  const AppWidgetExpansionPanelList({Key? key, required this.apps})
+      : super(key: key);
+
+  final List<String> apps;
+
+  @override
+  State<AppWidgetExpansionPanelList> createState() =>
+      _AppWidgetExpansionPanelListState();
+}
+
+class _AppWidgetExpansionPanelListState
+    extends State<AppWidgetExpansionPanelList> {
+  int? _lastExpandedIndex;
+  int? _expandedIndex;
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: ExpansionPanelList.radio(
-            children: apps
-                .map((appPackage) => ExpansionPanelRadio(
-                    value: appPackage,
-                    canTapOnHeader: true,
-                    headerBuilder: (BuildContext context, bool isExpanded) =>
-                        AppWidgetGroupHeader(
-                          appPackage: appPackage,
-                        ),
-                    body: AppWidgetGroupListTile(
-                      appPackage: appPackage,
-                    )))
-                .toList()));
+            expansionCallback: (index, isExpanded) {
+              setState(() {
+                if (!isExpanded) {
+                  // this panel was closed and is expanding now
+                  if (index != _lastExpandedIndex) {
+                    // remember the last expanded panel
+                    _lastExpandedIndex = _expandedIndex;
+                    _expandedIndex = index;
+                  }
+                  // or it is called directly afterwards and is the last expanded panel which is closing
+                  else {
+                    // remember the currently expanded panel
+                    _lastExpandedIndex = _expandedIndex;
+                  }
+                } else if (isExpanded) {
+                  // this panel was expanded and is closing now
+                  // no panel should be expanded => reset state
+                  _lastExpandedIndex = null;
+                  _expandedIndex = null;
+                }
+              });
+            },
+            children: [
+          for (var i = 0; i < widget.apps.length; i++)
+            ExpansionPanelRadio(
+              value: widget.apps[i],
+              headerBuilder: (BuildContext context, bool isExpanded) =>
+                  AppWidgetGroupHeader(
+                appPackage: widget.apps[i],
+              ),
+              canTapOnHeader: true,
+              body: (_expandedIndex == i)
+                  ? AppWidgetGroupListTile(
+                      appPackage: widget.apps[i],
+                    )
+                  : const SizedBox.shrink(),
+            )
+        ]));
   }
 }
 

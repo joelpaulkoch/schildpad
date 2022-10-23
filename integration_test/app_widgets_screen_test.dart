@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:isar/isar.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
@@ -11,7 +12,13 @@ import 'robot/app_widgets_screen_robot.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
+  tearDown(() async {
+    final isar = Isar.getInstance();
+    await isar?.writeTxn(() async {
+      await isar.clear();
+    });
+    await isar?.close(deleteFromDisk: true);
+  });
   group('add app widgets to home view', () {
     testWidgets(
         'Long pressing an app widget from installed app widgets view should enable drag and drop to home view',
@@ -49,6 +56,6 @@ void main() {
       // wait to load widget
       await tester.pumpAndSettle(const Duration(seconds: 1));
       expect(find.byType(AppWidget), findsOneWidget);
-    }, skip: true);
+    });
   });
 }
