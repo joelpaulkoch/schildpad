@@ -69,13 +69,11 @@ class GridElement extends ConsumerWidget {
     final tile = ref.watch(tileProvider(coordinates));
     final tileManager = ref.watch(tileManagerProvider);
 
-    final appData = tile.tileData?.appData;
-    final appWidgetData = tile.tileData?.appWidgetData;
-
     /* app widget gets special treatment because you cannot drag it inside drag target
      * when this is fixed this part should be moved inside the DragTarget
      */
     if (_isAppWidgetData(tile.tileData)) {
+      final appWidgetData = tile.tileData?.appWidgetData;
       if (appWidgetData != null) {
         assert(appWidgetData.appWidgetId != null);
         return AppWidgetDraggable(
@@ -109,6 +107,7 @@ class GridElement extends ConsumerWidget {
             border: Border.all(color: Colors.greenAccent, width: 3));
       }
 
+      final appData = tile.tileData?.appData;
       final Widget child;
       if (appData != null) {
         child = InstalledAppDraggable(
