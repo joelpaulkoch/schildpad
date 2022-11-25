@@ -21,7 +21,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMethodCodec
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : FlutterActivity() {
