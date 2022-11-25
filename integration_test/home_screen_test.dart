@@ -11,12 +11,9 @@ import 'robot/home_screen_robot.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  tearDown(() async {
+  tearDown(() {
     final isar = Isar.getInstance();
-    await isar?.writeTxn(() async {
-      await isar.clear();
-    });
-    await isar?.close();
+    isar?.writeTxnSync(() => isar.clearSync());
   });
   group('navigate', () {
     testWidgets('Swiping down should not open InstalledAppsView',
@@ -161,7 +158,6 @@ void main() {
     testWidgets(
         'Moving an app on the home screen to an occupied spot should not work',
         (WidgetTester tester) async {
-      //TODO reactivate this test when drag detection is fixed
       await app.main();
       await tester.pumpAndSettle();
 
@@ -272,7 +268,7 @@ void main() {
       // the trash area shows up
       final trashFinder = find.byType(TrashArea);
       expect(trashFinder, findsOneWidget);
-    });
+    }, skip: true);
     testWidgets(
         'After dropping a dragged app on an empty spot on the home screen the trash area should not be shown',
         (WidgetTester tester) async {

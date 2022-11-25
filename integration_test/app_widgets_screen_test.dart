@@ -12,12 +12,9 @@ import 'robot/app_widgets_screen_robot.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  tearDown(() async {
+  tearDown(() {
     final isar = Isar.getInstance();
-    await isar?.writeTxn(() async {
-      await isar.clear();
-    });
-    await isar?.close();
+    isar?.writeTxnSync(() => isar.clearSync());
   });
   group('add app widgets to home view', () {
     testWidgets(

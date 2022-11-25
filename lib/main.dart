@@ -23,6 +23,7 @@ Future<void> main() async {
   ]);
   SystemChrome.setSystemUIOverlayStyle(schildpadSystemUiOverlayStyle);
   runApp(ProviderScope(child: SchildpadApp()));
+  await Isar.getInstance()?.close();
 }
 
 class SchildpadApp extends StatelessWidget {

@@ -11,12 +11,9 @@ import 'robot/overview_screen_robot.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  tearDown(() async {
+  tearDown(() {
     final isar = Isar.getInstance();
-    await isar?.writeTxn(() async {
-      await isar.clear();
-    });
-    await isar?.close();
+    isar?.writeTxnSync(() => isar.clearSync());
   });
   group('navigate', () {
     testWidgets('navigating to appwidgets screen should be possible',

@@ -39,7 +39,7 @@ const PageCounterSchema = CollectionSchema(
   getId: _pageCounterGetId,
   getLinks: _pageCounterGetLinks,
   attach: _pageCounterAttach,
-  version: '3.0.2',
+  version: '3.0.5',
 );
 
 int _pageCounterEstimateSize(
