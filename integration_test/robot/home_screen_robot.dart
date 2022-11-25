@@ -70,7 +70,7 @@ class HomeScreenRobot {
     await longPressDragGesture.moveBy(smallOffset);
     await tester.pumpAndSettle();
 
-    final dropOffset = _getHomeGridCellPosition(column, row);
+    final dropOffset = _getHomeGridCellCenter(column, row);
     await longPressDragGesture.moveTo(dropOffset);
     await longPressDragGesture.up();
     await tester.pumpAndSettle();
@@ -93,6 +93,7 @@ class HomeScreenRobot {
 
     final dropOffset = _getDockGridCellPosition(column);
     await longPressDragGesture.moveTo(dropOffset);
+    await tester.pumpAndSettle();
     await longPressDragGesture.up();
     await tester.pumpAndSettle();
   }
@@ -105,8 +106,9 @@ class HomeScreenRobot {
     await longPressDragGesture.moveBy(smallOffset);
     await tester.pumpAndSettle();
 
-    final dropOffset = _getHomeGridCellPosition(column, row);
+    final dropOffset = _getHomeGridCellCenter(column, row);
     await longPressDragGesture.moveTo(dropOffset);
+    await tester.pumpAndSettle();
     await longPressDragGesture.up();
     await tester.pumpAndSettle();
   }
@@ -129,14 +131,14 @@ class HomeScreenRobot {
     await tester.pumpAndSettle();
   }
 
-  Offset _getHomeGridCellPosition(int column, int row) {
+  Offset _getHomeGridCellCenter(int column, int row) {
     final homeGridFinder = find.byType(HomePage);
     expect(homeGridFinder, findsOneWidget);
     final homeGridOrigin = tester.getTopLeft(homeGridFinder);
     final homeGridSize = tester.getSize(homeGridFinder);
 
-    final xPos = column / homeGridColumns * homeGridSize.width;
-    final yPos = row / homeGridRows * homeGridSize.height;
+    final xPos = (0.5 + column) / homeGridColumns * homeGridSize.width;
+    final yPos = (0.5 + row) / homeGridRows * homeGridSize.height;
     return homeGridOrigin + Offset(xPos, yPos);
   }
 
