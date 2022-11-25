@@ -56,32 +56,33 @@ class ApplicationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: IconButton(
-                  iconSize: applicationIconSize,
-                  padding: EdgeInsets.zero,
-                  icon: SizedBox(
-                    width: applicationIconSize,
-                    height: applicationIconSize,
-                    child: applicationIconImage,
-                  ),
-                  onPressed: applicationLaunchFunction),
-            ),
-            if (showApplicationLabel)
-              Text(
-                applicationLabel,
-                style: Theme.of(context).textTheme.labelMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: IconButton(
+              iconSize: applicationIconSize,
+              padding: EdgeInsets.zero,
+              icon: SizedBox(
+                width: applicationIconSize,
+                height: applicationIconSize,
+                child: applicationIconImage,
               ),
-          ],
-        ));
+              onPressed: applicationLaunchFunction),
+        ),
+        if (showApplicationLabel)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              applicationLabel,
+              style: Theme.of(context).textTheme.labelMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+      ],
+    );
   }
 }
 

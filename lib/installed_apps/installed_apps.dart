@@ -103,7 +103,7 @@ class InstalledAppDraggable extends ConsumerWidget {
       onDragCompleted: onDragCompleted,
       onDraggableCanceled: onDraggableCanceled,
       onDragEnd: onDragEnd,
-      child: Material(type: MaterialType.transparency, child: appIcon),
+      child: appIcon,
     );
   }
 }

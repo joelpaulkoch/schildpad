@@ -122,11 +122,10 @@ class GridElement extends ConsumerWidget {
         child = const SizedBox.expand();
       }
 
-      return OverflowBox(
-        child: Container(
-          foregroundDecoration: boxDecoration,
-          child: child,
-        ),
+      return Container(
+        alignment: Alignment.center,
+        foregroundDecoration: boxDecoration,
+        child: child,
       );
     });
   }
