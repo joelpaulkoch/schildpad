@@ -3,6 +3,7 @@ package app.schildpad.schildpad
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
@@ -20,6 +21,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMethodCodec
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
+import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : FlutterActivity() {
@@ -165,7 +167,7 @@ class MainActivity : FlutterActivity() {
                 ("createWidget") -> {
                     val args = call.arguments as List<String>
                     val componentName = args.first()
-                    val widgetId = createAndBindWidget(componentName)
+                    val widgetId = createWidget(componentName)
                     if (widgetId != null) result.success(widgetId) else result.error(
                         "FAILED",
                         "No widget id",
@@ -295,29 +297,66 @@ class MainActivity : FlutterActivity() {
         )
     }
 
-    private fun createAndBindWidget(componentName: String): Int? {
-
+    private fun createWidget(componentName: String): Int? {
         val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
 
-        val provider =
+        val appWidgetProvider =
             appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
                 ?: return null
 
         val appWidgetId = appWidgetHost.allocateAppWidgetId()
-        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, provider.provider)
+        val bindingAllowed =
+            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, appWidgetProvider.provider)
 
-        if (!allowed) {
-            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
-                // This is the options bundle described in the preceding section.
-                // putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options)
+        if (!bindingAllowed) {
+            val successfulBinding = bindWidget(appWidgetId, provider = appWidgetProvider.provider)
+            if (!successfulBinding) {
+                appWidgetHost.deleteAppWidgetId(appWidgetId)
+                return null
             }
-            val REQUEST_BIND_APPWIDGET = 1
-            startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
         }
-        //TODO test binding
+
+        val configuringEnabled = appWidgetProvider.configure != null
+        if (configuringEnabled) {
+            val successfulConfiguration = configureWidget(
+                appWidgetId,
+                configureComponentName = appWidgetProvider.configure,
+                provider = appWidgetProvider.provider
+            )
+            if (!successfulConfiguration) {
+                appWidgetHost.deleteAppWidgetId(appWidgetId)
+                return null
+            }
+        }
         return appWidgetId
+    }
+
+    private fun bindWidget(appWidgetId: Int, provider: ComponentName): Boolean {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider)
+            // This is the options bundle described in the preceding section.
+            // putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options)
+        }
+        val REQUEST_BIND_APPWIDGET = 1
+        startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
+        //TODO test binding
+        return true
+    }
+
+    private fun configureWidget(
+        appWidgetId: Int,
+        configureComponentName: ComponentName,
+        provider: ComponentName
+    ): Boolean {
+        val configureIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
+            component = configureComponentName
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider)
+        }
+        startActivityForResult(configureIntent, appWidgetId)
+        //TODO test configuration
+        return true
     }
 
     private fun deleteWidget(widgetId: Int) {
