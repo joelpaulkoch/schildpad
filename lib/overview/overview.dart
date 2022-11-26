@@ -39,7 +39,7 @@ class DeletePageButton extends ConsumerWidget {
     return IconButton(
         onPressed: onOuterPage
             ? () async {
-                await tileManager.removeAll();
+                await tileManager.removeAllTilesFromPage(page);
                 if (page < 0) {
                   await pageCounterManager.removeLeftPage();
                   ref.read(currentPageProvider.notifier).state++;
