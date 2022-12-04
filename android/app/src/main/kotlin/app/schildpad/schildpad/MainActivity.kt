@@ -1,11 +1,13 @@
 package app.schildpad.schildpad
 
+import android.app.Activity
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.os.Build
@@ -22,6 +24,7 @@ import io.flutter.plugin.common.StandardMethodCodec
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
 
+enum class CreateWidgetState { ALLOCATE, BIND, CONFIGURE }
 
 class MainActivity : FlutterActivity() {
     private val APPS_CHANNEL = "schildpad.schildpad.app/apps"
@@ -35,6 +38,13 @@ class MainActivity : FlutterActivity() {
             appWidgetHost
         )
     }
+    private var createWidgetResult: MethodChannel.Result? = null
+    private var createWidgetComponent: String? = null
+    private var createWidgetState = CreateWidgetState.ALLOCATE
+    private var createWidgetId: Int? = null
+    private val REQUEST_BIND_APPWIDGET = 1
+    private val REQUEST_CONFIGURE_APPWIDGET = 2
+
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
@@ -95,9 +105,7 @@ class MainActivity : FlutterActivity() {
                     appsUpdateBroadcastReceiver.listener = {
                     }
                 }
-
             }
-
         )
 
         MethodChannel(
@@ -166,12 +174,11 @@ class MainActivity : FlutterActivity() {
                 ("createWidget") -> {
                     val args = call.arguments as List<String>
                     val componentName = args.first()
-                    val widgetId = createWidget(componentName)
-                    if (widgetId != null) result.success(widgetId) else result.error(
-                        "FAILED",
-                        "No widget id",
-                        "Could neither find existing widget corresponding to $componentName nor create a new one"
-                    )
+                    createWidgetResult = result
+                    createWidgetComponent = componentName
+                    createWidgetState = CreateWidgetState.ALLOCATE
+                    createWidgetId = null
+                    createWidget(componentName)
                 }
 
                 ("deleteWidget") -> {
@@ -296,67 +303,115 @@ class MainActivity : FlutterActivity() {
         )
     }
 
-    private fun createWidget(componentName: String): Int? {
+    private fun createWidget(componentName: String) {
+
         val appWidgetManager = getSystemService(Context.APPWIDGET_SERVICE) as AppWidgetManager
 
         val appWidgetProvider =
             appWidgetManager.installedProviders.find { p: AppWidgetProviderInfo? -> p?.provider?.className == componentName }
-                ?: return null
 
-        val appWidgetId = appWidgetHost.allocateAppWidgetId()
-        val bindingAllowed =
-            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, appWidgetProvider.provider)
+        if (appWidgetProvider != null) {
+            when (createWidgetState) {
+                CreateWidgetState.ALLOCATE -> {
+                    createWidgetId = appWidgetHost.allocateAppWidgetId()
+                    createWidgetState = CreateWidgetState.BIND
+                    createWidget(componentName)
+                }
+                CreateWidgetState.BIND -> {
+                    val widgetId = createWidgetId
+                    if (widgetId != null) {
+                        val bindSuccessful = appWidgetManager.bindAppWidgetIdIfAllowed(
+                            widgetId,
+                            appWidgetProvider.provider
+                        )
 
-        if (!bindingAllowed) {
-            val successfulBinding = bindWidget(appWidgetId, provider = appWidgetProvider.provider)
-            if (!successfulBinding) {
-                appWidgetHost.deleteAppWidgetId(appWidgetId)
-                return null
+                        if (!bindSuccessful) {
+                            bindWidget(
+                                widgetId,
+                                appWidgetProvider.provider,
+                            )
+                        } else {
+                            createWidgetState = CreateWidgetState.CONFIGURE
+                            createWidget(componentName)
+                        }
+                    }
+                }
+                CreateWidgetState.CONFIGURE -> {
+                    val configureComponent: ComponentName? = appWidgetProvider.configure
+                    val widgetId = createWidgetId
+                    if (configureComponent == null) {
+                        createWidgetResult?.success(createWidgetId)
+                    } else if (widgetId != null) {
+                        configureWidget(widgetId, appWidgetProvider.provider, configureComponent)
+                    }
+                }
             }
-        }
 
-        val configuringEnabled = appWidgetProvider.configure != null
-        if (configuringEnabled) {
-            val successfulConfiguration = configureWidget(
-                appWidgetId,
-                configureComponentName = appWidgetProvider.configure,
-                provider = appWidgetProvider.provider
+        } else {
+            createWidgetResult?.error(
+                "FAILED",
+                "No widget",
+                "Unable to find widget corresponding to $componentName"
             )
-            if (!successfulConfiguration) {
-                appWidgetHost.deleteAppWidgetId(appWidgetId)
-                return null
-            }
         }
-        return appWidgetId
     }
 
-    private fun bindWidget(appWidgetId: Int, provider: ComponentName): Boolean {
+    private fun bindWidget(
+        appWidgetId: Int,
+        provider: ComponentName
+    ) {
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider)
-            // This is the options bundle described in the preceding section.
             // putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options)
         }
-        val REQUEST_BIND_APPWIDGET = 1
         startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
-        //TODO test binding
-        return true
     }
 
     private fun configureWidget(
         appWidgetId: Int,
-        configureComponentName: ComponentName,
-        provider: ComponentName
-    ): Boolean {
+        provider: ComponentName,
+        configureComponent: ComponentName?,
+    ) {
         val configureIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
-            component = configureComponentName
+            component = configureComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider)
         }
-        startActivityForResult(configureIntent, appWidgetId)
-        //TODO test configuration
-        return true
+        startActivityForResult(configureIntent, REQUEST_CONFIGURE_APPWIDGET)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_BIND_APPWIDGET -> {
+                val bindingSuccessful = resultCode == 0
+                val configureComponent = createWidgetComponent
+                if (bindingSuccessful && configureComponent != null) {
+                    createWidget(configureComponent)
+                } else {
+                    createWidgetId?.let { appWidgetHost.deleteAppWidgetId(it) }
+                    createWidgetResult?.error("FAILED", "No binding", "Unable to bind widget")
+                }
+            }
+            REQUEST_CONFIGURE_APPWIDGET -> {
+                val configurationSuccessful = resultCode == Activity.RESULT_OK
+                if (configurationSuccessful && createWidgetId != null) {
+                    createWidgetResult?.success(createWidgetId)
+                } else {
+                    createWidgetId?.let {
+                        appWidgetHost.deleteAppWidgetId(it)
+                    }
+                    createWidgetResult?.error(
+                        "FAILED",
+                        "Configuration failed",
+                        "Could not configure widget"
+                    )
+                }
+            }
+        }
+    }
+
 
     private fun deleteWidget(widgetId: Int) {
         appWidgetHost.deleteAppWidgetId(widgetId)
