@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/model/tile.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class AppWidgetsScreenRobot {
   const AppWidgetsScreenRobot(this.tester,
@@ -13,9 +12,10 @@ class AppWidgetsScreenRobot {
   final int homeGridRows;
 
   Future<void> addAppWidget(int column, int row) async {
-    final appWidgetGroupFinder = find.byType(AppWidgetGroupHeader);
-    expect(appWidgetGroupFinder, findsWidgets);
-    await tester.tap(appWidgetGroupFinder.first);
+    // use clock widget for testing because there is no configuration
+    final appWidgetGroupFinder = find.text('Clock widgets');
+    expect(appWidgetGroupFinder, findsOneWidget);
+    await tester.tap(appWidgetGroupFinder);
     await tester.pumpAndSettle();
     final appWidgetFinder =
         find.byType(LongPressDraggable<ElementData>).hitTestable().first;
