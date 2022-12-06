@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/settings.dart';
@@ -52,7 +53,7 @@ class OverviewScreen extends ConsumerWidget {
                   ),
                   Expanded(
                     child: GestureDetector(
-                        onTap: () => context.pop(),
+                        onTap: () => context.go(HomeScreen.routeName),
                         child: AspectRatio(
                             aspectRatio: _approxHomeViewAspectRatio(
                                 context, homeRowCount, totalRows),
