@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/home.dart';
+import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/installed_apps/installed_apps.dart';
@@ -244,8 +245,7 @@ class AppWidgetListTile extends ConsumerWidget {
                   child: appWidgetPreview),
               childWhenDragging: const SizedBox.shrink(),
               onDragStarted: () {
-                context.pop();
-                context.pop();
+                context.go(HomeScreen.routeName);
               },
               child: Card(
                 color: Colors.transparent,
