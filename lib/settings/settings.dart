@@ -47,7 +47,7 @@ class ResetListTile extends ConsumerWidget {
                       TextButton(
                           onPressed: Navigator.of(context).pop,
                           child: Text(AppLocalizations.of(context)!
-                              .resetConfirmationDialogText)),
+                              .resetConfirmationDialogCancelButton)),
                       const ResetButton()
                     ],
                   ));
