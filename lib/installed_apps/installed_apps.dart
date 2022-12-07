@@ -1,5 +1,3 @@
-import 'dart:developer' as dev;
-
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,7 +115,6 @@ final _appsUpdateStreamProvider = StreamProvider<int>((ref) async* {
   final stream = getApplicationsUpdateStream();
 
   await for (final counter in stream) {
-    dev.log('update $counter');
     yield counter;
   }
 });
