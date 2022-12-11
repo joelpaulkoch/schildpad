@@ -40,20 +40,27 @@ final homeTilesProvider =
       .toList();
 });
 
-final homePageControllerProvider = Provider<PageController>((ref) {
+final homePageControllerProvider = Provider<PageController?>((ref) {
   final leftPagesCount = ref.watch(leftPagesProvider);
   final currentPage = ref.watch(currentPageProvider);
+  final pagesIsarLoaded = ref
+      .watch(pagesIsarProvider)
+      .maybeMap(data: (_) => true, orElse: () => false);
 
-  final pageController = PageController(
-      initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
-  return pageController;
+  if (pagesIsarLoaded) {
+    final pageController = PageController(
+        initialPage: schildpadToPageViewIndex(currentPage, leftPagesCount));
+    return pageController;
+  } else {
+    return null;
+  }
 });
 
 class HomePageView extends ConsumerWidget {
   const HomePageView({Key? key, required this.pageController})
       : super(key: key);
 
-  final PageController pageController;
+  final PageController? pageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,17 +69,24 @@ class HomePageView extends ConsumerWidget {
     final columnCount = ref.watch(homeColumnCountProvider);
     final rowCount = ref.watch(homeRowCountProvider);
 
-    return PageView(
-        controller: pageController,
-        onPageChanged: (page) {
-          final schildpadPage = pageViewToSchildpadIndex(page, leftPagesCount);
-          ref.read(currentPageProvider.notifier).state = schildpadPage;
-        },
-        physics: const _HomePageViewScrollPhysics(),
-        children: List.generate(
-            pageCount,
-            (index) => HomePage(pageViewToSchildpadIndex(index, leftPagesCount),
-                columnCount, rowCount)));
+    if (pageController != null) {
+      return PageView(
+          controller: pageController,
+          onPageChanged: (page) {
+            final schildpadPage =
+                pageViewToSchildpadIndex(page, leftPagesCount);
+            ref.read(currentPageProvider.notifier).state = schildpadPage;
+          },
+          physics: const _HomePageViewScrollPhysics(),
+          children: List.generate(
+              pageCount,
+              (index) => HomePage(
+                  pageViewToSchildpadIndex(index, leftPagesCount),
+                  columnCount,
+                  rowCount)));
+    } else {
+      return const SizedBox.expand();
+    }
   }
 }
 
