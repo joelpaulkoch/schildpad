@@ -83,15 +83,14 @@ void main() {
       final homeScreenFinder = find.byType(HomeScreen);
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.openAppDrawer();
 
       // Given:
-      // I am on the home screen and the app drawer is open
+      // I am on the home screen
       expect(homeScreenFinder, findsOneWidget);
       expect(find.byType(AppsView), findsOneWidget);
 
       // When:
-      // I click on the settings button
+      // I open the app drawer and click on the settings button
       await homeScreenRobot.openSettings();
 
       // Then:

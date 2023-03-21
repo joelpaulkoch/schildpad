@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/settings/app_info.dart';
+import 'package:schildpad/settings/layout_settings_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,6 +22,21 @@ class SettingsIconButton extends StatelessWidget {
       ),
       onPressed: () => context.push(SettingsScreen.routeName),
       splashRadius: 20,
+    );
+  }
+}
+
+class LayoutListTile extends ConsumerWidget {
+  const LayoutListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: const Icon(Icons.grid_view_rounded),
+      title: Text(AppLocalizations.of(context)!.layoutListTile),
+      onTap: () => context.push(LayoutSettingsScreen.routeName),
     );
   }
 }

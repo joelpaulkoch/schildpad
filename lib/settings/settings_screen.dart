@@ -17,6 +17,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: const [
+          LayoutListTile(),
           ResetListTile(),
           ContactListTile(),
           SchildpadAboutListTile()

@@ -11,6 +11,10 @@
     "@contactListTile": {
       "description": "Text on contact list tile"
     },              
+    "layoutListTile": "Layout",
+    "@layoutListTile": {
+      "description": "Text on layout list tile"
+    },
     "resetListTile": "Reset",
     "@resetListTile": {
       "description": "Text on reset list tile"

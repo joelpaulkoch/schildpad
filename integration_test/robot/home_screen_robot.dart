@@ -28,6 +28,8 @@ class HomeScreenRobot {
   }
 
   Future<void> openSettings() async {
+    await openAppDrawer();
+
     final settingsButtonFinder = find.byType(SettingsIconButton);
     expect(settingsButtonFinder, findsOneWidget);
 
