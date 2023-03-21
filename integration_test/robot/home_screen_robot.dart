@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:schildpad/app_drawer/app_drawer.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/installed_apps.dart';
 
 class HomeScreenRobot {
   HomeScreenRobot(this.tester,
@@ -15,19 +15,19 @@ class HomeScreenRobot {
   final int homeGridColumns;
   final int homeGridRows;
 
-  Future<void> openAppList() async {
+  Future<void> openAppDrawer() async {
     final homeScreenFinder = find.byType(HomeScreen);
     expect(homeScreenFinder, findsOneWidget);
     await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
         warnIfMissed: false);
     await tester.pumpAndSettle();
 
-    final installedAppsViewFinder = find.byType(InstalledAppsView);
+    final installedAppsViewFinder = find.byType(AppsView);
     expect(installedAppsViewFinder, findsOneWidget);
   }
 
   Future<void> dragAndDropApp({Offset? dragOffset}) async {
-    final installedAppFinder = find.byType(InstalledAppDraggable).first;
+    final installedAppFinder = find.byType(AppDraggable).first;
     expect(installedAppFinder, findsOneWidget);
 
     final offset = dragOffset ?? const Offset(100, 100);
@@ -56,10 +56,9 @@ class HomeScreenRobot {
   }
 
   Future<void> addAppToHome(int column, int row) async {
-    await openAppList();
+    await openAppDrawer();
 
-    final installedAppFinder =
-        find.byType(InstalledAppDraggable).hitTestable().first;
+    final installedAppFinder = find.byType(AppDraggable).hitTestable().first;
     expect(installedAppFinder, findsOneWidget);
 
     const smallOffset = Offset(100, 100);
@@ -77,10 +76,9 @@ class HomeScreenRobot {
   }
 
   Future<void> addAppToDock(int column) async {
-    await openAppList();
+    await openAppDrawer();
 
-    final installedAppFinder =
-        find.byType(InstalledAppDraggable).hitTestable().first;
+    final installedAppFinder = find.byType(AppDraggable).hitTestable().first;
     expect(installedAppFinder, findsOneWidget);
 
     const smallOffset = Offset(100, 100);

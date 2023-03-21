@@ -2,11 +2,11 @@ import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schildpad/app_drawer/app_drawer.dart';
 import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/drag_detector.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -53,7 +53,7 @@ class HomeScreen extends ConsumerWidget {
                       }
                       return false;
                     },
-                    child: const InstalledAppsView()));
+                    child: const AppsView()));
           }),
           backLayer: DragDetector(
             child: Builder(builder: (context) {

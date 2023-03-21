@@ -1,8 +1,8 @@
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schildpad/app_drawer/installed_applications.dart';
 import 'package:schildpad/home/model/tile.dart';
-import 'package:schildpad/installed_apps/installed_applications.dart';
 import 'package:schildpad/settings/settings.dart';
 
 final _columnCountProvider = Provider<int>((ref) {
@@ -12,8 +12,8 @@ final _columnCountProvider = Provider<int>((ref) {
 const double _gridPadding = 16;
 const double _appIconSize = 60;
 
-class InstalledAppsView extends StatelessWidget {
-  const InstalledAppsView({Key? key}) : super(key: key);
+class AppsView extends StatelessWidget {
+  const AppsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +23,13 @@ class InstalledAppsView extends StatelessWidget {
           trailing: SettingsIconButton(),
         ),
       ),
-      Expanded(child: InstalledAppsGrid())
+      Expanded(child: AppDrawerGrid())
     ]);
   }
 }
 
-class InstalledAppsGrid extends ConsumerWidget {
-  const InstalledAppsGrid({
+class AppDrawerGrid extends ConsumerWidget {
+  const AppDrawerGrid({
     Key? key,
   }) : super(key: key);
 
@@ -43,7 +43,7 @@ class InstalledAppsGrid extends ConsumerWidget {
         crossAxisCount: columnCount,
         children: appPackages.maybeWhen(
             data: (appsList) => appsList
-                .map((packageName) => InstalledAppDraggable(
+                .map((packageName) => AppDraggable(
                       app: AppData(packageName: packageName),
                       appIcon: AppIcon(
                         packageName: packageName,
@@ -58,8 +58,8 @@ class InstalledAppsGrid extends ConsumerWidget {
   }
 }
 
-class InstalledAppDraggable extends ConsumerWidget {
-  const InstalledAppDraggable({
+class AppDraggable extends ConsumerWidget {
+  const AppDraggable({
     Key? key,
     required this.app,
     required this.appIcon,

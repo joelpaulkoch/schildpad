@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
+import 'package:schildpad/app_drawer/app_drawer.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_apps/installed_apps.dart';
 import 'package:schildpad/main.dart' as app;
 import 'package:schildpad/overview/overview_screen.dart';
 
@@ -16,7 +16,7 @@ void main() {
     isar?.writeTxnSync(() => isar.clearSync());
   });
   group('navigate', () {
-    testWidgets('Swiping down should not open InstalledAppsView',
+    testWidgets('Swiping down should not open app drawer',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -33,10 +33,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // InstalledAppsView is not opened
-      expect(find.byType(InstalledAppsView).hitTestable(), findsNothing);
+      // app drawer is not opened
+      expect(find.byType(AppsView).hitTestable(), findsNothing);
     });
-    testWidgets('Swiping up should open InstalledAppsView',
+    testWidgets('Swiping up should open app drawer',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -53,7 +53,7 @@ void main() {
 
       // Then:
       // A list of all installed apps is shown
-      expect(find.byType(InstalledAppsView), findsOneWidget);
+      expect(find.byType(AppsView), findsOneWidget);
     });
     testWidgets('Long press on HomeScreen should open OverviewScreen',
         (WidgetTester tester) async {
@@ -90,7 +90,7 @@ void main() {
       // I drop an app on it
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.openAppList();
+      await homeScreenRobot.openAppDrawer();
       await homeScreenRobot.dragAndDropApp();
 
       // Then:
@@ -130,7 +130,7 @@ void main() {
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
       final firstPosition = tester.getCenter(testAppFinder);
 
@@ -170,7 +170,7 @@ void main() {
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
       await homeScreenRobot.addAppToHome(0, 1);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
       final firstTestAppPosition = tester.getCenter(testAppFinder.first);
@@ -204,7 +204,7 @@ void main() {
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -213,7 +213,7 @@ void main() {
 
       // Then:
       // it is removed from the home screen
-      final newTestAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final newTestAppFinder = find.byType(AppDraggable).hitTestable();
       expect(newTestAppFinder, findsNothing);
     });
   });
@@ -232,7 +232,7 @@ void main() {
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
@@ -245,7 +245,7 @@ void main() {
       expect(trashFinder, findsOneWidget);
     });
     testWidgets(
-        'Dragging an app from the installed apps view to the home screen should cause the trash area to show up',
+        'Dragging an app from the app drawer to the home screen should cause the trash area to show up',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -259,8 +259,8 @@ void main() {
       // I drag an app on it
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.openAppList();
-      final appFinder = find.byType(InstalledAppDraggable).hitTestable().first;
+      await homeScreenRobot.openAppDrawer();
+      final appFinder = find.byType(AppDraggable).hitTestable().first;
       expect(appFinder, findsOneWidget);
       await homeScreenRobot.dragAppBy(appFinder, const Offset(200, 200));
 
@@ -284,7 +284,7 @@ void main() {
       // I drop an app on it
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.openAppList();
+      await homeScreenRobot.openAppDrawer();
       await homeScreenRobot.dragAndDropApp();
 
       // Then:
@@ -307,7 +307,7 @@ void main() {
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
       await homeScreenRobot.addAppToHome(0, 1);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsNWidgets(2));
 
       // When:
@@ -333,7 +333,7 @@ void main() {
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
       await homeScreenRobot.addAppToHome(0, 0);
-      final testAppFinder = find.byType(InstalledAppDraggable).hitTestable();
+      final testAppFinder = find.byType(AppDraggable).hitTestable();
       expect(testAppFinder, findsOneWidget);
 
       // When:
