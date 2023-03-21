@@ -6,6 +6,7 @@ workflows:
       groups:
         - google_play
         - keystore_credentials
+        - github
       flutter: stable
       vars:
         PACKAGE_NAME: "app.schildpad.schildpad"
@@ -39,9 +40,18 @@ workflows:
         script: |
           BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))
           flutter build appbundle --release --build-number=$BUILD_NUMBER
+      - name: Build universal apk
+        script: |
+          android-app-bundle build-universal-apk \
+            --bundle 'build/**/outputs/**/*.aab' \
+            --ks $CM_KEYSTORE_PATH \
+            --ks-pass $CM_KEYSTORE_PASSWORD \
+            --ks-key-alias $CM_KEY_ALIAS \
+            --key-pass $CM_KEY_PASSWORD
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
+      - build/**/outputs/**/*.apk
     publishing:
       email:
         recipients:
@@ -50,3 +60,22 @@ workflows:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
         submit_as_draft: true
+      scripts:
+        - name: Publish to GitHub
+          script: |
+            #!/usr/bin/env zsh
+            
+            # Publish only for tag builds
+            if [ -z ${CM_TAG} ]; then
+              echo "Not a tag build, will not publish GitHub release"
+              exit 0
+            fi
+            
+            cp \
+              build/app/outputs/bundle/release/app-release-universal.apk \
+              build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
+            
+            gh release create "${CM_TAG}" \
+              --draft \
+              --title "Schildpad Launcher ${CM_TAG}" \
+              build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
