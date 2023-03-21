@@ -6,6 +6,7 @@ import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/main.dart' as app;
 import 'package:schildpad/overview/overview_screen.dart';
+import 'package:schildpad/settings/settings_screen.dart';
 
 import 'robot/home_screen_robot.dart';
 
@@ -73,6 +74,29 @@ void main() {
       // Then:
       // OverviewScreen is opened
       expect(find.byType(OverviewScreen), findsOneWidget);
+    });
+    testWidgets('Settings button in app drawer should open SettingsScreen',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      final homeScreenFinder = find.byType(HomeScreen);
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      await homeScreenRobot.openAppDrawer();
+
+      // Given:
+      // I am on the home screen and the app drawer is open
+      expect(homeScreenFinder, findsOneWidget);
+      expect(find.byType(AppsView), findsOneWidget);
+
+      // When:
+      // I click on the settings button
+      await homeScreenRobot.openSettings();
+
+      // Then:
+      // it is opened
+      expect(find.byType(SettingsScreen), findsOneWidget);
     });
   });
   group('move apps', () {

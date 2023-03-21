@@ -4,6 +4,7 @@ import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
+import 'package:schildpad/settings/settings.dart';
 
 class HomeScreenRobot {
   HomeScreenRobot(this.tester,
@@ -24,6 +25,14 @@ class HomeScreenRobot {
 
     final installedAppsViewFinder = find.byType(AppsView);
     expect(installedAppsViewFinder, findsOneWidget);
+  }
+
+  Future<void> openSettings() async {
+    final settingsButtonFinder = find.byType(SettingsIconButton);
+    expect(settingsButtonFinder, findsOneWidget);
+
+    await tester.tap(settingsButtonFinder);
+    await tester.pumpAndSettle();
   }
 
   Future<void> dragAndDropApp({Offset? dragOffset}) async {
