@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schildpad/app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/home/tile.dart';
-import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 
 final showTrashProvider = StateProvider<bool>((ref) {
   return false;

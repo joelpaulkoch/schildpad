@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
+import 'package:schildpad/app_widgets/app_widgets.dart';
 import 'package:schildpad/settings/settings.dart';
 import 'package:schildpad/theme/theme.dart';
 

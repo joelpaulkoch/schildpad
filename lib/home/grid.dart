@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/app_drawer/app_drawer.dart';
+import 'package:schildpad/app_widgets/app_widgets.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/home/trash.dart';
-import 'package:schildpad/installed_app_widgets/installed_app_widgets.dart';
 
 class Grid extends StatelessWidget {
   const Grid(

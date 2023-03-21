@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:schildpad/app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/model/tile.dart';
-import 'package:schildpad/installed_app_widgets/installed_application_widgets.dart';
 import 'package:schildpad/main.dart';
 
 final isarTilesProvider = FutureProvider<IsarCollection<Tile>>((ref) async {

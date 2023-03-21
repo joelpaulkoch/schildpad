@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
+import 'package:schildpad/app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/home/home_screen.dart';
-import 'package:schildpad/installed_app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/main.dart' as app;
 import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/overview/overview_screen.dart';
