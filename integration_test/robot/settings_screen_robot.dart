@@ -16,9 +16,24 @@ class SettingsScreenRobot {
   }
 
   Future<void> setAppGridLayout(int newColumns, int newRows) async {
-    final appGridListTileFinder = find.byType(AppGridHeadingListTile);
-    expect(appGridListTileFinder, findsOneWidget);
+    // columns
+    final columnsListTileFinder = find.byType(AppGridColumnsListTile);
+    expect(columnsListTileFinder, findsOneWidget);
 
-    await tester.tap(appGridListTileFinder);
+    final columnsSwitchFinder = find.descendant(
+        of: columnsListTileFinder, matching: find.text('$newColumns'));
+    expect(columnsSwitchFinder, findsOneWidget);
+
+    await tester.tap(columnsSwitchFinder);
+
+    // rows
+    final rowsListTileFinder = find.byType(AppGridRowsListTile);
+    expect(rowsListTileFinder, findsOneWidget);
+
+    final rowsSwitchFinder = find.descendant(
+        of: rowsListTileFinder, matching: find.text('$newRows'));
+    expect(rowsSwitchFinder, findsOneWidget);
+
+    await tester.tap(rowsSwitchFinder);
   }
 }

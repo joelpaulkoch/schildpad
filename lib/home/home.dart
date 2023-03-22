@@ -6,12 +6,15 @@ import 'package:schildpad/home/grid.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/tile.dart';
+import 'package:schildpad/settings/layout_settings.dart';
 
 final homeColumnCountProvider = Provider<int>((ref) {
-  return 4;
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.appGridColumns;
 });
 final homeRowCountProvider = Provider<int>((ref) {
-  return 5;
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.appGridRows;
 });
 
 final homeTilesProvider =
