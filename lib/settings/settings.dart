@@ -133,12 +133,18 @@ class SchildpadAboutListTile extends ConsumerWidget {
     final schildpadVersion = ref.watch(schildpadVersionProvider);
     final schildpadAppName = ref.watch(schildpadAppNameProvider);
     return AboutListTile(
-        icon: const Icon(Icons.info_outline_rounded),
-        applicationName: schildpadAppName,
-        applicationIcon: SizedBox(
-            width: IconTheme.of(context).size,
-            height: IconTheme.of(context).size,
-            child: schildpadLogo),
-        applicationVersion: schildpadVersion);
+      icon: const Icon(Icons.info_outline_rounded),
+      applicationName: schildpadAppName,
+      applicationIcon: SizedBox(
+          width: IconTheme.of(context).size,
+          height: IconTheme.of(context).size,
+          child: schildpadLogo),
+      applicationVersion: schildpadVersion,
+      aboutBoxChildren: [
+        Text(
+          AppLocalizations.of(context)!.thankYou,
+        )
+      ],
+    );
   }
 }

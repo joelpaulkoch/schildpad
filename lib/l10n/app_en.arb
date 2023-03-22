@@ -39,6 +39,10 @@
     "@resetConfirmationDialogCancelButton": {
       "description": "Text of cancel button in the confirmation dialog to reset the app"
     },
+    "thankYou": "Thank you for using Schildpad, enjoy!",
+    "@thankYou": {
+      "description": "Thank you text in about dialog"
+    },
     "appGridListTile": "App Grid",
     "@appGridListTile": {
       "description": "Text on app grid list tile"
