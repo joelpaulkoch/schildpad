@@ -26,6 +26,7 @@ dependencies:
   url_launcher: ^6.1.6
   isar: ^3.0.5
   isar_flutter_libs: ^3.0.5
+  toggle_switch: ^2.0.1
 
 dev_dependencies:
   integration_test:

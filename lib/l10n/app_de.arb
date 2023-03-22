@@ -1,5 +1,6 @@
 {
     "settingsTitle": "Einstellungen",
+    "layoutSettingsTitle": "Layout",
     "widgetsTitle": "Widgets",
     "contactListTile": "Kontakt",
     "layoutListTile": "Layout",
@@ -7,5 +8,12 @@
     "resetConfirmationDialogTitle": "Zurücksetzen?",
     "resetConfirmationDialogText": "Ganz sicher?",
     "resetConfirmationDialogConfirmButton": "Zurücksetzen",
-    "resetConfirmationDialogCancelButton": "Abbrechen"
+    "resetConfirmationDialogCancelButton": "Abbrechen",
+    "appGridListTile": "Raster",
+    "columns": "Spalten",
+    "rows": "Reihen",
+    "appDrawer": "App Ansicht",
+    "dock": "Dock",
+    "additionalRow": "Zusätzliche Reihe",
+    "topDock": "Dock oben"
 }

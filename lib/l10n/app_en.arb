@@ -3,6 +3,10 @@
     "@settingsTitle": {
       "description": "Title of the settings screen"
     },
+    "layoutSettingsTitle": "Layout",
+    "@layoutSettingsTitle": {
+      "description": "Title of the layout settings screen"
+    },
     "widgetsTitle": "Widgets",
     "@widgetsTitle":{
       "description": "Title of the widgets screen"
@@ -34,5 +38,33 @@
     "resetConfirmationDialogCancelButton": "Cancel",
     "@resetConfirmationDialogCancelButton": {
       "description": "Text of cancel button in the confirmation dialog to reset the app"
+    },
+    "appGridListTile": "App Grid",
+    "@appGridListTile": {
+      "description": "Text on app grid list tile"
+    },
+    "columns": "Columns",
+    "@columns": {
+      "description": "Columns"
+    },
+    "rows": "Rows",
+    "@rows": {
+      "description": "Rows"
+    },
+    "appDrawer": "App Drawer",
+    "@appDrawer": {
+      "description": "App Drawer"
+    },
+    "dock": "Dock",
+    "@dock": {
+      "description": "Dock"
+    },
+    "additionalRow": "Additional Row",
+    "@additionalRow": {
+      "description": "Additional Row"
+    },
+    "topDock": "Top Dock",
+    "@topDock": {
+      "description": "Top Dock"
     }
 }

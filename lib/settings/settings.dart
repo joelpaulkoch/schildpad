@@ -26,13 +26,13 @@ class SettingsIconButton extends StatelessWidget {
   }
 }
 
-class LayoutListTile extends ConsumerWidget {
+class LayoutListTile extends StatelessWidget {
   const LayoutListTile({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.grid_view_rounded),
       title: Text(AppLocalizations.of(context)!.layoutListTile),
