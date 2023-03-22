@@ -70,15 +70,15 @@ class AppDrawerHeadingListTile extends StatelessWidget {
   }
 }
 
-class AppDrawerRowsListTile extends StatelessWidget {
-  const AppDrawerRowsListTile({
+class AppDrawerColumnsListTile extends StatelessWidget {
+  const AppDrawerColumnsListTile({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Text(AppLocalizations.of(context)!.rows),
+        title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
           initialLabelIndex: 0,
           totalSwitches: 3,
@@ -104,15 +104,15 @@ class DockHeadingListTile extends StatelessWidget {
   }
 }
 
-class DockRowsListTile extends StatelessWidget {
-  const DockRowsListTile({
+class DockColumnsListTile extends StatelessWidget {
+  const DockColumnsListTile({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Text(AppLocalizations.of(context)!.rows),
+        title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
           initialLabelIndex: 0,
           totalSwitches: 3,
