@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
+import 'package:schildpad/app_drawer/app_drawer.dart';
 import 'package:schildpad/home/grid.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/main.dart' as app;
@@ -70,17 +71,78 @@ void main() {
       // I set the app grid layout to 5x5
       const newColumns = 5;
       const newRows = 5;
-      await settingsScreenRobot.setAppGridLayout(newColumns, newRows);
+      await settingsScreenRobot.setAppGridColumns(newColumns);
+      await tester.pumpAndSettle();
+      await settingsScreenRobot.setAppGridRows(newRows);
       await tester.pumpAndSettle();
 
       // Then:
-      // I have a 3x3 app grid on my home screen
+      // I have a 5x5 app grid on my home screen
+      await tester.pageBack();
+      await tester.pumpAndSettle();
       await tester.pageBack();
       await tester.pumpAndSettle();
       await tester.pageBack();
       await tester.pumpAndSettle();
 
       expect(appGridElementsFinder, findsNWidgets(newColumns * newRows));
+    });
+    testWidgets(
+        'reducing the grid size should remove all apps from home screen',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 4;
+      const defaultRows = 5;
+
+      final homeScreenRobot = HomeScreenRobot(tester,
+          homeGridColumns: defaultColumns, homeGridRows: defaultRows);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have a 4x5 app grid layout
+      final homePageFinder = find.byType(HomePage);
+      expect(homePageFinder, findsOneWidget);
+      final appGridElementsFinder = find.descendant(
+          of: homePageFinder, matching: find.byType(GridElement));
+      expect(
+          appGridElementsFinder, findsNWidgets(defaultColumns * defaultRows));
+
+      // and there are apps on the home screen
+      await homeScreenRobot.addAppToHome(0, 0);
+      await homeScreenRobot.addAppToHome(1, 0);
+      expect(find.byType(AppIcon).hitTestable(), findsNWidgets(2));
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I reduce the size of the app grid layout to 3x3
+      const newColumns = 3;
+      const newRows = 3;
+      await settingsScreenRobot.setAppGridColumns(newColumns);
+      await tester.pumpAndSettle();
+      await settingsScreenRobot.confirmAlertDialog();
+      await tester.pumpAndSettle();
+
+      await settingsScreenRobot.setAppGridRows(newRows);
+      await tester.pumpAndSettle();
+      await settingsScreenRobot.confirmAlertDialog();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // there should be no more apps on the home screen
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppIcon).hitTestable(), findsNothing);
     });
   });
 }

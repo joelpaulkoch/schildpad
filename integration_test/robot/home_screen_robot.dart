@@ -27,8 +27,16 @@ class HomeScreenRobot {
     expect(installedAppsViewFinder, findsOneWidget);
   }
 
+  Future<void> openOverview() async {
+    final homeScreenFinder = find.byType(HomeScreen);
+    expect(homeScreenFinder, findsOneWidget);
+
+    await tester.longPress(homeScreenFinder);
+    await tester.pumpAndSettle();
+  }
+
   Future<void> openSettings() async {
-    await openAppDrawer();
+    await openOverview();
 
     final settingsButtonFinder = find.byType(SettingsIconButton);
     expect(settingsButtonFinder, findsOneWidget);

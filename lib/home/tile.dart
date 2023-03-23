@@ -129,6 +129,17 @@ class TileManager {
     }
   }
 
+  Future<void> removeAllFromLocation(Location location) async {
+    final homeTileCollection = isarCollection;
+    if (homeTileCollection != null) {
+      await homeTileCollection.isar.writeTxn(() async =>
+          await homeTileCollection
+              .filter()
+              .coordinates((q) => q.locationEqualTo(location))
+              .deleteAll());
+    }
+  }
+
   Future<void> removeAllTilesFromPage(int pageIndex) async {
     final homeTileCollection = isarCollection;
     if (homeTileCollection != null) {

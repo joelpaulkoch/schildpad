@@ -15,7 +15,7 @@ class SettingsScreenRobot {
     await tester.pumpAndSettle();
   }
 
-  Future<void> setAppGridLayout(int newColumns, int newRows) async {
+  Future<void> setAppGridColumns(int newColumns) async {
     // columns
     final columnsListTileFinder = find.byType(AppGridColumnsListTile);
     expect(columnsListTileFinder, findsOneWidget);
@@ -24,8 +24,10 @@ class SettingsScreenRobot {
         of: columnsListTileFinder, matching: find.text('$newColumns'));
     expect(columnsSwitchFinder, findsOneWidget);
 
-    await tester.tap(columnsSwitchFinder);
+    await tester.tap(columnsSwitchFinder, warnIfMissed: false);
+  }
 
+  Future<void> setAppGridRows(int newRows) async {
     // rows
     final rowsListTileFinder = find.byType(AppGridRowsListTile);
     expect(rowsListTileFinder, findsOneWidget);
@@ -34,6 +36,11 @@ class SettingsScreenRobot {
         of: rowsListTileFinder, matching: find.text('$newRows'));
     expect(rowsSwitchFinder, findsOneWidget);
 
-    await tester.tap(rowsSwitchFinder);
+    await tester.tap(rowsSwitchFinder, warnIfMissed: false);
+  }
+
+  Future<void> confirmAlertDialog() async {
+    final confirmButtonFinder = find.text('Confirm');
+    await tester.tap(confirmButtonFinder);
   }
 }

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/model/layout_settings.dart';
+import 'package:schildpad/home/model/tile.dart';
+import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/main.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -85,6 +87,7 @@ class AppGridColumnsListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final tileManager = ref.watch(tileManagerProvider);
     final columns = ref.watch(homeColumnCountProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
@@ -127,6 +130,9 @@ class AppGridColumnsListTile extends ConsumerWidget {
           },
           onToggle: (index) async {
             if (index != null) {
+              if (index + 3 < columns) {
+                tileManager.removeAllFromLocation(Location.home);
+              }
               await layoutManager.setColumns(index + 3);
             }
           },
@@ -142,6 +148,7 @@ class AppGridRowsListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final tileManager = ref.watch(tileManagerProvider);
     final rows = ref.watch(homeRowCountProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.rows),
@@ -184,6 +191,9 @@ class AppGridRowsListTile extends ConsumerWidget {
           },
           onToggle: (index) async {
             if (index != null) {
+              if (index + 3 < rows) {
+                tileManager.removeAllFromLocation(Location.home);
+              }
               await layoutManager.setRows(index + 3);
             }
           },
