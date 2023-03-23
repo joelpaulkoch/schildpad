@@ -648,11 +648,13 @@ const _GlobalElementCoordinateslocationEnumValueMap = {
   'list': 0,
   'dock': 1,
   'home': 2,
+  'topDock': 3,
 };
 const _GlobalElementCoordinateslocationValueEnumMap = {
   0: Location.list,
   1: Location.dock,
   2: Location.home,
+  3: Location.topDock,
 };
 
 extension GlobalElementCoordinatesQueryFilter on QueryBuilder<

@@ -67,3 +67,65 @@ class Dock extends ConsumerWidget {
             tiles: dockGridTiles));
   }
 }
+
+final topDockColumnCountProvider = Provider<int>((ref) {
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.dockColumns;
+});
+
+final topDockRowCountProvider = Provider<int>((ref) {
+  return 1;
+});
+
+final topDockEnabledProvider = Provider<bool>((ref) {
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.topDock;
+});
+
+final topDockGridTilesProvider =
+    FutureProvider<List<FlexibleGridTile>>((ref) async {
+  ref.watch(isarTilesUpdateProvider);
+
+  final columnCount = ref.watch(topDockColumnCountProvider);
+  final rowCount = ref.watch(topDockRowCountProvider);
+
+  final tiles = await ref.watch(isarTilesProvider.future);
+  return tiles
+      .filter()
+      .coordinates((c) => c.locationEqualTo(Location.topDock))
+      .findAllSync()
+      .map((e) => FlexibleGridTile(
+          column: e.coordinates.column,
+          row: e.coordinates.row,
+          columnSpan: e.columnSpan,
+          rowSpan: e.rowSpan,
+          child: GridElement(
+            coordinates: e.coordinates,
+            columnCount: columnCount,
+            rowCount: rowCount,
+          )))
+      .toList();
+});
+
+class TopDock extends ConsumerWidget {
+  const TopDock({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final topDockColumnCount = ref.watch(topDockColumnCountProvider);
+    final topDockRowCount = ref.watch(topDockRowCountProvider);
+    final topDockGridTiles = ref.watch(topDockGridTilesProvider).maybeWhen(
+        data: (tiles) => tiles, orElse: () => List<FlexibleGridTile>.empty());
+
+    return Container(
+        color: Colors.black12,
+        child: Grid(
+            location: Location.topDock,
+            page: null,
+            columnCount: topDockColumnCount,
+            rowCount: topDockRowCount,
+            tiles: topDockGridTiles));
+  }
+}

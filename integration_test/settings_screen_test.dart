@@ -290,7 +290,7 @@ void main() {
 
       expect(find.byType(AppIcon).hitTestable(), findsNothing);
     });
-    testWidgets('layout settings should allow enable additional row of dock',
+    testWidgets('layout settings should allow to enable additional row of dock',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -398,6 +398,36 @@ void main() {
       await _returnToHomeFromLayout(tester);
 
       expect(find.byType(AppIcon).hitTestable(), findsNothing);
+    });
+    testWidgets('layout settings should allow to enable top dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have no top dock enabled
+      final topDockFinder = find.byType(TopDock);
+      expect(topDockFinder, findsNothing);
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I enable the top dock
+      await settingsScreenRobot.toggleTopDock();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // I have a top dock now
+      await _returnToHomeFromLayout(tester);
+
+      expect(topDockFinder, findsOneWidget);
     });
   });
 }

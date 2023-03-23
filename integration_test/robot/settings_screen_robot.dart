@@ -71,4 +71,11 @@ class SettingsScreenRobot {
 
     await tester.tap(additionalRowListTileFinder);
   }
+
+  Future<void> toggleTopDock() async {
+    final topDockListTileFinder = find.byType(TopDockListTile);
+    expect(topDockListTileFinder, findsOneWidget);
+
+    await tester.tap(topDockListTileFinder);
+  }
 }

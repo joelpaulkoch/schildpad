@@ -96,6 +96,17 @@ class LayoutSettingsManager {
       await layoutCollection.put(newLayout);
     });
   }
+
+  Future<void> setTopDock(bool enabled) async {
+    final layoutCollection = isarCollection;
+
+    await layoutCollection?.isar.writeTxn(() async {
+      final layout = await layoutCollection.get(0);
+      final newLayout = layout?.copyWith(topDock: enabled) ??
+          LayoutSettings(topDock: enabled);
+      await layoutCollection.put(newLayout);
+    });
+  }
 }
 
 class AppGridHeadingListTile extends StatelessWidget {
@@ -406,16 +417,23 @@ class DockAdditionalRowListTile extends ConsumerWidget {
   }
 }
 
-class DockTopListTile extends StatelessWidget {
-  const DockTopListTile({
+class TopDockListTile extends ConsumerWidget {
+  const TopDockListTile({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final topDockEnabled = ref.watch(topDockEnabledProvider);
     return SwitchListTile(
         title: Text(AppLocalizations.of(context)!.topDock),
-        value: false,
-        onChanged: (_) {});
+        value: topDockEnabled,
+        onChanged: (enabled) async {
+          var cancel = false;
+          if (!cancel) {
+            await layoutManager.setTopDock(enabled);
+          }
+        });
   }
 }

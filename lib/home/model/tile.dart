@@ -20,7 +20,7 @@ class Tile {
   ElementData? tileData;
 }
 
-enum Location { list, dock, home }
+enum Location { list, dock, home, topDock }
 
 const defaultCoordinates = GlobalElementCoordinates();
 

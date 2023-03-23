@@ -27,7 +27,7 @@ class LayoutSettingsScreen extends StatelessWidget {
           DockHeadingListTile(),
           DockColumnsListTile(),
           DockAdditionalRowListTile(),
-          DockTopListTile(),
+          TopDockListTile(),
         ],
       ),
     );
