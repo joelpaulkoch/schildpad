@@ -5,15 +5,13 @@ class SchildpadTheme {
   static ThemeData get lightTheme {
     return ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.green,
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(0xff, 0x34, 0xb5, 0x33)),
         useMaterial3: true);
   }
 
   static ThemeData get darkTheme {
-    return ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.green,
-        useMaterial3: true);
+    return SchildpadTheme.lightTheme.copyWith(brightness: Brightness.dark);
   }
 }
 
