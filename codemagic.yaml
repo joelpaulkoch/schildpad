@@ -71,7 +71,7 @@ workflows:
               exit 0
             fi
             
-            cp \
+            mv \
               build/app/outputs/bundle/release/app-release-universal.apk \
               build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
             
