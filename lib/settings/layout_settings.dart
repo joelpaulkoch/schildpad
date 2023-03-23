@@ -394,9 +394,12 @@ class DockAdditionalRowListTile extends ConsumerWidget {
                         ),
                     barrierDismissible: false) ??
                 false;
+
+            if (!cancel) {
+              await tileManager.removeAllFromLocation(Location.dock);
+            }
           }
           if (!cancel) {
-            await tileManager.removeAllFromLocation(Location.dock);
             await layoutManager.setAdditionalDockRow(enabled);
           }
         });
