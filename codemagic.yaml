@@ -77,6 +77,5 @@ workflows:
             
             gh release create "${CM_TAG}" \
               --draft \
-              --generate-notes \
               --title "Schildpad Launcher ${CM_TAG}" \              
               build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
