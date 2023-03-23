@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/app_drawer/installed_applications.dart';
 import 'package:schildpad/home/model/tile.dart';
+import 'package:schildpad/settings/layout_settings.dart';
 import 'package:schildpad/settings/settings.dart';
 
-final _columnCountProvider = Provider<int>((ref) {
-  return 3;
+final _appDrawerColumnsProvider = Provider<int>((ref) {
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.appDrawerColumns;
 });
 
 const double _gridPadding = 16;
@@ -36,7 +38,7 @@ class AppDrawerGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appPackages = ref.watch(appPackagesProvider);
-    final columnCount = ref.watch(_columnCountProvider);
+    final columnCount = ref.watch(_appDrawerColumnsProvider);
     return GridView.count(
         padding: const EdgeInsets.fromLTRB(
             _gridPadding, 0, _gridPadding, _gridPadding),

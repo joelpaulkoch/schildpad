@@ -45,6 +45,14 @@ class HomeScreenRobot {
     await tester.pumpAndSettle();
   }
 
+  Future<void> openSettingsFromAppDrawer() async {
+    final settingsButtonFinder = find.byType(SettingsIconButton);
+    expect(settingsButtonFinder, findsOneWidget);
+
+    await tester.tap(settingsButtonFinder);
+    await tester.pumpAndSettle();
+  }
+
   Future<void> dragAndDropApp({Offset? dragOffset}) async {
     final installedAppFinder = find.byType(AppDraggable).first;
     expect(installedAppFinder, findsOneWidget);

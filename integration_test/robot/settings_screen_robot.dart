@@ -43,4 +43,16 @@ class SettingsScreenRobot {
     final confirmButtonFinder = find.text('Confirm');
     await tester.tap(confirmButtonFinder);
   }
+
+  Future<void> setAppDrawerColumns(int newColumns) async {
+    // columns
+    final columnsListTileFinder = find.byType(AppDrawerColumnsListTile);
+    expect(columnsListTileFinder, findsOneWidget);
+
+    final columnsSwitchFinder = find.descendant(
+        of: columnsListTileFinder, matching: find.text('$newColumns'));
+    expect(columnsSwitchFinder, findsOneWidget);
+
+    await tester.tap(columnsSwitchFinder, warnIfMissed: false);
+  }
 }

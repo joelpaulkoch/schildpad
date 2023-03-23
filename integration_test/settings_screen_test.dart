@@ -144,5 +144,62 @@ void main() {
 
       expect(find.byType(AppIcon).hitTestable(), findsNothing);
     });
+    testWidgets('layout settings should allow to change columns of app drawer',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 3;
+
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have an app drawer with 3 columns
+      await homeScreenRobot.openAppDrawer();
+
+      final appDrawerFinder = find.byType(AppDrawerGrid);
+      expect(appDrawerFinder, findsOneWidget);
+      final appFinder = find.descendant(
+          of: appDrawerFinder, matching: find.byType(AppDraggable));
+      expect(appFinder, findsWidgets);
+
+      final firstRowTopY = tester.getTopLeft(appFinder.first).dy;
+      var columns = appFinder
+          .evaluate()
+          .where((element) =>
+              tester.getTopLeft(find.byWidget(element.widget)).dy ==
+              firstRowTopY)
+          .length;
+      expect(columns, defaultColumns);
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettingsFromAppDrawer();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I set the columns of the app drawer to 4
+      const newColumns = 4;
+      await settingsScreenRobot.setAppDrawerColumns(newColumns);
+      await tester.pumpAndSettle();
+
+      // Then:
+      // my app drawer has 4 columns now
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      columns = appFinder
+          .evaluate()
+          .where((element) =>
+              tester.getTopLeft(find.byWidget(element.widget)).dy ==
+              firstRowTopY)
+          .length;
+
+      expect(columns, newColumns);
+    });
   });
 }

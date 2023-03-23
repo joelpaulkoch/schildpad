@@ -40,7 +40,7 @@ class LayoutSettingsManager {
 
   final IsarCollection<LayoutSettings>? isarCollection;
 
-  Future<void> setColumns(int columns) async {
+  Future<void> setAppGridColumns(int columns) async {
     final layoutCollection = isarCollection;
 
     await layoutCollection?.isar.writeTxn(() async {
@@ -51,13 +51,24 @@ class LayoutSettingsManager {
     });
   }
 
-  Future<void> setRows(int rows) async {
+  Future<void> setAppGridRows(int rows) async {
     final layoutCollection = isarCollection;
 
     await layoutCollection?.isar.writeTxn(() async {
       final gridLayout = await layoutCollection.get(0);
       final newLayout = gridLayout?.copyWith(appGridRows: rows) ??
           LayoutSettings(appGridColumns: rows);
+      await layoutCollection.put(newLayout);
+    });
+  }
+
+  Future<void> setAppDrawerColumns(int columns) async {
+    final layoutCollection = isarCollection;
+
+    await layoutCollection?.isar.writeTxn(() async {
+      final layout = await layoutCollection.get(0);
+      final newLayout = layout?.copyWith(appDrawerColumns: columns) ??
+          LayoutSettings(appDrawerColumns: columns);
       await layoutCollection.put(newLayout);
     });
   }
@@ -133,7 +144,7 @@ class AppGridColumnsListTile extends ConsumerWidget {
               if (index + 3 < columns) {
                 tileManager.removeAllFromLocation(Location.home);
               }
-              await layoutManager.setColumns(index + 3);
+              await layoutManager.setAppGridColumns(index + 3);
             }
           },
         ));
@@ -194,7 +205,7 @@ class AppGridRowsListTile extends ConsumerWidget {
               if (index + 3 < rows) {
                 tileManager.removeAllFromLocation(Location.home);
               }
-              await layoutManager.setRows(index + 3);
+              await layoutManager.setAppGridRows(index + 3);
             }
           },
         ));
@@ -217,20 +228,25 @@ class AppDrawerHeadingListTile extends StatelessWidget {
   }
 }
 
-class AppDrawerColumnsListTile extends StatelessWidget {
+class AppDrawerColumnsListTile extends ConsumerWidget {
   const AppDrawerColumnsListTile({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layoutManager = ref.watch(layoutSettingsManagerProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
           initialLabelIndex: 0,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
-          onToggle: null,
+          onToggle: (index) async {
+            if (index != null) {
+              await layoutManager.setAppDrawerColumns(index + 3);
+            }
+          },
         ));
   }
 }
