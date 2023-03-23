@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/settings/app_info.dart';
+import 'package:schildpad/settings/layout_settings.dart';
 import 'package:schildpad/settings/layout_settings_screen.dart';
 import 'package:schildpad/settings/settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -79,10 +80,12 @@ class ResetButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tileManager = ref.watch(tileManagerProvider);
     final pageCounterManager = ref.watch(pageCounterManagerProvider);
+    final layoutManager = ref.watch(layoutSettingsManagerProvider);
 
     return TextButton(
         onPressed: () {
           tileManager.removeAll();
+          layoutManager.reset();
 
           final leftPages = ref.read(leftPagesProvider);
           for (var i = -leftPages; i < 0; i++) {

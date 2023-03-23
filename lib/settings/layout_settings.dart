@@ -107,6 +107,14 @@ class LayoutSettingsManager {
       await layoutCollection.put(newLayout);
     });
   }
+
+  Future<void> reset() async {
+    final layoutCollection = isarCollection;
+    if (layoutCollection != null) {
+      await layoutCollection.isar
+          .writeTxn(() async => await layoutCollection.clear());
+    }
+  }
 }
 
 class AppGridHeadingListTile extends StatelessWidget {
