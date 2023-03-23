@@ -6,7 +6,7 @@ import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/settings/layout_settings.dart';
 import 'package:schildpad/settings/settings.dart';
 
-final _appDrawerColumnsProvider = Provider<int>((ref) {
+final appDrawerColumnsProvider = Provider<int>((ref) {
   final layout = ref.watch(layoutSettingsProvider);
   return layout.appDrawerColumns;
 });
@@ -38,7 +38,7 @@ class AppDrawerGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appPackages = ref.watch(appPackagesProvider);
-    final columnCount = ref.watch(_appDrawerColumnsProvider);
+    final columnCount = ref.watch(appDrawerColumnsProvider);
     return GridView.count(
         padding: const EdgeInsets.fromLTRB(
             _gridPadding, 0, _gridPadding, _gridPadding),

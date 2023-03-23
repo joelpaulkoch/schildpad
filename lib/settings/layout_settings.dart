@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:schildpad/app_drawer/app_drawer.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/home/model/layout_settings.dart';
 import 'package:schildpad/home/model/tile.dart';
@@ -247,10 +249,11 @@ class AppDrawerColumnsListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final appDrawerColumns = ref.watch(appDrawerColumnsProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
-          initialLabelIndex: 0,
+          initialLabelIndex: appDrawerColumns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
           onToggle: (index) async {
@@ -286,10 +289,11 @@ class DockColumnsListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final dockColumns = ref.watch(dockColumnCountProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
-          initialLabelIndex: 0,
+          initialLabelIndex: dockColumns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
           onToggle: (index) async {
