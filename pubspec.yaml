@@ -1,9 +1,9 @@
 name: schildpad
 description: Schildpad is a launcher app for Android built with Flutter. It aims to be robust but beautiful, just like a turtle.
 
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: "none"
 
-version: 1.2.0
+version: 1.2.1
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
