@@ -245,5 +245,55 @@ void main() {
 
       expect(appGridElementsFinder, findsNWidgets(newColumns));
     });
+    testWidgets(
+        'reducing the columns of the dock should remove all apps from the dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 4;
+
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have a dock with 4 columns
+      final dockFinder = find.byType(Dock);
+      expect(dockFinder, findsOneWidget);
+
+      final appGridElementsFinder =
+          find.descendant(of: dockFinder, matching: find.byType(GridElement));
+      expect(appGridElementsFinder, findsNWidgets(defaultColumns));
+
+      // and there are apps on the dock
+      await homeScreenRobot.addAppToDock(0);
+      await homeScreenRobot.addAppToDock(1);
+      expect(find.byType(AppIcon).hitTestable(), findsNWidgets(2));
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I reduce the columns of the dock to 3
+      const newColumns = 3;
+      await settingsScreenRobot.setDockColumns(newColumns);
+      await tester.pumpAndSettle();
+      await settingsScreenRobot.confirmAlertDialog();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // there should be no more apps on the dock
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppIcon).hitTestable(), findsNothing);
+    });
   });
 }

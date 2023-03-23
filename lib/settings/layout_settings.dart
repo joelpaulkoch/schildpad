@@ -130,7 +130,7 @@ class AppGridColumnsListTile extends ConsumerWidget {
                               title: Text(AppLocalizations.of(context)!
                                   .layoutAlertTitle),
                               content: Text(AppLocalizations.of(context)!
-                                  .layoutAlertContent),
+                                  .appGridLayoutAlertContent),
                               actions: [
                                 TextButton(
                                     onPressed: () {
@@ -191,7 +191,7 @@ class AppGridRowsListTile extends ConsumerWidget {
                               title: Text(AppLocalizations.of(context)!
                                   .layoutAlertTitle),
                               content: Text(AppLocalizations.of(context)!
-                                  .layoutAlertContent),
+                                  .appGridLayoutAlertContent),
                               actions: [
                                 TextButton(
                                     onPressed: () {
@@ -289,6 +289,7 @@ class DockColumnsListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final tileManager = ref.watch(tileManagerProvider);
     final dockColumns = ref.watch(dockColumnCountProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
@@ -296,8 +297,44 @@ class DockColumnsListTile extends ConsumerWidget {
           initialLabelIndex: dockColumns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
+          cancelToggle: (index) async {
+            var cancel = false;
+            if (index != null) {
+              if (index + 3 < dockColumns) {
+                // less columns than before
+                cancel = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: Text(AppLocalizations.of(context)!
+                                  .layoutAlertTitle),
+                              content: Text(AppLocalizations.of(context)!
+                                  .dockLayoutAlertContent),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.cancel)),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.confirm)),
+                              ],
+                            ),
+                        barrierDismissible: false) ??
+                    false;
+              }
+            }
+            return cancel;
+          },
           onToggle: (index) async {
             if (index != null) {
+              if (index + 3 < dockColumns) {
+                tileManager.removeAllFromLocation(Location.dock);
+              }
               await layoutManager.setDockColumns(index + 3);
             }
           },

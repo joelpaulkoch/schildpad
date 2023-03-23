@@ -18,7 +18,8 @@
     "additionalRow": "Zusätzliche Reihe",
     "topDock": "Dock oben",
     "layoutAlertTitle": "Achtung",
-    "layoutAlertContent": "Wenn Du das Raster verkleinerst werden alle Apps und Widgets vom Startbildschirm entfernt um Fehler zu vermeiden. Bist Du sicher?",
+    "appGridLayoutAlertContent": "Wenn Du das Raster verkleinerst werden alle Apps und Widgets vom Startbildschirm entfernt um Fehler zu vermeiden. Bist Du sicher?",
+    "dockLayoutAlertContent": "Wenn Du den Dock verkleinerst werden alle Apps und Widgets von ihm entfernt um Fehler zu vermeiden. Bist Du sicher?",
     "cancel": "Abbrechen",
     "confirm": "Bestätigen"
 }

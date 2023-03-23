@@ -73,11 +73,15 @@
     },
     "layoutAlertTitle": "Warning",
     "@layoutAlertTitle": {
-      "description": "Title of alert dialog when downsizing grid layout"
+      "description": "Title of alert dialog when downsizing layout"
     },
-    "layoutAlertContent": "All your apps and widgets will be removed from the home screen when you reduce the size of the grid to prevent invalid state. Are you sure you want to continue?",
-    "@layoutAlertContent": {
+    "appGridLayoutAlertContent": "All your apps and widgets will be removed from the home screen when you reduce the size of the grid to prevent invalid state. Are you sure you want to continue?",
+    "@appGridLayoutAlertContent": {
       "description": "Content of alert dialog when downsizing grid layout"
+    },
+    "dockLayoutAlertContent": "All your apps and widgets will be removed from the dock when you reduce its columns to prevent invalid state. Are you sure you want to continue?",
+    "@dockLayoutAlertContent": {
+      "description": "Content of alert dialog when reducing dock columns"
     },
     "cancel": "Cancel",
     "@cancel": {

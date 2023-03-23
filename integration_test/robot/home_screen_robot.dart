@@ -173,8 +173,7 @@ class HomeScreenRobot {
     final dockGridOrigin = tester.getTopLeft(dockGridFinder);
     final dockGridSize = tester.getSize(dockGridFinder);
 
-    final xPos = column / homeGridColumns * dockGridSize.width +
-        0.5 * dockGridSize.width;
+    final xPos = (0.5 + column) / homeGridColumns * dockGridSize.width;
     return dockGridOrigin + Offset(xPos, dockGridSize.height / 2);
   }
 }
