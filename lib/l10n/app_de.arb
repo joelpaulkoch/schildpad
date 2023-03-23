@@ -16,5 +16,9 @@
     "appDrawer": "App Ansicht",
     "dock": "Dock",
     "additionalRow": "Zusätzliche Reihe",
-    "topDock": "Dock oben"
+    "topDock": "Dock oben",
+    "layoutAlertTitle": "Achtung",
+    "layoutAlertContent": "Wenn Du das Raster verkleinerst werden alle Apps und Widgets vom Startbildschirm entfernt um Fehler zu vermeiden. Bist Du sicher?",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen"
 }

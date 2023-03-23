@@ -70,5 +70,21 @@
     "topDock": "Top Dock",
     "@topDock": {
       "description": "Top Dock"
+    },
+    "layoutAlertTitle": "Warning",
+    "@layoutAlertTitle": {
+      "description": "Title of alert dialog when downsizing grid layout"
+    },
+    "layoutAlertContent": "All your apps and widgets will be removed from the home screen when you reduce the size of the grid to prevent invalid state. Are you sure you want to continue?",
+    "@layoutAlertContent": {
+      "description": "Content of alert dialog when downsizing grid layout"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+      "description": "Cancel"
+    },
+    "confirm": "Confirm",
+    "@confirm": {
+      "description": "Confirm"
     }
 }

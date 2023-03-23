@@ -92,6 +92,39 @@ class AppGridColumnsListTile extends ConsumerWidget {
           initialLabelIndex: columns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
+          cancelToggle: (index) async {
+            var cancel = false;
+            if (index != null) {
+              if (index + 3 < columns) {
+                // less columns than before
+                cancel = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: Text(AppLocalizations.of(context)!
+                                  .layoutAlertTitle),
+                              content: Text(AppLocalizations.of(context)!
+                                  .layoutAlertContent),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.cancel)),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.confirm)),
+                              ],
+                            ),
+                        barrierDismissible: false) ??
+                    false;
+              }
+            }
+            return cancel;
+          },
           onToggle: (index) async {
             if (index != null) {
               await layoutManager.setColumns(index + 3);
@@ -116,6 +149,39 @@ class AppGridRowsListTile extends ConsumerWidget {
           initialLabelIndex: rows - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
+          cancelToggle: (index) async {
+            var cancel = false;
+            if (index != null) {
+              if (index + 3 < rows) {
+                // less columns than before
+                cancel = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: Text(AppLocalizations.of(context)!
+                                  .layoutAlertTitle),
+                              content: Text(AppLocalizations.of(context)!
+                                  .layoutAlertContent),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.cancel)),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.confirm)),
+                              ],
+                            ),
+                        barrierDismissible: false) ??
+                    false;
+              }
+            }
+            return cancel;
+          },
           onToggle: (index) async {
             if (index != null) {
               await layoutManager.setRows(index + 3);
@@ -154,7 +220,7 @@ class AppDrawerColumnsListTile extends StatelessWidget {
           initialLabelIndex: 0,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
-          onToggle: (index) {},
+          onToggle: null,
         ));
   }
 }
@@ -188,7 +254,7 @@ class DockColumnsListTile extends StatelessWidget {
           initialLabelIndex: 0,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
-          onToggle: (index) {},
+          onToggle: null,
         ));
   }
 }
