@@ -5,9 +5,11 @@ import 'package:schildpad/home/flexible_grid.dart';
 import 'package:schildpad/home/grid.dart';
 import 'package:schildpad/home/model/tile.dart';
 import 'package:schildpad/home/tile.dart';
+import 'package:schildpad/settings/layout_settings.dart';
 
 final dockColumnCountProvider = Provider<int>((ref) {
-  return 4;
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.dockColumns;
 });
 final dockRowCountProvider = Provider<int>((ref) {
   return 1;

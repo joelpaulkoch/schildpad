@@ -72,6 +72,17 @@ class LayoutSettingsManager {
       await layoutCollection.put(newLayout);
     });
   }
+
+  Future<void> setDockColumns(int columns) async {
+    final layoutCollection = isarCollection;
+
+    await layoutCollection?.isar.writeTxn(() async {
+      final layout = await layoutCollection.get(0);
+      final newLayout = layout?.copyWith(dockColumns: columns) ??
+          LayoutSettings(dockColumns: columns);
+      await layoutCollection.put(newLayout);
+    });
+  }
 }
 
 class AppGridHeadingListTile extends StatelessWidget {
@@ -267,20 +278,25 @@ class DockHeadingListTile extends StatelessWidget {
   }
 }
 
-class DockColumnsListTile extends StatelessWidget {
+class DockColumnsListTile extends ConsumerWidget {
   const DockColumnsListTile({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layoutManager = ref.watch(layoutSettingsManagerProvider);
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
           initialLabelIndex: 0,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
-          onToggle: null,
+          onToggle: (index) async {
+            if (index != null) {
+              await layoutManager.setDockColumns(index + 3);
+            }
+          },
         ));
   }
 }

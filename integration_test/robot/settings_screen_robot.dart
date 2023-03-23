@@ -16,7 +16,6 @@ class SettingsScreenRobot {
   }
 
   Future<void> setAppGridColumns(int newColumns) async {
-    // columns
     final columnsListTileFinder = find.byType(AppGridColumnsListTile);
     expect(columnsListTileFinder, findsOneWidget);
 
@@ -28,7 +27,6 @@ class SettingsScreenRobot {
   }
 
   Future<void> setAppGridRows(int newRows) async {
-    // rows
     final rowsListTileFinder = find.byType(AppGridRowsListTile);
     expect(rowsListTileFinder, findsOneWidget);
 
@@ -47,6 +45,17 @@ class SettingsScreenRobot {
   Future<void> setAppDrawerColumns(int newColumns) async {
     // columns
     final columnsListTileFinder = find.byType(AppDrawerColumnsListTile);
+    expect(columnsListTileFinder, findsOneWidget);
+
+    final columnsSwitchFinder = find.descendant(
+        of: columnsListTileFinder, matching: find.text('$newColumns'));
+    expect(columnsSwitchFinder, findsOneWidget);
+
+    await tester.tap(columnsSwitchFinder, warnIfMissed: false);
+  }
+
+  Future<void> setDockColumns(int newColumns) async {
+    final columnsListTileFinder = find.byType(DockColumnsListTile);
     expect(columnsListTileFinder, findsOneWidget);
 
     final columnsSwitchFinder = find.descendant(

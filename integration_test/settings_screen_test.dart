@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/app_drawer/app_drawer.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/grid.dart';
 import 'package:schildpad/home/home.dart';
 import 'package:schildpad/main.dart' as app;
@@ -200,6 +201,49 @@ void main() {
           .length;
 
       expect(columns, newColumns);
+    });
+
+    testWidgets('layout settings should allow to change columns of dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 4;
+
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have a dock with 4 columns
+      final dockFinder = find.byType(Dock);
+      expect(dockFinder, findsOneWidget);
+
+      final appGridElementsFinder =
+          find.descendant(of: dockFinder, matching: find.byType(GridElement));
+      expect(appGridElementsFinder, findsNWidgets(defaultColumns));
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I set the columns of the dock to 5
+      const newColumns = 5;
+      await settingsScreenRobot.setDockColumns(newColumns);
+      await tester.pumpAndSettle();
+
+      // Then:
+      // my dock has 5 columns now
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(appGridElementsFinder, findsNWidgets(newColumns));
     });
   });
 }
