@@ -166,7 +166,7 @@ class AppGridColumnsListTile extends ConsumerWidget {
           onToggle: (index) async {
             if (index != null) {
               if (index + 3 < columns) {
-                tileManager.removeAllFromLocation(Location.home);
+                await tileManager.removeAllFromLocation(Location.home);
               }
               await layoutManager.setAppGridColumns(index + 3);
             }
@@ -227,7 +227,7 @@ class AppGridRowsListTile extends ConsumerWidget {
           onToggle: (index) async {
             if (index != null) {
               if (index + 3 < rows) {
-                tileManager.removeAllFromLocation(Location.home);
+                await tileManager.removeAllFromLocation(Location.home);
               }
               await layoutManager.setAppGridRows(index + 3);
             }
@@ -344,7 +344,7 @@ class DockColumnsListTile extends ConsumerWidget {
           onToggle: (index) async {
             if (index != null) {
               if (index + 3 < dockColumns) {
-                tileManager.removeAllFromLocation(Location.dock);
+                await tileManager.removeAllFromLocation(Location.dock);
               }
               await layoutManager.setDockColumns(index + 3);
             }
@@ -361,12 +361,44 @@ class DockAdditionalRowListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final tileManager = ref.watch(tileManagerProvider);
     final additionalRow = ref.watch(additionalDockRowProvider);
     return SwitchListTile(
         title: Text(AppLocalizations.of(context)!.additionalRow),
         value: additionalRow,
         onChanged: (enabled) async {
-          await layoutManager.setAdditionalDockRow(enabled);
+          var cancel = false;
+          if (additionalRow && !enabled) {
+            //disabling additional row
+            cancel = await showDialog<bool>(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: Text(
+                              AppLocalizations.of(context)!.layoutAlertTitle),
+                          content: Text(AppLocalizations.of(context)!
+                              .dockLayoutAlertContent),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child:
+                                    Text(AppLocalizations.of(context)!.cancel)),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                child: Text(
+                                    AppLocalizations.of(context)!.confirm)),
+                          ],
+                        ),
+                    barrierDismissible: false) ??
+                false;
+          }
+          if (!cancel) {
+            await tileManager.removeAllFromLocation(Location.dock);
+            await layoutManager.setAdditionalDockRow(enabled);
+          }
         });
   }
 }

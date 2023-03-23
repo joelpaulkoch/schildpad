@@ -8,13 +8,18 @@ import 'package:schildpad/settings/settings.dart';
 
 class HomeScreenRobot {
   HomeScreenRobot(this.tester,
-      {required this.homeGridColumns, required this.homeGridRows})
+      {required this.homeGridColumns,
+      required this.homeGridRows,
+      this.dockColumns = 4,
+      this.dockRows = 1})
       : assert(homeGridColumns > 0),
         assert(homeGridRows > 0);
 
   final WidgetTester tester;
   final int homeGridColumns;
   final int homeGridRows;
+  final int dockColumns;
+  final int dockRows;
 
   Future<void> openAppDrawer() async {
     final homeScreenFinder = find.byType(HomeScreen);
@@ -102,7 +107,7 @@ class HomeScreenRobot {
     await tester.pumpAndSettle();
   }
 
-  Future<void> addAppToDock(int column) async {
+  Future<void> addAppToDock({required int column, int row = 0}) async {
     await openAppDrawer();
 
     final installedAppFinder = find.byType(AppDraggable).hitTestable().first;
@@ -116,7 +121,7 @@ class HomeScreenRobot {
     await longPressDragGesture.moveBy(smallOffset);
     await tester.pumpAndSettle();
 
-    final dropOffset = _getDockGridCellPosition(column);
+    final dropOffset = _getDockGridCellPosition(column, row);
     await longPressDragGesture.moveTo(dropOffset);
     await tester.pumpAndSettle();
     await longPressDragGesture.up();
@@ -167,13 +172,14 @@ class HomeScreenRobot {
     return homeGridOrigin + Offset(xPos, yPos);
   }
 
-  Offset _getDockGridCellPosition(int column) {
+  Offset _getDockGridCellPosition(int column, int row) {
     final dockGridFinder = find.byType(Dock);
     expect(dockGridFinder, findsOneWidget);
     final dockGridOrigin = tester.getTopLeft(dockGridFinder);
     final dockGridSize = tester.getSize(dockGridFinder);
 
-    final xPos = (0.5 + column) / homeGridColumns * dockGridSize.width;
-    return dockGridOrigin + Offset(xPos, dockGridSize.height / 2);
+    final xPos = (0.5 + column) / dockColumns * dockGridSize.width;
+    final yPos = (0.5 + row) / dockRows * dockGridSize.height;
+    return dockGridOrigin + Offset(xPos, yPos);
   }
 }

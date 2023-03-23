@@ -134,7 +134,7 @@ void main() {
       // I drop an app on the dock
       final homeScreenRobot =
           HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
-      await homeScreenRobot.addAppToDock(0);
+      await homeScreenRobot.addAppToDock(column: 0);
 
       // Then:
       // the app is added to the dock

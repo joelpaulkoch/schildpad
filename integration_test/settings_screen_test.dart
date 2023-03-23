@@ -136,12 +136,7 @@ void main() {
 
       // Then:
       // there should be no more apps on the home screen
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+      await _returnToHomeFromLayout(tester);
 
       expect(find.byType(AppIcon).hitTestable(), findsNothing);
     });
@@ -267,8 +262,8 @@ void main() {
       expect(appGridElementsFinder, findsNWidgets(defaultColumns));
 
       // and there are apps on the dock
-      await homeScreenRobot.addAppToDock(0);
-      await homeScreenRobot.addAppToDock(1);
+      await homeScreenRobot.addAppToDock(column: 0);
+      await homeScreenRobot.addAppToDock(column: 1);
       expect(find.byType(AppIcon).hitTestable(), findsNWidgets(2));
 
       // and I am on the layout settings screen
@@ -337,12 +332,7 @@ void main() {
 
       // Then:
       // my dock has 2 rows now
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+      await _returnToHomeFromLayout(tester);
 
       elementsNotInFirstRow = appGridElementsFinder
           .evaluate()
@@ -353,5 +343,70 @@ void main() {
 
       expect(elementsNotInFirstRow, greaterThan(0));
     });
+    testWidgets(
+        'disabling the additional row of the dock should remove all apps from the dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 4;
+
+      final homeScreenRobot = HomeScreenRobot(tester,
+          homeGridColumns: 4,
+          homeGridRows: 5,
+          dockColumns: defaultColumns,
+          dockRows: 2);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have a dock with the additional row enabled
+      final dockFinder = find.byType(Dock);
+      expect(dockFinder, findsOneWidget);
+
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+      await settingsScreenRobot.toggleAdditionalDockRow();
+      await tester.pumpAndSettle();
+
+      // return to home
+      await _returnToHomeFromLayout(tester);
+
+      final appGridElementsFinder =
+          find.descendant(of: dockFinder, matching: find.byType(GridElement));
+      expect(appGridElementsFinder, findsNWidgets(2 * defaultColumns));
+
+      // and there are apps on the dock
+      await homeScreenRobot.addAppToDock(column: 0, row: 0);
+      await homeScreenRobot.addAppToDock(column: 1, row: 1);
+      expect(find.byType(AppIcon).hitTestable(), findsNWidgets(2));
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I disable the additional row
+      await settingsScreenRobot.toggleAdditionalDockRow();
+      await tester.pumpAndSettle();
+      await settingsScreenRobot.confirmAlertDialog();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // there should be no more apps on the dock
+      await _returnToHomeFromLayout(tester);
+
+      expect(find.byType(AppIcon).hitTestable(), findsNothing);
+    });
   });
+}
+
+Future _returnToHomeFromLayout(WidgetTester tester) async {
+  await tester.pageBack();
+  await tester.pumpAndSettle();
+  await tester.pageBack();
+  await tester.pumpAndSettle();
+  await tester.pageBack();
+  await tester.pumpAndSettle();
 }
