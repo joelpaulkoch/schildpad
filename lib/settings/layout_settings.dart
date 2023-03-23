@@ -143,9 +143,19 @@ class AppGridColumnsListTile extends ConsumerWidget {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
     final tileManager = ref.watch(tileManagerProvider);
     final columns = ref.watch(homeColumnCountProvider);
+
+    final theme = Theme.of(context);
+    List<Color>? backgroundColor;
+    if (theme.brightness == Brightness.dark) {
+      final colorScheme = theme.buttonTheme.colorScheme;
+      if (colorScheme != null) {
+        backgroundColor = [colorScheme.primaryContainer];
+      }
+    }
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
+          activeBgColor: backgroundColor,
           initialLabelIndex: columns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
@@ -204,9 +214,19 @@ class AppGridRowsListTile extends ConsumerWidget {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
     final tileManager = ref.watch(tileManagerProvider);
     final rows = ref.watch(homeRowCountProvider);
+
+    final theme = Theme.of(context);
+    List<Color>? backgroundColor;
+    if (theme.brightness == Brightness.dark) {
+      final colorScheme = theme.buttonTheme.colorScheme;
+      if (colorScheme != null) {
+        backgroundColor = [colorScheme.primaryContainer];
+      }
+    }
     return ListTile(
         title: Text(AppLocalizations.of(context)!.rows),
         trailing: ToggleSwitch(
+          activeBgColor: backgroundColor,
           initialLabelIndex: rows - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
@@ -280,9 +300,19 @@ class AppDrawerColumnsListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
     final appDrawerColumns = ref.watch(appDrawerColumnsProvider);
+
+    final theme = Theme.of(context);
+    List<Color>? backgroundColor;
+    if (theme.brightness == Brightness.dark) {
+      final colorScheme = theme.buttonTheme.colorScheme;
+      if (colorScheme != null) {
+        backgroundColor = [colorScheme.primaryContainer];
+      }
+    }
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
+          activeBgColor: backgroundColor,
           initialLabelIndex: appDrawerColumns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
@@ -321,9 +351,19 @@ class DockColumnsListTile extends ConsumerWidget {
     final layoutManager = ref.watch(layoutSettingsManagerProvider);
     final tileManager = ref.watch(tileManagerProvider);
     final dockColumns = ref.watch(dockColumnCountProvider);
+
+    final theme = Theme.of(context);
+    List<Color>? backgroundColor;
+    if (theme.brightness == Brightness.dark) {
+      final colorScheme = theme.buttonTheme.colorScheme;
+      if (colorScheme != null) {
+        backgroundColor = [colorScheme.primaryContainer];
+      }
+    }
     return ListTile(
         title: Text(AppLocalizations.of(context)!.columns),
         trailing: ToggleSwitch(
+          activeBgColor: backgroundColor,
           initialLabelIndex: dockColumns - 3,
           totalSwitches: 3,
           labels: const ['3', '4', '5'],
