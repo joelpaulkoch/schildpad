@@ -52,8 +52,11 @@ class TileManager {
           .coordinates((c) => c
               .locationEqualTo(coordinates.location)
               .pageEqualTo(coordinates.page)
-              .columnEqualTo(coordinates.column)
-              .rowEqualTo(coordinates.row))
+              .columnBetween(
+                  coordinates.column, coordinates.column + columnCount,
+                  includeUpper: false)
+              .rowBetween(coordinates.row, coordinates.row + rowCount,
+                  includeUpper: false))
           .findAllSync();
       final flexibleGridTiles = gridTiles
           .map((e) => FlexibleGridTile(
