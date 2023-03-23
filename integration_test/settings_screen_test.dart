@@ -67,9 +67,9 @@ void main() {
       expect(find.byType(LayoutSettingsScreen), findsOneWidget);
 
       // When:
-      // I set the app grid layout to 3x3
-      const newColumns = 3;
-      const newRows = 3;
+      // I set the app grid layout to 5x5
+      const newColumns = 5;
+      const newRows = 5;
       await settingsScreenRobot.setAppGridLayout(newColumns, newRows);
       await tester.pumpAndSettle();
 
