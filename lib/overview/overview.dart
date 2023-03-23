@@ -6,6 +6,20 @@ import 'package:schildpad/home/pages.dart';
 import 'package:schildpad/home/tile.dart';
 import 'package:schildpad/overview/overview_screen.dart';
 
+class OverviewIconButton extends StatelessWidget {
+  const OverviewIconButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(
+        Icons.view_array_rounded,
+      ),
+      onPressed: () => context.push(OverviewScreen.routeName),
+    );
+  }
+}
+
 class ShowAppWidgetsButton extends StatelessWidget {
   const ShowAppWidgetsButton({
     Key? key,

@@ -21,7 +21,6 @@ class SettingsIconButton extends StatelessWidget {
         Icons.settings_outlined,
       ),
       onPressed: () => context.push(SettingsScreen.routeName),
-      splashRadius: 20,
     );
   }
 }

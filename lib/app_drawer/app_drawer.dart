@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schildpad/app_drawer/installed_applications.dart';
 import 'package:schildpad/home/model/tile.dart';
+import 'package:schildpad/overview/overview.dart';
 import 'package:schildpad/settings/layout_settings.dart';
 import 'package:schildpad/settings/settings.dart';
 
@@ -19,13 +20,24 @@ class AppsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: const [
-      Material(
-        child: ListTile(
-          trailing: SettingsIconButton(),
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: SizedBox(
+            height: Theme.of(context).navigationBarTheme.height,
+            width: 100,
+            child: Row(
+              children: const [
+                Expanded(child: OverviewIconButton()),
+                Expanded(child: SettingsIconButton()),
+              ],
+            ),
+          ),
         ),
       ),
-      Expanded(child: AppDrawerGrid())
+      const Expanded(child: AppDrawerGrid())
     ]);
   }
 }
