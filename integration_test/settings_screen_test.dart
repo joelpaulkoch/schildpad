@@ -295,5 +295,63 @@ void main() {
 
       expect(find.byType(AppIcon).hitTestable(), findsNothing);
     });
+    testWidgets('layout settings should allow enable additional row of dock',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+
+      const defaultColumns = 4;
+
+      final homeScreenRobot =
+          HomeScreenRobot(tester, homeGridColumns: 4, homeGridRows: 5);
+      final settingsScreenRobot = SettingsScreenRobot(tester);
+
+      // Given:
+      // I have a dock with 1 row
+      final dockFinder = find.byType(Dock);
+      expect(dockFinder, findsOneWidget);
+
+      final appGridElementsFinder =
+          find.descendant(of: dockFinder, matching: find.byType(GridElement));
+      expect(appGridElementsFinder, findsNWidgets(defaultColumns));
+
+      final firstRowTopY = tester.getTopLeft(appGridElementsFinder.first).dy;
+      var elementsNotInFirstRow = appGridElementsFinder
+          .evaluate()
+          .where((element) =>
+              tester.getTopLeft(find.byWidget(element.widget)).dy !=
+              firstRowTopY)
+          .length;
+
+      expect(elementsNotInFirstRow, 0);
+
+      // and I am on the layout settings screen
+      await homeScreenRobot.openSettings();
+      await settingsScreenRobot.openLayoutSettings();
+      expect(find.byType(LayoutSettingsScreen), findsOneWidget);
+
+      // When:
+      // I enable the additional row
+      await settingsScreenRobot.toggleAdditionalDockRow();
+      await tester.pumpAndSettle();
+
+      // Then:
+      // my dock has 2 rows now
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      elementsNotInFirstRow = appGridElementsFinder
+          .evaluate()
+          .where((element) =>
+              tester.getTopLeft(find.byWidget(element.widget)).dy !=
+              firstRowTopY)
+          .length;
+
+      expect(elementsNotInFirstRow, greaterThan(0));
+    });
   });
 }

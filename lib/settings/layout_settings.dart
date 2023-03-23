@@ -85,6 +85,17 @@ class LayoutSettingsManager {
       await layoutCollection.put(newLayout);
     });
   }
+
+  Future<void> setAdditionalDockRow(bool enabled) async {
+    final layoutCollection = isarCollection;
+
+    await layoutCollection?.isar.writeTxn(() async {
+      final layout = await layoutCollection.get(0);
+      final newLayout = layout?.copyWith(additionalDockRow: enabled) ??
+          LayoutSettings(additionalDockRow: enabled);
+      await layoutCollection.put(newLayout);
+    });
+  }
 }
 
 class AppGridHeadingListTile extends StatelessWidget {
@@ -342,17 +353,21 @@ class DockColumnsListTile extends ConsumerWidget {
   }
 }
 
-class DockAdditionalRowListTile extends StatelessWidget {
+class DockAdditionalRowListTile extends ConsumerWidget {
   const DockAdditionalRowListTile({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layoutManager = ref.watch(layoutSettingsManagerProvider);
+    final additionalRow = ref.watch(additionalDockRowProvider);
     return SwitchListTile(
         title: Text(AppLocalizations.of(context)!.additionalRow),
-        value: false,
-        onChanged: (_) {});
+        value: additionalRow,
+        onChanged: (enabled) async {
+          await layoutManager.setAdditionalDockRow(enabled);
+        });
   }
 }
 

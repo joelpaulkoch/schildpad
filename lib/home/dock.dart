@@ -11,8 +11,13 @@ final dockColumnCountProvider = Provider<int>((ref) {
   final layout = ref.watch(layoutSettingsProvider);
   return layout.dockColumns;
 });
+final additionalDockRowProvider = Provider<bool>((ref) {
+  final layout = ref.watch(layoutSettingsProvider);
+  return layout.additionalDockRow;
+});
 final dockRowCountProvider = Provider<int>((ref) {
-  return 1;
+  final additionalRow = ref.watch(additionalDockRowProvider);
+  return additionalRow ? 2 : 1;
 });
 
 final dockGridTilesProvider =

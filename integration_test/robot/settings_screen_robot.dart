@@ -64,4 +64,11 @@ class SettingsScreenRobot {
 
     await tester.tap(columnsSwitchFinder, warnIfMissed: false);
   }
+
+  Future<void> toggleAdditionalDockRow() async {
+    final additionalRowListTileFinder = find.byType(DockAdditionalRowListTile);
+    expect(additionalRowListTileFinder, findsOneWidget);
+
+    await tester.tap(additionalRowListTileFinder);
+  }
 }
