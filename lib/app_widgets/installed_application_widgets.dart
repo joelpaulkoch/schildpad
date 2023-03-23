@@ -116,7 +116,14 @@ class ApplicationWidget extends StatelessWidget {
       surfaceFactory: (context, controller) {
         return AndroidViewSurface(
           controller: controller as AndroidViewController,
-          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            Factory<VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer(),
+            ),
+            Factory<TapGestureRecognizer>(
+              () => TapGestureRecognizer(),
+            ),
+          },
           hitTestBehavior: PlatformViewHitTestBehavior.opaque,
         );
       },
