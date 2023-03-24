@@ -24,7 +24,10 @@ class HomeScreenRobot {
   Future<void> openAppDrawer() async {
     final homeScreenFinder = find.byType(HomeScreen);
     expect(homeScreenFinder, findsOneWidget);
-    await tester.fling(homeScreenFinder, const Offset(0, -100), 500,
+    final dockFinder = find.byType(Dock);
+    expect(dockFinder, findsOneWidget);
+
+    await tester.fling(dockFinder, const Offset(0, -100), 500,
         warnIfMissed: false);
     await tester.pumpAndSettle();
 

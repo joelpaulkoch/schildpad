@@ -60,16 +60,9 @@ class HomeScreen extends ConsumerWidget {
           backLayer: DragDetector(
             child: Builder(builder: (context) {
               return GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onLongPress: () => context.push(OverviewScreen.routeName),
-                  onVerticalDragEnd: (details) {
-                    final primaryVelocity = details.primaryVelocity ?? 0;
-                    // on swipe up
-                    if (primaryVelocity < 0) {
-                      Backdrop.of(context).concealBackLayer();
-                    }
-                  },
-                  child: Column(
+                behavior: HitTestBehavior.translucent,
+                onLongPress: () => context.push(OverviewScreen.routeName),
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (showTrash) const TrashArea(),
@@ -85,11 +78,21 @@ class HomeScreen extends ConsumerWidget {
                                 ))),
                       ),
                       Expanded(
-                        flex: dockRowCount,
-                        child: const Dock(),
-                      )
-                    ],
-                  ));
+                          flex: dockRowCount,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onVerticalDragEnd: (details) {
+                              final primaryVelocity =
+                                  details.primaryVelocity ?? 0;
+                              // on swipe up
+                              if (primaryVelocity < 0) {
+                                Backdrop.of(context).concealBackLayer();
+                              }
+                            },
+                            child: const Dock(),
+                          ))
+                    ]),
+              );
             }),
             onDragDetected: () {
               ref.read(showTrashProvider.notifier).state = true;

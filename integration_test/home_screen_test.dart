@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
 import 'package:schildpad/app_drawer/app_drawer.dart';
+import 'package:schildpad/home/dock.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/trash.dart';
 import 'package:schildpad/main.dart' as app;
@@ -37,7 +38,8 @@ void main() {
       // app drawer is not opened
       expect(find.byType(AppsView).hitTestable(), findsNothing);
     });
-    testWidgets('Swiping up should open app drawer',
+    testWidgets(
+        'Swiping up on the upper part of the home screen should not open app drawer',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -53,10 +55,31 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
+      // app drawer is not opened
+      expect(find.byType(AppsView).hitTestable(), findsNothing);
+    });
+    testWidgets('Swiping up on the dock should open app drawer',
+        (WidgetTester tester) async {
+      await app.main();
+      await tester.pumpAndSettle();
+      // Given:
+      // I am on the HomeScreen
+      final homeScreenFinder = find.byType(HomeScreen);
+      expect(homeScreenFinder, findsOneWidget);
+      final dockFinder = find.byType(Dock);
+      expect(dockFinder, findsOneWidget);
+
+      // When:
+      // I swipe up on the dock
+      await tester.fling(dockFinder, const Offset(0, -100), 500,
+          warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      // Then:
       // A list of all installed apps is shown
       expect(find.byType(AppsView), findsOneWidget);
     });
-    testWidgets('Long press on HomeScreen should open OverviewScreen',
+    testWidgets('Long press on home screen should open overview screen',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -75,8 +98,7 @@ void main() {
       // OverviewScreen is opened
       expect(find.byType(OverviewScreen), findsOneWidget);
     });
-    testWidgets('Settings button in app drawer should open SettingsScreen',
-        (WidgetTester tester) async {
+    testWidgets('Can navigate to settings screen', (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
 
@@ -90,7 +112,7 @@ void main() {
       expect(find.byType(AppsView), findsOneWidget);
 
       // When:
-      // I open the app drawer and click on the settings button
+      // I navigate to the settings screen
       await homeScreenRobot.openSettings();
 
       // Then:
