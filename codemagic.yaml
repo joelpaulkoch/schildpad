@@ -48,6 +48,10 @@ workflows:
             --ks-pass $CM_KEYSTORE_PASSWORD \
             --ks-key-alias $CM_KEY_ALIAS \
             --key-pass $CM_KEY_PASSWORD
+          
+          mv \
+            build/app/outputs/bundle/release/app-release-universal.apk \
+            build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
@@ -70,10 +74,6 @@ workflows:
               echo "Not a tag build, will not publish GitHub release"
               exit 0
             fi
-            
-            mv \
-              build/app/outputs/bundle/release/app-release-universal.apk \
-              build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
             
             gh release create "${CM_TAG}" \
               --draft \
