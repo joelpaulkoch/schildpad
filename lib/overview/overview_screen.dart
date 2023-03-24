@@ -58,11 +58,9 @@ class OverviewScreen extends ConsumerWidget {
                             aspectRatio: _approxHomeViewAspectRatio(
                                 context, homeRowCount, totalRows),
                             child: Card(
-                                child: Hero(
-                                    tag: 'home',
-                                    child: HomePageView(
-                                      pageController: overviewPageController,
-                                    ))))),
+                                child: HomePageView(
+                              pageController: overviewPageController,
+                            )))),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),

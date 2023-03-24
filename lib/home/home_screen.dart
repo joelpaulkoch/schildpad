@@ -71,11 +71,9 @@ class HomeScreen extends ConsumerWidget {
                       Expanded(
                         flex: homeRowCount,
                         child: Align(
-                            child: Hero(
-                                tag: 'home',
-                                child: HomePageView(
-                                  pageController: homePageController,
-                                ))),
+                            child: HomePageView(
+                          pageController: homePageController,
+                        )),
                       ),
                       Expanded(
                           flex: dockRowCount,
