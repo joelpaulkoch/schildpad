@@ -66,6 +66,7 @@ workflows:
         submit_as_draft: true
       scripts:
         - name: Publish to GitHub
+          ignore_failure: true
           script: |
             #!/usr/bin/env zsh
             
@@ -78,4 +79,4 @@ workflows:
             gh release create "${CM_TAG}" \
               --draft \
               --title "Schildpad Launcher ${CM_TAG}" \              
-              build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
+              **/schildpad-${CM_TAG}.apk
