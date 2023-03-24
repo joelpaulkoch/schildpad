@@ -23,21 +23,13 @@
     "@resetListTile": {
       "description": "Text on reset list tile"
     },
-    "resetConfirmationDialogTitle": "Reset?",
-    "@resetConfirmationDialogTitle": {
-      "description": "Title of the confirmation dialog to reset the app"
-    },
-    "resetConfirmationDialogText": "Are you sure?",
+    "resetConfirmationDialogText": "This will reset Schildpad to its initial state with the default settings and an empty home screen. Are you sure?",
     "@resetConfirmationDialogText": {
       "description": "Text shown in the confirmation dialog to reset the app"
     },
     "resetConfirmationDialogConfirmButton": "Reset",
     "@resetConfirmationDialogConfirmButton": {
       "description": "Text of confirm button in the confirmation dialog to reset the app"
-    },
-    "resetConfirmationDialogCancelButton": "Cancel",
-    "@resetConfirmationDialogCancelButton": {
-      "description": "Text of cancel button in the confirmation dialog to reset the app"
     },
     "thankYou": "Thank you for using Schildpad, enjoy!",
     "@thankYou": {
@@ -71,9 +63,9 @@
     "@topDock": {
       "description": "Top Dock"
     },
-    "layoutAlertTitle": "Warning",
-    "@layoutAlertTitle": {
-      "description": "Title of alert dialog when downsizing layout"
+    "alertTitle": "Warning",
+    "@alertTitle": {
+      "description": "Title of alert dialog"
     },
     "appGridLayoutAlertContent": "All your apps and widgets will be removed from the home screen when you reduce the size of the grid to prevent invalid state. Are you sure you want to continue?",
     "@appGridLayoutAlertContent": {

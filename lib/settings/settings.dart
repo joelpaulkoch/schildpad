@@ -55,15 +55,13 @@ class ResetListTile extends ConsumerWidget {
           showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: Text(AppLocalizations.of(context)!
-                        .resetConfirmationDialogTitle),
+                    title: Text(AppLocalizations.of(context)!.alertTitle),
                     content: Text(AppLocalizations.of(context)!
                         .resetConfirmationDialogText),
                     actions: [
                       TextButton(
                           onPressed: Navigator.of(context).pop,
-                          child: Text(AppLocalizations.of(context)!
-                              .resetConfirmationDialogCancelButton)),
+                          child: Text(AppLocalizations.of(context)!.cancel)),
                       const ResetButton()
                     ],
                   ));

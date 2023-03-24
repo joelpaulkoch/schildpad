@@ -167,8 +167,8 @@ class AppGridColumnsListTile extends ConsumerWidget {
                 cancel = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
-                              title: Text(AppLocalizations.of(context)!
-                                  .layoutAlertTitle),
+                              title: Text(
+                                  AppLocalizations.of(context)!.alertTitle),
                               content: Text(AppLocalizations.of(context)!
                                   .appGridLayoutAlertContent),
                               actions: [
@@ -238,8 +238,8 @@ class AppGridRowsListTile extends ConsumerWidget {
                 cancel = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
-                              title: Text(AppLocalizations.of(context)!
-                                  .layoutAlertTitle),
+                              title: Text(
+                                  AppLocalizations.of(context)!.alertTitle),
                               content: Text(AppLocalizations.of(context)!
                                   .appGridLayoutAlertContent),
                               actions: [
@@ -375,8 +375,8 @@ class DockColumnsListTile extends ConsumerWidget {
                 cancel = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
-                              title: Text(AppLocalizations.of(context)!
-                                  .layoutAlertTitle),
+                              title: Text(
+                                  AppLocalizations.of(context)!.alertTitle),
                               content: Text(AppLocalizations.of(context)!
                                   .dockLayoutAlertContent),
                               actions: [
@@ -432,8 +432,7 @@ class DockAdditionalRowListTile extends ConsumerWidget {
             cancel = await showDialog<bool>(
                     context: context,
                     builder: (_) => AlertDialog(
-                          title: Text(
-                              AppLocalizations.of(context)!.layoutAlertTitle),
+                          title: Text(AppLocalizations.of(context)!.alertTitle),
                           content: Text(AppLocalizations.of(context)!
                               .dockLayoutAlertContent),
                           actions: [
