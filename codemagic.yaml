@@ -60,6 +60,17 @@ workflows:
             --ks-pass $CM_KEYSTORE_PASSWORD \
             --ks-key-alias $CM_KEY_ALIAS \
             --key-pass $CM_KEY_PASSWORD
+        
+        mv \
+            build/app/outputs/bundle/release/app-arm64-v8a-release.apk \
+            build/app/outputs/bundle/release/schildpad-${CM_TAG}-arm64.apk
+        mv \
+            build/app/outputs/bundle/release/app-armeabi-v7a-release.apk \
+            build/app/outputs/bundle/release/schildpad-${CM_TAG}-arm.apk
+        mv \
+            build/app/outputs/bundle/release/app-x86_64-release.apk \
+            build/app/outputs/bundle/release/schildpad-${CM_TAG}-x64.apk
+        
 
     artifacts:
       - build/**/outputs/bundle/**/*.aab
@@ -88,4 +99,4 @@ workflows:
             gh release create "${CM_TAG}" \
               --draft \
               --title "Schildpad Launcher ${CM_TAG}" \              
-              **/schildpad-${CM_TAG}.apk
+              **/schildpad-${CM_TAG}-*.apk
