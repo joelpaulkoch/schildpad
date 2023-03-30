@@ -51,7 +51,16 @@ workflows:
           
           mv \
             build/app/outputs/bundle/release/app-release-universal.apk \
-            build/app/outputs/bundle/release/schildpad-${CM_TAG}.apk
+            build/app/outputs/bundle/release/schildpad-${CM_TAG}-universal.apk
+      - name: Build apks per abi
+        script: |
+          android-app-bundle build-apks \
+            --bundle 'build/**/outputs/**/*.aab' \
+            --ks $CM_KEYSTORE_PATH \
+            --ks-pass $CM_KEYSTORE_PASSWORD \
+            --ks-key-alias $CM_KEY_ALIAS \
+            --key-pass $CM_KEY_PASSWORD
+
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
