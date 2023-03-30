@@ -1,10 +1,10 @@
 Schildpad Launcher provides you with the following features:
- <ul>
-  <li>An app drawer shows you all installed apps</li>
-  <li>You can drop apps on your home screen to access them quickly</li>
-  <li>You can have multiple pages on your home screen</li>
-  <li>You can drop app widgets on the home screen</li>
-  <li>A dock let's you pin your favorite apps at the bottom of the screen</li>
-  <li>The dock offers an optional additional row, to pin more apps or widgets, for instance a search bar of your favorite search engine</li>
-  <li>You can enable a second dock at the top of the screen, for example to pin the weather report</li>
-</ul> 
+
+- An app drawer shows you all installed apps
+- You can drop apps on your home screen to access them quickly
+- You can have multiple pages on your home screen
+- You can drop app widgets on the home screen
+- A dock let's you pin your favorite apps at the bottom of the screen
+- The dock offers an optional additional row, to pin more apps or widgets, for instance a search bar of your favorite search engine
+- You can enable a second dock at the top of the screen, for example to pin the weather report
+
