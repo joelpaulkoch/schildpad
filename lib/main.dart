@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:schildpad/app_widgets/app_widgets_screen.dart';
 import 'package:schildpad/home/home_screen.dart';
 import 'package:schildpad/home/model/layout_settings.dart';
@@ -15,7 +16,9 @@ import 'package:schildpad/settings/settings_screen.dart';
 import 'package:schildpad/theme/theme.dart';
 
 final isarProvider = FutureProvider<Isar>((ref) async {
-  return await Isar.open([TileSchema, PageCounterSchema, LayoutSettingsSchema]);
+  final dir = await getApplicationDocumentsDirectory();
+  return await Isar.open([TileSchema, PageCounterSchema, LayoutSettingsSchema],
+      directory: dir.path);
 });
 
 Future<void> main() async {
