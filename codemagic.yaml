@@ -91,4 +91,7 @@ workflows:
             gh release create "${CM_TAG}" \
               --draft \
               --title "Schildpad Launcher ${CM_TAG}" \              
-              *schildpad-${CM_TAG}-*.apk
+              schildpad-${CM_TAG}-universal.apk \
+              schildpad-${CM_TAG}-arm64.apk \
+              schildpad-${CM_TAG}-arm.apk \
+              schildpad-${CM_TAG}-x64.apk
