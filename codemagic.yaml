@@ -95,9 +95,9 @@ workflows:
             fi
             
             gh release create "${CM_TAG}" \
-              schildpad-${CM_TAG}-universal.apk \
-              schildpad-${CM_TAG}-arm64.apk \
-              schildpad-${CM_TAG}-arm.apk \
-              schildpad-${CM_TAG}-x64.apk \
+              $CM_BUILD_OUTPUT_DIR/schildpad-${CM_TAG}-universal.apk \
+              $CM_BUILD_OUTPUT_DIR/schildpad-${CM_TAG}-arm64.apk \
+              $CM_BUILD_OUTPUT_DIR/schildpad-${CM_TAG}-arm.apk \
+              $CM_BUILD_OUTPUT_DIR/schildpad-${CM_TAG}-x64.apk \
               --draft \
               --title "Schildpad Launcher ${CM_TAG}"
