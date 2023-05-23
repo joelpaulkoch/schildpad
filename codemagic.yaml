@@ -31,6 +31,12 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter packages pub get
+      - name: Analyze code
+        script: |
+          flutter analyze
+      - name: Verify formatting
+        script: |
+          dart format --output=none --set-exit-if-changed .
       - name: Unit tests
         script: |
           mkdir -p test-results
@@ -95,4 +101,3 @@ workflows:
               schildpad-${CM_TAG}-x64.apk \
               --draft \
               --title "Schildpad Launcher ${CM_TAG}"
-              
