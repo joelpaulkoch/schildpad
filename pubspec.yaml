@@ -3,7 +3,7 @@ description: Schildpad is a launcher app for Android built with Flutter. It aims
 
 publish_to: "none"
 
-version: 1.2.9+1
+version: 1.2.10+1
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
