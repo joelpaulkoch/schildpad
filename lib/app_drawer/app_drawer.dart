@@ -28,8 +28,8 @@ class AppsView extends StatelessWidget {
           child: SizedBox(
             height: Theme.of(context).navigationBarTheme.height,
             width: 100,
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Expanded(child: OverviewIconButton()),
                 Expanded(child: SettingsIconButton()),
               ],

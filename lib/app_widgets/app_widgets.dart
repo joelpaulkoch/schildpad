@@ -425,11 +425,11 @@ class AppWidgetError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
+    return const SizedBox.expand(
         child: Card(
       color: Colors.amber,
       child: Column(
-        children: const [
+        children: [
           Icon(
             Icons.bubble_chart,
             color: Colors.white,
