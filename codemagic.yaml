@@ -1,11 +1,9 @@
-environment:
-  vars: FLUTTER_VERSION: "$(cat .tool-versions | cut -d " " -f2 | cut -d "-" -f1)"
 workflows:
   manual:
     name: Manual build and test
     max_build_duration: 30
     environment:
-      flutter: $FLUTTER_VERSION
+      flutter: 3.10.2
     scripts:
       - name: Set up local properties
         script: |
@@ -32,7 +30,7 @@ workflows:
         - google_play
         - keystore_credentials
         - github
-      flutter: $FLUTTER_VERSION
+      flutter: 3.10.2
       vars:
         PACKAGE_NAME: "app.schildpad.schildpad"
         GOOGLE_PLAY_TRACK: internal
