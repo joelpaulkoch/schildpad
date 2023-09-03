@@ -39,7 +39,7 @@ void main() {
       expect(find.byType(AppsView).hitTestable(), findsNothing);
     });
     testWidgets(
-        'Swiping up on the upper part of the home screen should not open app drawer',
+        'Swiping up on the upper part of the home screen should open app drawer',
         (WidgetTester tester) async {
       await app.main();
       await tester.pumpAndSettle();
@@ -55,8 +55,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Then:
-      // app drawer is not opened
-      expect(find.byType(AppsView).hitTestable(), findsNothing);
+      // app drawer is opened
+      expect(find.byType(AppsView).hitTestable(), findsWidgets);
     });
     testWidgets('Swiping up on the dock should open app drawer',
         (WidgetTester tester) async {
