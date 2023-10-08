@@ -86,7 +86,6 @@ class HomeScreen extends ConsumerWidget {
                           flex: dockRowCount,
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
-                            
                             child: const Dock(),
                           ))
                     ]),
