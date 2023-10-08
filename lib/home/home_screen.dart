@@ -62,6 +62,13 @@ class HomeScreen extends ConsumerWidget {
               return GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onLongPress: () => context.push(OverviewScreen.routeName),
+                onVerticalDragEnd: (details) {
+                  final primaryVelocity = details.primaryVelocity ?? 0;
+                  // on swipe up
+                  if (primaryVelocity < 0) {
+                    Backdrop.of(context).concealBackLayer();
+                  }
+                },
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -79,14 +86,7 @@ class HomeScreen extends ConsumerWidget {
                           flex: dockRowCount,
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
-                            onVerticalDragEnd: (details) {
-                              final primaryVelocity =
-                                  details.primaryVelocity ?? 0;
-                              // on swipe up
-                              if (primaryVelocity < 0) {
-                                Backdrop.of(context).concealBackLayer();
-                              }
-                            },
+                            
                             child: const Dock(),
                           ))
                     ]),
