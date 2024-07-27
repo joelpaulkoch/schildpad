@@ -1,3 +1,7 @@
+> [!WARNING]  
+> I archived this project because I don't use Schildpad at the moment.
+> Feel free to fork it!
+
 # Schildpad Launcher
 
 ![Schildpad Logo](/assets/schildpad_logo.svg) 
